@@ -1,0 +1,30 @@
+sequenceDiagram
+  actor User
+  participant PC as PC dashboard
+  participant ADB as Local ADB bridge
+  participant Phone as Phone browser
+  participant RX as PC collector
+  participant Disk as PC files
+  User->>PC: Select USB, token and authorized device
+  PC->>RX: POST /api/usb (local admin only)
+  RX->>ADB: Verify USB and reverse port mapping
+  ADB-->>RX: Mapping confirmed
+  PC->>RX: Create session (usb-adb)
+  RX-->>PC: Session ID and upload-only key
+  PC-->>Phone: QR with localhost origin and pairing fragment
+  User->>Phone: Check sensors
+  Phone-->>User: Observed availability, rates, permission warning
+  User->>Phone: Continue to capture
+  Phone->>RX: Clock exchanges and device capabilities
+  loop While capturing
+    Phone->>RX: Batched telemetry and indexed JPEG
+    RX->>Disk: Append records and write JPEG
+    Disk-->>RX: Writes completed
+    RX-->>Phone: Acceptance or storage ACK
+    PC->>RX: Latest saved image and selected sensor chart
+    RX-->>PC: Newest JPEG, metrics and samples
+  end
+  User->>Phone: Stop capture and flush
+  User->>PC: Stop and save
+  PC->>RX: Finalize session
+  RX->>Disk: Completed manifest

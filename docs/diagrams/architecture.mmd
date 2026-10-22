@@ -1,0 +1,12 @@
+architecture-beta
+  service phone(server)[Phone browser]
+  service route(server)[USB ADB or HTTPS tunnel]
+  service collector(server)[PC collector]
+  service dashboard(server)[PC dashboard]
+  service records(disk)[PC CSV JSONL JPEG]
+  service hosting(cloud)[Vercel static UI]
+  phone:R --> L:route
+  route:R --> L:collector
+  dashboard:B -- T:collector
+  collector:R --> L:records
+  hosting:R --> L:phone

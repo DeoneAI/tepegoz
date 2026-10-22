@@ -1,0 +1,8 @@
+data/
+.env*
+node_modules/
+.git/
+*.log
+.tools/
+*.pdf
+__pycache__/

@@ -1,0 +1,17 @@
+node_modules/
+dist/
+data/
+.vercel/
+.env*
+!.env.example
+*.log
+.tools/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.DS_Store
+Thumbs.db
+
+.vercel
