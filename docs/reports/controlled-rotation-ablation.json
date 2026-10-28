@@ -1,0 +1,73 @@
+{
+  "evidence_type": "controlled synthetic rotation stress test on a real public still frame; no real IMU or capture timing",
+  "frames": 60,
+  "intrinsics": [
+    [
+      700.0,
+      0.0,
+      480.0
+    ],
+    [
+      0.0,
+      700.0,
+      270.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "intrinsics_status": "chosen simulation intrinsics; not measured camera calibration",
+  "reference_boxes": [
+    [
+      1,
+      298,
+      40,
+      367
+    ],
+    [
+      292,
+      300,
+      332,
+      330
+    ],
+    [
+      356,
+      303,
+      390,
+      330
+    ],
+    [
+      406,
+      301,
+      440,
+      330
+    ]
+  ],
+  "reference_annotation": "approximate visual subset, not exhaustive detector ground truth",
+  "matching_iou": 0.3,
+  "metrics": {
+    "rgb_only": {
+      "matched_reference_observations": 188,
+      "missing_reference_observations": 28,
+      "id_switches_reference_subset": 184
+    },
+    "rotation_assisted": {
+      "matched_reference_observations": 156,
+      "missing_reference_observations": 60,
+      "id_switches_reference_subset": 0
+    },
+    "wrong_rotation_sign": {
+      "matched_reference_observations": 132,
+      "missing_reference_observations": 84,
+      "id_switches_reference_subset": 129
+    }
+  },
+  "limits": [
+    "Known pure rotation favors the correct compensation model",
+    "Translation, rolling shutter, timing error, moving objects and bad extrinsics violate the model",
+    "Wrong-sign rotation is a deliberate negative case",
+    "This result does not establish field tracking accuracy or road safety"
+  ]
+}

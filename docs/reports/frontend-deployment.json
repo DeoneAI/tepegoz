@@ -1,0 +1,101 @@
+{
+  "url": "https://tepegoz-tawny.vercel.app",
+  "root_status": 200,
+  "headers": {
+    "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; media-src 'self' blob:; connect-src 'self' https: http://localhost:8787; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+    "Permissions-Policy": "camera=(self), microphone=(), geolocation=(self), accelerometer=(self), gyroscope=(self)",
+    "Referrer-Policy": "no-referrer",
+    "X-Content-Type-Options": "nosniff"
+  },
+  "assets": [
+    {
+      "file": "app.js",
+      "status": 200,
+      "bytes": 18592,
+      "matches_build": true,
+      "sha256": "de28a1cf61b1e5855fdf0235d1d14514f8aa9b16dfed500b4551ebde91fc90c0"
+    },
+    {
+      "file": "common.js",
+      "status": 200,
+      "bytes": 1707,
+      "matches_build": true,
+      "sha256": "61516f386b08994911f94c02a369745a279a1317fbe26b8342033df2f730cf19"
+    },
+    {
+      "file": "fonts.css",
+      "status": 200,
+      "bytes": 81,
+      "matches_build": true,
+      "sha256": "6dfa265befce15c95807b57bc5d95a8f457b2fe9ee9e0fdba35d2e3fafe76007"
+    },
+    {
+      "file": "index.html",
+      "status": 200,
+      "bytes": 15873,
+      "matches_build": true,
+      "sha256": "fc69aeb7f72711673fe5b44c1fd3c46757d08f5ee43c52bdbc2e050b4f03067d"
+    },
+    {
+      "file": "mark.svg",
+      "status": 200,
+      "bytes": 250,
+      "matches_build": true,
+      "sha256": "a57e8599cbe3d47bb2278f7d2ae12d303415ab893cdff39d0643486e2e53a516"
+    },
+    {
+      "file": "phone.html",
+      "status": 200,
+      "bytes": 3637,
+      "matches_build": true,
+      "sha256": "fbad2c886d8d0851fe03b07217f2eb5485c84814537fa13399ce314465bb21df"
+    },
+    {
+      "file": "phone.js",
+      "status": 200,
+      "bytes": 14843,
+      "matches_build": true,
+      "sha256": "a064ece5a8372798b70706a83601a47f929537580505517bd793f54d31dfe5f1"
+    },
+    {
+      "file": "qr.js",
+      "status": 200,
+      "bytes": 3896,
+      "matches_build": true,
+      "sha256": "24fc42e56fb387158f5cc9f29d54c709582501cf5ea0b4934902bb494a0de086"
+    },
+    {
+      "file": "sensors.js",
+      "status": 200,
+      "bytes": 2884,
+      "matches_build": true,
+      "sha256": "83e5ebc62e8aa825a6837f1d55a40e49d539a13dae81ee03d8b0830f11713a31"
+    },
+    {
+      "file": "style.css",
+      "status": 200,
+      "bytes": 21737,
+      "matches_build": true,
+      "sha256": "ee5935447469b4ebc7817136a4d8acde29e6952abb3a6bfad32d486415f3c926"
+    }
+  ],
+  "private_paths": [
+    {
+      "path": "/pc/server.mjs",
+      "status": 404
+    },
+    {
+      "path": "/.env.local",
+      "status": 404
+    },
+    {
+      "path": "/data/",
+      "status": 404
+    }
+  ],
+  "deployment_id": "dpl_CH1LrgoYyTWYmuyHktc8jHpoZuDN",
+  "deployment_state": "READY",
+  "target": "production",
+  "frontend_only": true,
+  "verified_at_utc": "2026-10-28T06:18:09.788470+00:00"
+}

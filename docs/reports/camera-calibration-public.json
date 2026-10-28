@@ -1,0 +1,354 @@
+{
+  "status": "checkerboard_fit_unvalidated",
+  "camera_model": "pinhole_brown_conrady_5",
+  "image_width": 640,
+  "image_height": 480,
+  "camera_intrinsics": [
+    [
+      532.5089371750037,
+      0.0,
+      342.0229399498909
+    ],
+    [
+      0.0,
+      532.5899595855915,
+      234.44661743916345
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "distortion_coefficients": [
+    -0.311580004379963,
+    0.1635193916869511,
+    0.0010936313679006406,
+    0.0005567641046821841,
+    -0.02536196802020908
+  ],
+  "distortion_order": [
+    "k1",
+    "k2",
+    "p1",
+    "p2",
+    "k3"
+  ],
+  "pattern_internal_corners": [
+    9,
+    6
+  ],
+  "square_size_m": null,
+  "translation_units": "board_squares_unknown_physical_size",
+  "training_views": 11,
+  "held_out_views": 2,
+  "training_rms_px": 0.2531297612193926,
+  "views": [
+    {
+      "role": "training",
+      "rms_px": 0.20812509953975677,
+      "rotation_board_to_camera_rodrigues": [
+        -0.43730063172976974,
+        0.2649064504728502,
+        -3.08621365672611
+      ],
+      "translation_board_to_camera": [
+        4.74198099312823,
+        0.8938137727941319,
+        14.53114383554383
+      ]
+    },
+    {
+      "role": "training",
+      "rms_px": 0.23775511980056763,
+      "rotation_board_to_camera_rodrigues": [
+        0.6860325989341538,
+        -0.4365366019706819,
+        1.656226481124922
+      ],
+      "translation_board_to_camera": [
+        3.3135019268059795,
+        -1.7019917187130569,
+        8.42111679869851
+      ]
+    },
+    {
+      "role": "training",
+      "rms_px": 0.20376735925674438,
+      "rotation_board_to_camera_rodrigues": [
+        -0.26405085225729485,
+        -0.3891135721404384,
+        -2.7483493748272254
+      ],
+      "translation_board_to_camera": [
+        3.9475786320163064,
+        3.03280249740252,
+        9.62901756410511
+      ]
+    },
+    {
+      "role": "training",
+      "rms_px": 0.21549862623214722,
+      "rotation_board_to_camera_rodrigues": [
+        -0.37369324330034004,
+        -0.17591088561940155,
+        -3.1167084847212156
+      ],
+      "translation_board_to_camera": [
+        3.786871854809079,
+        2.177435388435766,
+        10.685818262760968
+      ]
+    },
+    {
+      "role": "training",
+      "rms_px": 0.2875889539718628,
+      "rotation_board_to_camera_rodrigues": [
+        -0.45958329146119475,
+        -0.3129175860680839,
+        -1.7613650461544805
+      ],
+      "translation_board_to_camera": [
+        -0.9557018010096094,
+        3.51047247404717,
+        9.051005958831322
+      ]
+    },
+    {
+      "role": "training",
+      "rms_px": 0.2605797052383423,
+      "rotation_board_to_camera_rodrigues": [
+        -0.2930073065084413,
+        0.3976952973409732,
+        -1.4353308119357315
+      ],
+      "translation_board_to_camera": [
+        1.5094914923894327,
+        4.7581237210874905,
+        16.167706747614602
+      ]
+    },
+    {
+      "role": "training",
+      "rms_px": 0.332772821187973,
+      "rotation_board_to_camera_rodrigues": [
+        -0.31368389288537685,
+        0.15571615864854566,
+        -1.2408813150511626
+      ],
+      "translation_board_to_camera": [
+        -6.2927259877259525,
+        3.2869594239910316,
+        16.674301994430493
+      ]
+    },
+    {
+      "role": "training",
+      "rms_px": 0.22907830774784088,
+      "rotation_board_to_camera_rodrigues": [
+        -0.454620327298787,
+        -0.08987609665713148,
+        -1.3357793611987727
+      ],
+      "translation_board_to_camera": [
+        -3.5331506036126923,
+        3.039743997954249,
+        11.354669182351973
+      ]
+    },
+    {
+      "role": "training",
+      "rms_px": 0.3329286575317383,
+      "rotation_board_to_camera_rodrigues": [
+        0.6387262931926585,
+        0.2991651548166674,
+        -2.9266155768421065
+      ],
+      "translation_board_to_camera": [
+        3.7253990640283705,
+        2.324777780853173,
+        15.230126341716868
+      ]
+    },
+    {
+      "role": "training",
+      "rms_px": 0.21567080914974213,
+      "rotation_board_to_camera_rodrigues": [
+        0.5242147146330537,
+        -0.442435902625887,
+        -1.7006106655476716
+      ],
+      "translation_board_to_camera": [
+        -0.9036573981036986,
+        4.381826447547598,
+        11.44078033990696
+      ]
+    },
+    {
+      "role": "training",
+      "rms_px": 0.2140970677137375,
+      "rotation_board_to_camera_rodrigues": [
+        -0.3510824171669883,
+        -0.24420812837694925,
+        -1.5688721983193417
+      ],
+      "translation_board_to_camera": [
+        -2.902671338576759,
+        3.5168880991281886,
+        10.149420572754908
+      ]
+    },
+    {
+      "role": "held_out_pose_fit",
+      "rms_px": 0.3394797444343567,
+      "rotation_board_to_camera_rodrigues": [
+        0.31178059563122706,
+        0.5056469073318739,
+        -1.826709117202941
+      ],
+      "translation_board_to_camera": [
+        -0.9353594214725226,
+        4.3103899809484165,
+        16.083361925662043
+      ]
+    },
+    {
+      "role": "held_out_pose_fit",
+      "rms_px": 0.24076974391937256,
+      "rotation_board_to_camera_rodrigues": [
+        0.49569055166407333,
+        -0.18012718997499166,
+        -1.7336274813329635
+      ],
+      "translation_board_to_camera": [
+        -1.498521707343971,
+        4.535012110839505,
+        12.300891533142803
+      ]
+    }
+  ],
+  "intrinsic_parameter_std": [
+    0.6195047397092777,
+    0.6499004670066879,
+    0.6546437614086655,
+    0.7084627381385956,
+    0.007457520778152927,
+    0.05601317603569147,
+    0.000159125085142211,
+    0.00020067974688342012,
+    0.11777824239794255,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "std_interpretation": "Conditional fit uncertainty, not independently validated accuracy",
+  "view_diversity": {
+    "max_normal_angle_deg": 65.52985872009494,
+    "normalized_center_span_xy": [
+      0.3627658605575562,
+      0.20020621617635087
+    ],
+    "thresholds_are_heuristics": true
+  },
+  "quality_warnings": [],
+  "undistorted_intrinsics": [
+    [
+      448.7291785869144,
+      0.0,
+      345.99928757457684
+    ],
+    [
+      0.0,
+      444.16713261971086,
+      235.05702916485845
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "undistorted_valid_roi_xywh": [
+    16,
+    26,
+    606,
+    427
+  ],
+  "R_body_camera": null,
+  "phone_to_vehicle": null,
+  "limits": [
+    "Board poses are not camera/IMU or phone/vehicle mount calibration",
+    "Held-out images do not fit K/D, but their six-DOF poses are fitted; this is not independent metric camera truth",
+    "Use the same lens, focus/zoom, resolution, crop and stabilization settings; recalibrate when they change",
+    "Unknown public board square size cannot provide metric board translations",
+    "A small residual alone does not establish physically correct intrinsics or timing"
+  ],
+  "opencv_version": "5.0.0",
+  "input_images": [
+    {
+      "file": "left01.jpg",
+      "sha256": "9621899098adffa1440c8264606bb7be535ccfd9ad126ae8e0bd9b0c5a5b8676"
+    },
+    {
+      "file": "left02.jpg",
+      "sha256": "052e700bbcc865c112958ec2ea105cb1bce4deca50ac8d6efae13adca9df7a2c"
+    },
+    {
+      "file": "left03.jpg",
+      "sha256": "c85b9426c3d8fcf161e1e727356105091009c3fd0b1b1a65bc2da91fea2724d2"
+    },
+    {
+      "file": "left04.jpg",
+      "sha256": "b490599dccfbfe5eb56d33363415b02227a9548ab8c9b8e7b05d3580e97266d9"
+    },
+    {
+      "file": "left05.jpg",
+      "sha256": "40bab8934fa76f82ec614a7fd0e6ebb4d9f74391d5e8b0c6f2f0ed6080c6c4de"
+    },
+    {
+      "file": "left06.jpg",
+      "sha256": "1cb164db61b3bd52f58a7e9340bb27c5e0278895bc80b6f292fba5cf9bccc4a1"
+    },
+    {
+      "file": "left07.jpg",
+      "sha256": "d2211fe9f971646b6ff88ed93a4f0d3f443741eb2894095cba15caade7c8c6e4"
+    },
+    {
+      "file": "left08.jpg",
+      "sha256": "f7a0737894812a28243af5b409c5689f4fadfe7610958b8ca5fc79aec2f2cd1b"
+    },
+    {
+      "file": "left09.jpg",
+      "sha256": "753939bc62d093c001d9118e989bef2b887f1b2f9ac03603df915a8b85aa81d3"
+    },
+    {
+      "file": "left11.jpg",
+      "sha256": "e736ace3d515c94c547009c3c10d818c81506ed7059cb31123749b9cc3f94ee8"
+    },
+    {
+      "file": "left12.jpg",
+      "sha256": "04bdd78b3b507fe0551aa7062a3ffd94846a147ee2bea7fb38082c720bdbe231"
+    },
+    {
+      "file": "left13.jpg",
+      "sha256": "2637fb6dd5e557f4fadb06b353a453eb0b9223f4671f6f572f815302bc4a70b3"
+    },
+    {
+      "file": "left14.jpg",
+      "sha256": "d4c032971dd7b859f9d6aed5090c9888bd8039b82e0604bee5bfe05444fce834"
+    }
+  ],
+  "skipped_images": [],
+  "split": "sorted accepted filenames; final views held out; duplicate images/geometry excluded",
+  "corner_detector": "findChessboardCornersSB; subpixel output",
+  "calibration_code_sha256": {
+    "scripts/calibrate_camera.py": "c14463a040fadb690d0c4d4d2bc4f7d219df8df9bfa5a4759a5510f5480486c2",
+    "evaluation/camera_calibration.py": "f2ceb5a58a600a4f9972d4b87842753bd5f9acfb8399671d9ef76054da2ac711"
+  }
+}

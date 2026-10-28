@@ -1,0 +1,16 @@
+{
+  "source_run": "solidWhiteRight-depth-both",
+  "samples": 112,
+  "interpretation": "ROI sensitivity only; background leakage is possible, not independently measured by this diagnostic",
+  "units_must_not_be_mixed": true,
+  "models": {
+    "relative": {
+      "objects": 56,
+      "mean_abs_half_vs_full_difference": 0.025977141090801785
+    },
+    "metric": {
+      "objects": 56,
+      "mean_abs_half_vs_full_difference": 0.5658966473170689
+    }
+  }
+}

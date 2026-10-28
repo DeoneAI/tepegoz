@@ -1,0 +1,95 @@
+{
+  "dataset": "EuRoC MAV V1_01_easy subset",
+  "frames": 600,
+  "imu_samples": 5993,
+  "gyro_bias_estimate": {
+    "accepted": true,
+    "assumption": "initial window is stationary; IMU alone does not prove this",
+    "samples": 150,
+    "duration_s": 0.744999936,
+    "gyro_bias_rad_s": [
+      -0.001982694030265558,
+      0.02071124045699939,
+      0.07842346105627863
+    ],
+    "mean_specific_force_m_s2": [
+      9.066084480833332,
+      0.11631776527777773,
+      -3.684358405
+    ],
+    "reason": "numerical stationary criteria met",
+    "start_offset_s": 1.5,
+    "end_offset_s": 2.244999936,
+    "selection": "first quiet interval in initial search; offline and assumed stationary, not GT-calibrated"
+  },
+  "gyro_optical_flow_correlation": {
+    "pearson_r": 0.9524512576248493,
+    "pairs": 599,
+    "model": "small-rotation center dx=-fx*delta_camera_y; translation, off-center bearings and dynamic objects also affect observed flow"
+  },
+  "ground_truth_usage": "evaluation only; one fixed initial orientation alignment per estimator; no GT bias/pose feedback",
+  "camera_imu_extrinsics": [
+    [
+      0.0148655429818,
+      -0.999880929698,
+      0.00414029679422,
+      -0.0216401454975
+    ],
+    [
+      0.999557249008,
+      0.0149672133247,
+      0.025715529948,
+      -0.064676986768
+    ],
+    [
+      -0.0257744366974,
+      0.00375618835797,
+      0.999660727178,
+      0.00981073058949
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "visual_gain": 0.2,
+  "visual_updates_accepted": 386,
+  "vo_accepted_frames": 386,
+  "vo_failure_reasons": {
+    "initialization": 1,
+    "low parallax / near-stationary": 95,
+    "cheirality / inlier support insufficient": 23,
+    "essential pose accepted": 386,
+    "rotation-only / insufficient translation parallax": 25,
+    "homography dominates: planar scene / rotation degeneracy": 70
+  },
+  "wall_s": 8.189449500059709,
+  "orientation_error_deg": {
+    "gyro_uncorrected": {
+      "mean": 47.57594735148116,
+      "max": 80.8968012998671
+    },
+    "gyro": {
+      "mean": 1.9503174400718948,
+      "max": 3.732351662737935
+    },
+    "vo": {
+      "mean": 16.72035772611726,
+      "max": 33.57864926226739
+    },
+    "fused": {
+      "mean": 1.3756086451892005,
+      "max": 2.69827898351656
+    }
+  },
+  "limitations": [
+    "Attitude-only complementary visual-inertial experiment; not full VIO or SLAM",
+    "VO translation has arbitrary scale and skipped intervals; no validated metric trajectory",
+    "VO accumulated orientation loses continuity at rejected frames; its errors include those failures",
+    "Initial stationary-window bias is an assumption, not an independent calibration",
+    "Euler yaw is for visualization; quaternion/rotation error is authoritative near gimbal lock",
+    "Dynamic points, planar scenes, blur and low parallax can invalidate essential-matrix pose"
+  ]
+}

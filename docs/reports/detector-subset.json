@@ -1,0 +1,172 @@
+{
+  "nano": {
+    "classes": {
+      "person": {
+        "ground_truth": 52,
+        "tp": 26,
+        "fp": 5,
+        "fn": 26,
+        "precision_at_score": 0.8387096774193549,
+        "recall_at_score": 0.5,
+        "ap50": 0.5527384308670537,
+        "ap50_95": 0.25442978277168116
+      },
+      "bicycle": {
+        "ground_truth": 5,
+        "tp": 0,
+        "fp": 1,
+        "fn": 5,
+        "precision_at_score": 0.0,
+        "recall_at_score": 0.0,
+        "ap50": 0.0,
+        "ap50_95": 0.0
+      },
+      "car": {
+        "ground_truth": 16,
+        "tp": 9,
+        "fp": 2,
+        "fn": 7,
+        "precision_at_score": 0.8181818181818182,
+        "recall_at_score": 0.5625,
+        "ap50": 0.6036963696369636,
+        "ap50_95": 0.3546812824139557
+      },
+      "motorcycle": {
+        "ground_truth": 3,
+        "tp": 2,
+        "fp": 1,
+        "fn": 1,
+        "precision_at_score": 0.6666666666666666,
+        "recall_at_score": 0.6666666666666666,
+        "ap50": 0.865346534653465,
+        "ap50_95": 0.571089108910891
+      },
+      "bus": {
+        "ground_truth": 5,
+        "tp": 5,
+        "fp": 0,
+        "fn": 0,
+        "precision_at_score": 1.0,
+        "recall_at_score": 1.0,
+        "ap50": 1.0,
+        "ap50_95": 0.9207920792079207
+      },
+      "truck": {
+        "ground_truth": 4,
+        "tp": 0,
+        "fp": 2,
+        "fn": 4,
+        "precision_at_score": 0.0,
+        "recall_at_score": 0.0,
+        "ap50": 0.0,
+        "ap50_95": 0.0
+      }
+    },
+    "subset_map50": 0.503630222526247,
+    "subset_map50_95": 0.35016537555074145,
+    "score_threshold_for_precision_recall": 0.25,
+    "protocol": "101-point interpolated AP; IoU .50:.05:.95; no target crowd instances; class-balanced small subset, not official full COCO mAP",
+    "images": 15,
+    "sampling": "First 3 sorted eligible val images per target class with at least one >=32px-area-scale target and no target crowd annotations; retain every target-class annotation in selected images. Nonrandom class-balanced subset, not the full COCO benchmark.",
+    "model_sha256": "c789161ed43c8269fcd4e67c67eeeb4e80c622da2eb296a20bc6007bd18a0b7d",
+    "model_bytes": 3659407,
+    "detector_threshold": 0.05,
+    "max_detections_per_image": 100,
+    "inference_preprocess_postprocess_seconds": 0.17694240005221218,
+    "fps_excluding_image_io_and_model_load": 84.77334994650123,
+    "class_mapping": {
+      "0": "person",
+      "1": "bicycle",
+      "2": "car",
+      "3": "motorcycle",
+      "5": "bus",
+      "7": "truck"
+    },
+    "output_interpretation": "small selected validation subset; not a published/full COCO benchmark score"
+  },
+  "tiny": {
+    "classes": {
+      "person": {
+        "ground_truth": 52,
+        "tp": 32,
+        "fp": 1,
+        "fn": 20,
+        "precision_at_score": 0.9696969696969697,
+        "recall_at_score": 0.6153846153846154,
+        "ap50": 0.7292396475672411,
+        "ap50_95": 0.40286838921234097
+      },
+      "bicycle": {
+        "ground_truth": 5,
+        "tp": 1,
+        "fp": 1,
+        "fn": 4,
+        "precision_at_score": 0.5,
+        "recall_at_score": 0.2,
+        "ap50": 0.2079207920792079,
+        "ap50_95": 0.04158415841584158
+      },
+      "car": {
+        "ground_truth": 16,
+        "tp": 10,
+        "fp": 4,
+        "fn": 6,
+        "precision_at_score": 0.7142857142857143,
+        "recall_at_score": 0.625,
+        "ap50": 0.6399086062452399,
+        "ap50_95": 0.4022034236390672
+      },
+      "motorcycle": {
+        "ground_truth": 3,
+        "tp": 3,
+        "fp": 1,
+        "fn": 0,
+        "precision_at_score": 0.75,
+        "recall_at_score": 1.0,
+        "ap50": 0.9158415841584159,
+        "ap50_95": 0.6569306930693071
+      },
+      "bus": {
+        "ground_truth": 5,
+        "tp": 5,
+        "fp": 1,
+        "fn": 0,
+        "precision_at_score": 0.8333333333333334,
+        "recall_at_score": 1.0,
+        "ap50": 1.0,
+        "ap50_95": 0.8924752475247525
+      },
+      "truck": {
+        "ground_truth": 4,
+        "tp": 0,
+        "fp": 4,
+        "fn": 4,
+        "precision_at_score": 0.0,
+        "recall_at_score": 0.0,
+        "ap50": 0.051485148514851496,
+        "ap50_95": 0.030891089108910898
+      }
+    },
+    "subset_map50": 0.5907326297608261,
+    "subset_map50_95": 0.40449216682837,
+    "score_threshold_for_precision_recall": 0.25,
+    "protocol": "101-point interpolated AP; IoU .50:.05:.95; no target crowd instances; class-balanced small subset, not official full COCO mAP",
+    "images": 15,
+    "sampling": "First 3 sorted eligible val images per target class with at least one >=32px-area-scale target and no target crowd annotations; retain every target-class annotation in selected images. Nonrandom class-balanced subset, not the full COCO benchmark.",
+    "model_sha256": "427cc366d34e27ff7a03e2899b5e3671425c262ea2291f88bb942bc1cc70b0f7",
+    "model_bytes": 20219662,
+    "detector_threshold": 0.05,
+    "max_detections_per_image": 100,
+    "inference_preprocess_postprocess_seconds": 0.3490376996342093,
+    "fps_excluding_image_io_and_model_load": 42.9753004209,
+    "class_mapping": {
+      "0": "person",
+      "1": "bicycle",
+      "2": "car",
+      "3": "motorcycle",
+      "5": "bus",
+      "7": "truck"
+    },
+    "output_interpretation": "small selected validation subset; not a published/full COCO benchmark score"
+  }
+}

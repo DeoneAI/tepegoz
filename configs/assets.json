@@ -1,0 +1,302 @@
+{
+  "schema_version": 1,
+  "assets": [
+    {
+      "id": "yolox_tiny",
+      "group": "vision",
+      "path": ".tools/models/yolox_tiny.onnx",
+      "url": "https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/yolox_tiny.onnx",
+      "bytes": 20219662,
+      "sha256": "427cc366d34e27ff7a03e2899b5e3671425c262ea2291f88bb942bc1cc70b0f7",
+      "license": "Apache-2.0",
+      "source": "https://github.com/Megvii-BaseDetection/YOLOX",
+      "contract": "416x416 BGR raw input; raw YOLOX head; COCO 80 classes"
+    },
+    {
+      "id": "yolop",
+      "group": "vision",
+      "path": ".tools/models/yolop-320-320.onnx",
+      "url": "https://raw.githubusercontent.com/hustvl/YOLOP/8d8f68df318c71f01d6f813c024df646c7d1978f/weights/yolop-320-320.onnx",
+      "bytes": 31817335,
+      "sha256": "86d6e8b6dfdef195c061e9bcad82d9487bb5ee1ac4a1cf9a3dc4736657a07369",
+      "license": "MIT",
+      "source": "https://github.com/hustvl/YOLOP",
+      "contract": "320x320 centered letterbox RGB ImageNet normalization; lane_line_seg two-class output"
+    },
+    {
+      "id": "solidWhiteRight",
+      "group": "roads",
+      "path": ".tools/datasets/roads/solidWhiteRight.mp4",
+      "url": "https://raw.githubusercontent.com/udacity/CarND-LaneLines-P1/ce5681be7ef8140560c0e464ef2da611e40b4fc9/test_videos/solidWhiteRight.mp4",
+      "bytes": 2641803,
+      "sha256": "2d8e14b46fe89afbc8ad1f718685cf09b83e85a324095031c38186a9f0535417",
+      "license": "MIT repository; retain source attribution",
+      "source": "https://github.com/udacity/CarND-LaneLines-P1",
+      "contract": "Public recorded video; no phone IMU or hardware capture timestamps"
+    },
+    {
+      "id": "solidYellowLeft",
+      "group": "roads",
+      "path": ".tools/datasets/roads/solidYellowLeft.mp4",
+      "url": "https://raw.githubusercontent.com/udacity/CarND-LaneLines-P1/ce5681be7ef8140560c0e464ef2da611e40b4fc9/test_videos/solidYellowLeft.mp4",
+      "bytes": 8008635,
+      "sha256": "75a63e3b2ae2fe04ec57beace9b680daa417a905d9e9656f445e510b1b70c17d",
+      "license": "MIT repository; retain source attribution",
+      "source": "https://github.com/udacity/CarND-LaneLines-P1",
+      "contract": "Public recorded video; no phone IMU or hardware capture timestamps"
+    },
+    {
+      "id": "challenge",
+      "group": "roads",
+      "path": ".tools/datasets/roads/challenge.mp4",
+      "url": "https://raw.githubusercontent.com/udacity/CarND-LaneLines-P1/ce5681be7ef8140560c0e464ef2da611e40b4fc9/test_videos/challenge.mp4",
+      "bytes": 15093678,
+      "sha256": "e91ddd5dcae65c2570bb2ee72d9b268c296f6893bf3eb68e7976b843e0e53a47",
+      "license": "MIT repository; retain source attribution",
+      "source": "https://github.com/udacity/CarND-LaneLines-P1",
+      "contract": "Public recorded video; no phone IMU or hardware capture timestamps"
+    },
+    {
+      "id": "depth_relative",
+      "group": "depth",
+      "path": ".tools/models/depth_anything_v2_vits_dynamic.onnx",
+      "url": "https://github.com/fabio-sim/Depth-Anything-ONNX/releases/download/v2.0.0/depth_anything_v2_vits_dynamic.onnx",
+      "bytes": 99092268,
+      "sha256": "46c4e8eeda3a27f34701831b6a2ec7753d7b38779b215acb5633424703deed8f",
+      "license": "Apache-2.0 original ViT-S weights; retain conversion attribution",
+      "source": "https://github.com/fabio-sim/Depth-Anything-ONNX",
+      "contract": "Dynamic NCHW ImageNet-normalized RGB, multiples of 14; relative inverse depth, arbitrary scale"
+    },
+    {
+      "id": "depth_metric",
+      "group": "depth",
+      "path": ".tools/models/depth_anything_v2_vits_outdoor_dynamic.onnx",
+      "url": "https://github.com/fabio-sim/Depth-Anything-ONNX/releases/download/v2.0.0/depth_anything_v2_vits_outdoor_dynamic.onnx",
+      "bytes": 99092413,
+      "sha256": "6a9b5a1325eed4a25b317e39db47ed5890708ce61e891d508a0dcac2343cf14c",
+      "license": "Apache-2.0 original ViT-S weights; retain conversion attribution",
+      "source": "https://github.com/fabio-sim/Depth-Anything-ONNX",
+      "contract": "Dynamic normalized RGB; outdoor Virtual KITTI metric fine-tuning, model meters unvalidated here, trained maximum 80m"
+    },
+    {
+      "id": "yolop_example_0ace96c3-48481887",
+      "group": "road-images",
+      "path": ".tools/datasets/yolop-images/0ace96c3-48481887.jpg",
+      "url": "https://raw.githubusercontent.com/hustvl/YOLOP/8d8f68df318c71f01d6f813c024df646c7d1978f/inference/images/0ace96c3-48481887.jpg",
+      "bytes": 67278,
+      "sha256": "b180c8fef16ea1ae4210992b8f61aa86a879d549cc78bdba1e14e50844c06794",
+      "license": "MIT upstream repository; retain YOLOP/BDD source attribution",
+      "source": "https://github.com/hustvl/YOLOP",
+      "contract": "Public upstream still image; no capture time or IMU claimed"
+    },
+    {
+      "id": "yolop_example_3c0e7240-96e390d2",
+      "group": "road-images",
+      "path": ".tools/datasets/yolop-images/3c0e7240-96e390d2.jpg",
+      "url": "https://raw.githubusercontent.com/hustvl/YOLOP/8d8f68df318c71f01d6f813c024df646c7d1978f/inference/images/3c0e7240-96e390d2.jpg",
+      "bytes": 37163,
+      "sha256": "4c10eb1905bf94fcec45a35c3170ea46dc31c5f7c8e487c45bc95021366d6616",
+      "license": "MIT upstream repository; retain YOLOP/BDD source attribution",
+      "source": "https://github.com/hustvl/YOLOP",
+      "contract": "Public upstream still image; no capture time or IMU claimed"
+    },
+    {
+      "id": "yolop_example_7dd9ef45-f197db95",
+      "group": "road-images",
+      "path": ".tools/datasets/yolop-images/7dd9ef45-f197db95.jpg",
+      "url": "https://raw.githubusercontent.com/hustvl/YOLOP/8d8f68df318c71f01d6f813c024df646c7d1978f/inference/images/7dd9ef45-f197db95.jpg",
+      "bytes": 83781,
+      "sha256": "d9e778870f2f29e29f700b81597ba27125cd67a8d5e01d4b404c75968c23bfc8",
+      "license": "MIT upstream repository; retain YOLOP/BDD source attribution",
+      "source": "https://github.com/hustvl/YOLOP",
+      "contract": "Public upstream still image; no capture time or IMU claimed"
+    },
+    {
+      "id": "yolop_example_8e1c1ab0-a8b92173",
+      "group": "road-images",
+      "path": ".tools/datasets/yolop-images/8e1c1ab0-a8b92173.jpg",
+      "url": "https://raw.githubusercontent.com/hustvl/YOLOP/8d8f68df318c71f01d6f813c024df646c7d1978f/inference/images/8e1c1ab0-a8b92173.jpg",
+      "bytes": 78991,
+      "sha256": "79388f76e6703c26e8bdb9a0bec444820824ab040d0f4e36d00fba35b920b785",
+      "license": "MIT upstream repository; retain YOLOP/BDD source attribution",
+      "source": "https://github.com/hustvl/YOLOP",
+      "contract": "Public upstream still image; no capture time or IMU claimed"
+    },
+    {
+      "id": "yolop_example_9aa94005-ff1d4c9a",
+      "group": "road-images",
+      "path": ".tools/datasets/yolop-images/9aa94005-ff1d4c9a.jpg",
+      "url": "https://raw.githubusercontent.com/hustvl/YOLOP/8d8f68df318c71f01d6f813c024df646c7d1978f/inference/images/9aa94005-ff1d4c9a.jpg",
+      "bytes": 43835,
+      "sha256": "925f3820381676c6dc6272a826b98dc93d42ae59e9191ce1836d4779b8d1b1eb",
+      "license": "MIT upstream repository; retain YOLOP/BDD source attribution",
+      "source": "https://github.com/hustvl/YOLOP",
+      "contract": "Public upstream still image; no capture time or IMU claimed"
+    },
+    {
+      "id": "yolop_example_adb4871d-4d063244",
+      "group": "road-images",
+      "path": ".tools/datasets/yolop-images/adb4871d-4d063244.jpg",
+      "url": "https://raw.githubusercontent.com/hustvl/YOLOP/8d8f68df318c71f01d6f813c024df646c7d1978f/inference/images/adb4871d-4d063244.jpg",
+      "bytes": 85524,
+      "sha256": "d63c4474ec9775d4e6384f11cb93b0483a5ce35c5090a30f03b572db0975b971",
+      "license": "MIT upstream repository; retain YOLOP/BDD source attribution",
+      "source": "https://github.com/hustvl/YOLOP",
+      "contract": "Public upstream still image; no capture time or IMU claimed"
+    },
+    {
+      "id": "yolox_nano",
+      "group": "vision",
+      "path": ".tools/models/yolox_nano.onnx",
+      "url": "https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/yolox_nano.onnx",
+      "bytes": 3659407,
+      "sha256": "c789161ed43c8269fcd4e67c67eeeb4e80c622da2eb296a20bc6007bd18a0b7d",
+      "license": "Apache-2.0",
+      "source": "https://github.com/Megvii-BaseDetection/YOLOX",
+      "contract": "416x416 BGR raw input; raw YOLOX head; COCO 80 classes; comparison candidate"
+    },
+    {
+      "id": "opencv_calibration_left01",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left01.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left01.jpg",
+      "bytes": 27908,
+      "sha256": "9621899098adffa1440c8264606bb7be535ccfd9ad126ae8e0bd9b0c5a5b8676",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left02",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left02.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left02.jpg",
+      "bytes": 28611,
+      "sha256": "052e700bbcc865c112958ec2ea105cb1bce4deca50ac8d6efae13adca9df7a2c",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left03",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left03.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left03.jpg",
+      "bytes": 29553,
+      "sha256": "c85b9426c3d8fcf161e1e727356105091009c3fd0b1b1a65bc2da91fea2724d2",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left04",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left04.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left04.jpg",
+      "bytes": 25150,
+      "sha256": "b490599dccfbfe5eb56d33363415b02227a9548ab8c9b8e7b05d3580e97266d9",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left05",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left05.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left05.jpg",
+      "bytes": 28743,
+      "sha256": "40bab8934fa76f82ec614a7fd0e6ebb4d9f74391d5e8b0c6f2f0ed6080c6c4de",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left06",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left06.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left06.jpg",
+      "bytes": 28530,
+      "sha256": "1cb164db61b3bd52f58a7e9340bb27c5e0278895bc80b6f292fba5cf9bccc4a1",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left07",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left07.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left07.jpg",
+      "bytes": 29864,
+      "sha256": "d2211fe9f971646b6ff88ed93a4f0d3f443741eb2894095cba15caade7c8c6e4",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left08",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left08.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left08.jpg",
+      "bytes": 28689,
+      "sha256": "f7a0737894812a28243af5b409c5689f4fadfe7610958b8ca5fc79aec2f2cd1b",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left09",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left09.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left09.jpg",
+      "bytes": 27244,
+      "sha256": "753939bc62d093c001d9118e989bef2b887f1b2f9ac03603df915a8b85aa81d3",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left11",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left11.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left11.jpg",
+      "bytes": 27749,
+      "sha256": "e736ace3d515c94c547009c3c10d818c81506ed7059cb31123749b9cc3f94ee8",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left12",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left12.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left12.jpg",
+      "bytes": 25603,
+      "sha256": "04bdd78b3b507fe0551aa7062a3ffd94846a147ee2bea7fb38082c720bdbe231",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left13",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left13.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left13.jpg",
+      "bytes": 28129,
+      "sha256": "2637fb6dd5e557f4fadb06b353a453eb0b9223f4671f6f572f815302bc4a70b3",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    },
+    {
+      "id": "opencv_calibration_left14",
+      "group": "calibration",
+      "path": ".tools/datasets/opencv-calibration/left14.jpg",
+      "url": "https://raw.githubusercontent.com/opencv/opencv/4.12.0/samples/data/left14.jpg",
+      "bytes": 27875,
+      "sha256": "d4c032971dd7b859f9d6aed5090c9888bd8039b82e0604bee5bfe05444fce834",
+      "source": "https://github.com/opencv/opencv/tree/4.12.0/samples/data",
+      "license": "OpenCV Apache-2.0 repository; retain sample attribution",
+      "contract": "Public checkerboard sample; 9x6 internal corners, unknown measured square size; not phone calibration"
+    }
+  ]
+}

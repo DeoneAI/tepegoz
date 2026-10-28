@@ -1,12 +1,16 @@
 # Tepegoz
 
-**Smartphone-to-PC acquisition, with a roadmap toward road perception and motion-assisted evaluation.**
+**Continuing on a coworker's PC? Start with the [Weeks 1–3 handoff](docs/handoff/START-HERE.md)** for fresh installation, the team's existing Vercel project, week-by-week tasks and evidence to collect.
 
-Tepegoz currently contains the **Sensorlink Week 1 acquisition prototype**: a browser-based phone client, a local Node.js receiver, a desktop dashboard, timestamped recordings and deterministic replay. The broader project follows the supplied [one-month assignment and technical addendum](docs/roadmap/assignment.pdf).
+**Smartphone-to-PC acquisition and recorded road perception with depth and motion experiments.**
 
-**Current milestone: Week 1, partially complete.** The repository does not yet implement lane detection, object detection/tracking, depth inference, Kalman filters, VO, VIO or SLAM. Android Camera2 and SensorManager are research alternatives; the current phone client uses browser APIs. A working viewer is not evidence that the Week 1 acceptance gate has passed.
+Tepegoz contains the **Sensorlink acquisition prototype** plus offline PC lanes, road-user detection/tracking, depth, Kalman exercises, gyro orientation and visual-inertial experiments. The project follows the supplied [one-month assignment and technical addendum](docs/roadmap/assignment.pdf).
 
-[Getting started](BASLA.md) · [20-day roadmap and TODOs](docs/ROADMAP.md) · [Acquisition contract](docs/ACQUISITION.md) · [Transport decisions](docs/TRANSPORTS.md) · [Validation](docs/VALIDATION.md)
+**Development frontend:** [tepegoz-tawny.vercel.app](https://tepegoz-tawny.vercel.app). The coworker handoff uses the team's existing Vercel project instead; no account migration is required. Network capture uses an HTTPS tunnel to the running PC collector; recordings and offline analysis stay on the PC. USB setup uses the local dashboard at `http://localhost:8787`.
+
+**Current milestone: Weeks 2–3 implemented and evaluated with public datasets; Week 1 physical acceptance remains partial.** No new phone recording is available. Public data exercises the PC pipeline without establishing phone/USB performance. The local estimator is an attitude-only experiment, not full VIO/SLAM. Android Camera2 and SensorManager remain acquisition alternatives to the current browser client.
+
+[Getting started](BASLA.md) · [Progress tracker](docs/STATUS.md) · [20-day checklist](docs/ROADMAP.md) · [Perception and estimation](docs/PERCEPTION-AND-ESTIMATION.md) · [Measured results](docs/reports/WEEKS-2-3.md) · [Validation](docs/VALIDATION.md)
 
 ## What works today
 
@@ -16,12 +20,14 @@ Tepegoz currently contains the **Sensorlink Week 1 acquisition prototype**: a br
 - Upload-only phone keys, separate collector admin authentication and exact-origin checks.
 - CSV/JSONL/JPEG recording, clock-offset estimates, stop/finalization, replay and optional offline Parquet export.
 - A dependency-free Node runtime and static frontend; Vercel hosts the frontend, while the PC stores recordings.
+- Python/ONNX classical and pretrained lanes, six road-user classes, temporal tracks, relative and learned metric-depth alternatives, independent indexed logs and overlay videos.
+- Reproducible CPU benchmarks, a small labeled detector comparison, real gyro/VO experiments, motion ablations, scalar/2D Kalman plots and explicit calibration/time contracts.
 
 **Still unverified or incomplete:** real USB device acceptance, sustained target rates, hardware exposure timestamps, true capture-to-display latency, camera/mount calibration, and a compliant two-minute camera + accelerometer + gyroscope recording. Missing gyro readings are never replaced with invented data.
 
 ## Quick start
 
-Requirements: **Node.js 22+**, a PC, and a phone browser. Android USB mode additionally requires [SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools), a data-capable cable and explicit USB debugging authorization. Python is needed only for optional Parquet export/tests.
+Acquisition requires **Node.js 22+**, a PC, and a phone browser. Android USB mode additionally requires [SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools), a data-capable cable and explicit USB debugging authorization. Offline perception/estimation requires **Python 3.10+** and the dependencies below; the Node collector remains dependency-free.
 
 ```bash
 git clone https://github.com/DeoneAI/tepegoz.git
@@ -38,6 +44,20 @@ No `npm install` is required for the current runtime or build. On Windows PowerS
 5. Stop capture on the phone, then **Stop & save** on the PC. Use **Session library → Replay** to inspect the recording.
 
 The interface retains the Sensorlink name. The public repository is named Tepegoz.
+
+### Continue without a phone recording
+
+```bash
+python -m pip install -r scripts/requirements-vision.txt
+python scripts/fetch_assets.py --group vision
+python scripts/fetch_assets.py --group roads
+python scripts/fetch_assets.py --group depth
+python scripts/run_perception.py .tools/datasets/roads/solidWhiteRight.mp4 --output .tools/experiments/my-run --max-frames 100 --stride 2 --depth both
+```
+
+Open the output `overlay.mp4` or its `previews/` images. JSONL and raw depth maps retain source indices and explicit units. For matching benchmarks, public camera/IMU imports and Kalman/VO demonstrations, follow [the reproducible guide](docs/PERCEPTION-AND-ESTIMATION.md). Models, datasets and recordings stay in ignored local directories. The browser dashboard remains the acquisition/replay interface; offline perception is launched from these CLI scripts.
+
+The [camera-calibration workflow](docs/CALIBRATION.md) fits checkerboard intrinsics/distortion, reports held-out-view residuals and saves an undistortion preview. It has a public-data example and keeps unknown phone/mount transforms explicit.
 
 ### USB: Android ADB reverse
 
@@ -73,7 +93,7 @@ Select **Wi-Fi / Internet HTTPS tunnel** and enter that tunnel origin and the co
 
 ## Architecture
 
-Only acquisition, ingest, logging, visualization and replay are implemented. Dashed arrows below mark the planned PC perception path.
+Acquisition remains in the browser/Node collector. Recorded perception and motion analysis run on the PC through Python CLI modules.
 
 ```mermaid
 flowchart TB
@@ -82,8 +102,8 @@ flowchart TB
   receiver --> records["Local CSV / JSONL / JPEG files"]
   receiver --> dashboard["PC dashboard: preview, plots, controls"]
   records --> replay["Deterministic offline replay"]
-  replay -. "planned" .-> perception["PC lanes + detector + tracker + depth"]
-  perception -. "planned" .-> fusion["Motion cues, uncertainty and evaluation"]
+  replay --> perception["Offline Python: lanes + detector + tracker + depth"]
+  perception --> fusion["Calibrated rotation cues, uncertainty and evaluation"]
   hosting["Static frontend hosting"] --> phone
   hosting --> dashboard
 ```
@@ -144,7 +164,7 @@ The day numbering follows page 2 of the [assignment](docs/roadmap/assignment.pdf
 
 ## Project roadmap and TODOs
 
-The full [20-day checklist](docs/ROADMAP.md) includes the technical learning addendum and acceptance evidence. Weeks 2–4 are planned, not implemented.
+The full [20-day checklist](docs/ROADMAP.md) includes the technical learning addendum and acceptance evidence. Weeks 2–3 have executable public-data baselines; Week 4 submission/live-integration deliverables remain pending.
 
 | Milestone | Days | Required outcome | Current state |
 |---|---|---|---|
@@ -209,6 +229,16 @@ node pc/replay.mjs data/SESSION_ID
 node pc/replay.mjs data/SESSION_ID --realtime
 ```
 
+Generate frame-to-IMU alignment evidence and a shared-time camera/gyro/acceleration plot from a finalized recording:
+
+```bash
+python -m pip install -r scripts/requirements-analysis.txt
+python -m pip install -r scripts/requirements-vision.txt
+python scripts/analyze_session.py data/SESSION_ID
+```
+
+Outputs in `SESSION/analysis/` include `analysis.json`, `alignment.csv`, `timeline.svg` and `timeline.png`. Use `--no-plot` for JSON/CSV without plotting dependencies. Missing gyro/associations, sequence gaps and JPEG/log mismatches remain explicit; automated checks never mark physical acceptance complete. See the [frame conventions and timing guide](docs/FRAMES-AND-TIMING.md).
+
 Optional Parquet export preserves typed int64 timestamps and null fields after finalization:
 
 ```bash
@@ -224,10 +254,11 @@ python scripts/export_parquet.py data/SESSION_ID
 npm test
 npm run build
 python -m pip install -r scripts/requirements-parquet.txt
+python -m pip install -r scripts/requirements-analysis.txt
 python -m unittest discover -s tests -p "test_*.py"
 ```
 
-The current automated suite contains **14 Node tests and 2 optional Parquet tests**. [Validation evidence](docs/VALIDATION.md) distinguishes fixture/simulated-browser checks from physical acceptance. GitHub Actions runs tests and the static build; no hosted CI job proves phone hardware performance.
+Install `scripts/requirements-vision.txt`, `scripts/requirements-analysis.txt` and `scripts/requirements-parquet.txt` to exercise every Python check. [Validation evidence](docs/VALIDATION.md) records exact suite counts, actual model runs and their limits. GitHub Actions runs tests and the static build; no hosted CI job proves phone hardware performance.
 
 | Setting | Default | Purpose |
 |---|---|---|
@@ -244,15 +275,20 @@ The static frontend can be deployed using `vercel.json` (`npm run build`, output
 ```text
 web/                  browser dashboard, phone acquisition and sensor preflight
 pc/                   receiver, timing/schema utilities, USB bridge and replay
-scripts/              static build and optional Parquet export
-tests/                protocol, sensor, USB and Parquet checks
-docs/                 acquisition, decisions, glossary, acceptance and roadmap
+scripts/              build, dataset fetch/import, offline inference and experiments
+perception/           lane/detector/depth adapters, tracking and camera rotation
+localization/         Kalman, quaternion integration and essential-matrix VO
+evaluation/           dataset readers, detection metrics and runtime summaries
+integrations/openvins/ pinned external VIO demonstration and local adapter
+configs/              model/sample asset URLs, sizes, hashes and source notices
+tests/                acquisition, persistence, replay, vision and estimation checks
+docs/                 methods, measured results, acquisition and roadmap
 docs/roadmap/          supplied assignment PDF
 docs/diagrams/         Mermaid sources and SVG fallbacks
 .github/workflows/    automated tests and build
 ```
 
-Suggested future perception/localization/fusion/evaluation packages are described in the roadmap; empty placeholder modules are not presented as implementation.
+Model weights, downloaded datasets, raw experiment outputs and tools live under ignored `.tools/`. Selected aggregate metrics and plots are included in `docs/reports/`.
 
 ## Scope and handling data
 

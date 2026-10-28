@@ -1,0 +1,179 @@
+{
+  "evidence_type": "synthetic learning exercises; not phone acquisition or vehicle validation",
+  "scalar_examples": [
+    {
+      "R": 1,
+      "prior_x": 10,
+      "prior_variance": 5,
+      "measurement": 14,
+      "K": 0.8333333333333334,
+      "posterior_x": 13.333333333333332,
+      "posterior_variance": 0.8333333333333333
+    },
+    {
+      "R": 9,
+      "prior_x": 10,
+      "prior_variance": 5,
+      "measurement": 14,
+      "K": 0.35714285714285715,
+      "posterior_x": 11.428571428571429,
+      "posterior_variance": 3.214285714285714
+    },
+    {
+      "R": 100,
+      "prior_x": 10,
+      "prior_variance": 5,
+      "measurement": 14,
+      "K": 0.047619047619047616,
+      "posterior_x": 10.19047619047619,
+      "posterior_variance": 4.761904761904762
+    }
+  ],
+  "scalar_timeseries": {
+    "seed": 42,
+    "samples": 240,
+    "dt_s": 0.1,
+    "missing_observations": 24,
+    "raw_rmse_observed_times": 1.391112375558721,
+    "variants": [
+      {
+        "R": 0.25,
+        "Q_per_step": 0.08,
+        "position_rmse_all_times": 0.7798323584877637,
+        "position_rmse_observed_times": 0.8013940422782454
+      },
+      {
+        "R": 2.25,
+        "Q_per_step": 0.08,
+        "position_rmse_all_times": 0.637958941363636,
+        "position_rmse_observed_times": 0.6576107409147562
+      },
+      {
+        "R": 25.0,
+        "Q_per_step": 0.08,
+        "position_rmse_all_times": 1.1011413582596725,
+        "position_rmse_observed_times": 1.1178454747760165
+      }
+    ],
+    "model": "scalar position random walk, F=H=1; unmodeled position step at 12 s",
+    "evidence_type": "synthetic, not phone or vehicle measurements"
+  },
+  "kinematic_experiments": [
+    {
+      "position_rmse": 0.7849371559724976,
+      "raw_position_rmse_observed_only": 2.1953722598690795,
+      "missing_measurements": 47,
+      "rejected_present_measurements": 1,
+      "q_acceleration_variance": 0.1,
+      "r_position_variance": 2.25,
+      "turning": false,
+      "seed": 42
+    },
+    {
+      "position_rmse": 0.8421707645044273,
+      "raw_position_rmse_observed_only": 2.1953722598690795,
+      "missing_measurements": 47,
+      "rejected_present_measurements": 0,
+      "q_acceleration_variance": 1.0,
+      "r_position_variance": 2.25,
+      "turning": false,
+      "seed": 42
+    },
+    {
+      "position_rmse": 0.9910363657785836,
+      "raw_position_rmse_observed_only": 2.1953722598690795,
+      "missing_measurements": 47,
+      "rejected_present_measurements": 1,
+      "q_acceleration_variance": 10.0,
+      "r_position_variance": 2.25,
+      "turning": false,
+      "seed": 42
+    },
+    {
+      "position_rmse": 1.4947800700356584,
+      "raw_position_rmse_observed_only": 2.1953722598690795,
+      "missing_measurements": 47,
+      "rejected_present_measurements": 6,
+      "q_acceleration_variance": 0.1,
+      "r_position_variance": 2.25,
+      "turning": true,
+      "seed": 42
+    },
+    {
+      "position_rmse": 0.962892529228324,
+      "raw_position_rmse_observed_only": 2.1953722598690795,
+      "missing_measurements": 47,
+      "rejected_present_measurements": 0,
+      "q_acceleration_variance": 1.0,
+      "r_position_variance": 2.25,
+      "turning": true,
+      "seed": 42
+    },
+    {
+      "position_rmse": 1.010742496220586,
+      "raw_position_rmse_observed_only": 2.1953722598690795,
+      "missing_measurements": 47,
+      "rejected_present_measurements": 1,
+      "q_acceleration_variance": 10.0,
+      "r_position_variance": 2.25,
+      "turning": true,
+      "seed": 42
+    }
+  ],
+  "yaw_bias_exercise": {
+    "measured_rad_s": 0.11,
+    "bias_rad_s": 0.01,
+    "duration_s": 10,
+    "uncorrected_rad": 1.1,
+    "corrected_rad": 1.0,
+    "uncorrected_deg": 63.02535746439056,
+    "corrected_deg": 57.29577951308232
+  },
+  "heading_ekf_example": {
+    "state": [
+      0,
+      0,
+      0.4,
+      5
+    ],
+    "dt": 0.1,
+    "predicted": [
+      0.46053049700144255,
+      0.1947091711543253,
+      0.3999999999999999,
+      5.0
+    ],
+    "F": [
+      [
+        1.0,
+        0.0,
+        -0.1947091711543253,
+        0.09210609940028852
+      ],
+      [
+        0.0,
+        1.0,
+        0.46053049700144255,
+        0.03894183423086506
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "assumptions": [
+    "CV state [px,py,vx,vy] with position observations",
+    "Discrete white acceleration Q=variance*G*G^T with dt-specific G",
+    "Joseph covariance; 2D innovation gate 9.21",
+    "This is neither VIO nor SLAM; turning violates constant-velocity assumptions"
+  ]
+}

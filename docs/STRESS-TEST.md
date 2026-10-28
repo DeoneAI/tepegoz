@@ -2,7 +2,7 @@
 
 Status: **formal multi-condition acceptance is not completed**. Live phone recordings were inspected during development and a gyro-free recording was observed; this does not establish a complete physical-device acceptance report. Synthetic and simulated browser tests are not hardware evidence.
 
-Record exact phone model (SM-A155/SM-A156 + variant), Android/Chrome versions, PC CPU/RAM, network, tunnel route, camera settings, screen orientation and mount. For every condition, record at least two minutes and finalize on the PC.
+Record the exact physical phone model and variant (do not infer it from the interface's old Galaxy A15 label), Android/browser versions, PC CPU/RAM, network, tunnel route, camera settings, screen orientation and mount. For every condition, record at least two minutes and finalize on the PC. New-PC operators should start with the [coworker Week 1 guide](handoff/WEEK-1.md).
 
 | Condition | Session ID | Duration | Saved frames | FPS | Accel Hz | Gyro Hz | Ingest p50/p95 ms | RTT ms | Jitter ms | Sequence gaps / skipped frames | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -18,7 +18,7 @@ For each session verify:
 1. Every saved JPEG has one frame record with index and phone timestamp; confirm no untimestamped orphan appears after a normal stop.
 2. Gyro and accelerometer have real finite X/Y/Z values, increasing per-type sequence IDs and documented units. All-zero samples are not proof of available hardware without motion testing.
 3. Read `clock.jsonl`; note RTT/2 uncertainty and drift over time. Camera estimates remain estimates.
-4. Use replay and the offline replay command. Count missing frame-to-IMU associations and maximum absolute matching delta per type. The two-minute example must be an actual recording.
+4. Use replay and the offline replay command. Run `python scripts/analyze_session.py data/SESSION_ID` (install `scripts/requirements-analysis.txt` for plots, or add `--no-plot`). Inspect `analysis/analysis.json`, `alignment.csv` and timeline plots for missing associations, absolute matching deltas, common stream overlap and JPEG/log mismatches. The checks are prerequisites, not an automatic W1 pass. The two-minute example must be an actual recording.
 5. Check raw file counts/metadata, stop finalization, restart replay, and permission denial behavior.
 6. Record camera-to-display latency with a filmed/visible reference clock or an external event experiment if the assignment requires that metric. UI ingest latency alone does not establish it.
 7. Photograph a checkerboard only if calibration is feasible; do not populate intrinsics/extrinsics without calibration results. Document mount rotation.

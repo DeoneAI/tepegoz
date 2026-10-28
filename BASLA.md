@@ -1,6 +1,8 @@
 # Getting started
 
-This guide runs the current **Tepegoz / Sensorlink acquisition prototype**. Read the [README](README.md) for implementation status and the [roadmap](docs/ROADMAP.md) for outstanding work.
+For continuing on a new coworker PC after the repository owner publishes the handoff branch, use [Start here: Weeks 1–3 handoff](docs/handoff/START-HERE.md). It includes fresh-machine dependencies and the remaining phone-specific work.
+
+This guide runs **Tepegoz / Sensorlink acquisition**. To continue on public datasets without a phone, use the [offline perception and estimation guide](docs/PERCEPTION-AND-ESTIMATION.md). Read the [measured results](docs/reports/WEEKS-2-3.md) and [roadmap](docs/ROADMAP.md) for status.
 
 ## 1. Run the PC collector
 
@@ -54,7 +56,7 @@ Choose the optional GNSS checkbox before capture if location is needed. Review t
 
 Keep the phone page visible and the screen active. Keep the collector and either the USB cable/mapping or HTTPS tunnel running.
 
-1. Stop capture on the phone so pending telemetry can flush.
+1. Stop capture on the phone and wait for the final frame and telemetry uploads to finish. If samples remain queued, keep the page open, restore the connection and use **Retry remaining telemetry uploads** before finalizing on the PC. Closing the tab loses the in-memory queue.
 2. Click **Stop & save** on the PC.
 3. Open **Session library → Replay**, or run:
 
@@ -64,6 +66,8 @@ node pc/replay.mjs data/SESSION_ID --realtime
 ```
 
 Recordings are stored under `data/<session-id>/`: JPEGs, IMU/GNSS CSV, canonical JSONL, clock estimates and a manifest. They are ignored by Git. Optional Parquet conversion is documented in the README.
+
+For a saved session, run `python scripts/analyze_session.py data/SESSION_ID --no-plot` to export alignment CSV and a JSON report. Install `scripts/requirements-analysis.txt` and omit `--no-plot` to generate gyro/acceleration/video timelines. See the [analysis guide and frame diagram](docs/FRAMES-AND-TIMING.md). The report identifies missing gyro and associations; it does not certify hardware acceptance.
 
 Phone **Saved frames** counts successful storage acknowledgements; **Skipped frames** counts busy/failed target attempts. A selected target FPS is not proof of the achieved rate. Ingest latency is not full display latency.
 

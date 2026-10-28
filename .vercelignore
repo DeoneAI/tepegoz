@@ -1,8 +1,26 @@
+# Keep recordings, credentials, tools and offline processing out of frontend uploads.
 data/
 .env*
 node_modules/
 .git/
-*.log
+.vercel/
 .tools/
+.github/
+dist/
+docs/
+configs/
+evaluation/
+integrations/
+localization/
+perception/
+pc/
+tests/
+scripts/*.py
+scripts/requirements-*.txt
+*.ps1
+*.log
 *.pdf
+*.py[cod]
 __pycache__/
+README.md
+BASLA.md

@@ -1,0 +1,64 @@
+{
+  "dataset": "EuRoC V1_01_easy selected cam0/IMU subset",
+  "estimator": "OpenVINS mono MSCKF with local SLAM features, fixed supplied camera calibration",
+  "upstream_commit": "69488123ed9362dd44b6f28e7f4680abbff1442b",
+  "source_camera_frames": 600,
+  "initialized_poses": 488,
+  "matched_reference_poses": 488,
+  "first_matched_pose_s": 5.6,
+  "last_matched_pose_s": 29.950000128,
+  "original_origin_timestamp_ns": "1403715273262142976",
+  "ground_truth_usage": "Evaluation only after the isolated estimator exits; one fixed first-matched-pose SE(3) alignment, no scale fit or trajectory-wide alignment; no GT initialization/feedback",
+  "alignment_rotation": [
+    [
+      0.9862709253601226,
+      -0.16492071657951451,
+      0.008415404457710067
+    ],
+    [
+      0.16513499977411467,
+      0.9850821668399671,
+      -0.04841029253659086
+    ],
+    [
+      -0.00030600472307726334,
+      0.04913534183024075,
+      0.998792082740114
+    ]
+  ],
+  "alignment_translation_m": [
+    0.8719238441847091,
+    2.1489669706734817,
+    0.9260889825328837
+  ],
+  "alignment_scale": 1,
+  "reference_matching": {
+    "method": "nearest provided ground-truth sample, maximum 10 ms; no interpolated reference",
+    "max_abs_delta_ms": 0.000256
+  },
+  "position_error_m": {
+    "rmse": 0.2035345481414606,
+    "mean": 0.18753205336170417,
+    "max": 0.3126304747448828,
+    "final": 0.3091232162934739
+  },
+  "orientation_error_deg": {
+    "mean": 2.540135740988906,
+    "max": 4.432815627174877,
+    "final": 2.4025106357857484
+  },
+  "limitations": [
+    "Only a short public monochrome dataset subset, not phone/road acceptance",
+    "Mono VIO, not a global loop-closing/relocalizing SLAM demonstration",
+    "Initial static initialization is stock OpenVINS; initialization delay remains visible",
+    "No GT read by the C++ runner; CSV positions have estimator scale before evaluation",
+    "Docker wall time includes startup, decode and mounted-file I/O; not a matched speed comparison with Windows ONNX runs"
+  ],
+  "docker_image_id": "sha256:7cabbdc3c603a4e64a87d3d205c096c3ed01c40c2755447ba0b8aaf4ef602b5e",
+  "wall_s_including_container_and_io": 11.60401719994843,
+  "adapter_sha256": {
+    "Dockerfile": "0d888a0e43c829f3e39429cc0fa46e20131f21c14dfb6239d1600cc310da4c0f",
+    "euroc_runner.cpp": "7c7cc03d826b65b5cdb2fd8cf391007c04cb455ec953c0dd0ed1fd50a4a59bf2"
+  },
+  "dataset_selection_sha256": "b255c5ebaeda60da0ebf760487dab369f515d2f5a9c87ccbad05145cdd3803d1"
+}

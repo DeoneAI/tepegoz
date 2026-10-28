@@ -1,0 +1,141 @@
+{
+  "session_id": "49c482e4dd2730d3012ad565",
+  "name": "KITTI 2011_09_30 drive 0028 PUBLIC DATASET IMPORT",
+  "status": "completed",
+  "acceptance_status": "requires_physical_validation",
+  "time_basis": "kitti_dataset_relative_sensor_time",
+  "source_type": "public_dataset_import",
+  "axes": "kitti_oxts_sensor_native",
+  "origin_timestamp_ns": "0",
+  "max_alignment_gap_ms": 100,
+  "common_camera_accel_gyro_overlap_s": 125.017158912,
+  "frames": {
+    "count": 1205,
+    "span_s": 125.0877184,
+    "observed_hz": 9.625245510913404,
+    "sequence_gaps": 0,
+    "duplicate_ids": 0,
+    "timestamp_regressions": 0
+  },
+  "frame_timestamp_sources": {
+    "dataset_sensor_timestamp": 1205
+  },
+  "sensors": {
+    "accelerometer": {
+      "count": 1206,
+      "span_s": 125.127520433,
+      "observed_hz": 9.630175646653381,
+      "sequence_gaps": 0,
+      "duplicate_ids": 0,
+      "timestamp_regressions": 0
+    },
+    "linear_acceleration": {
+      "count": 0,
+      "span_s": 0,
+      "observed_hz": null,
+      "sequence_gaps": 0,
+      "duplicate_ids": 0,
+      "timestamp_regressions": 0
+    },
+    "gyroscope": {
+      "count": 1206,
+      "span_s": 125.127520433,
+      "observed_hz": 9.630175646653381,
+      "sequence_gaps": 0,
+      "duplicate_ids": 0,
+      "timestamp_regressions": 0
+    },
+    "gnss": {
+      "count": 0,
+      "span_s": 0,
+      "observed_hz": null,
+      "sequence_gaps": 0,
+      "duplicate_ids": 0,
+      "timestamp_regressions": 0
+    }
+  },
+  "alignment": {
+    "accelerometer": {
+      "matched_frames": 1205,
+      "missing_frames": 0,
+      "max_abs_delta_ms": 70.559488,
+      "p95_abs_delta_ms": 10.794418
+    },
+    "linear_acceleration": {
+      "matched_frames": 0,
+      "missing_frames": 1205,
+      "max_abs_delta_ms": null,
+      "p95_abs_delta_ms": null
+    },
+    "gyroscope": {
+      "matched_frames": 1205,
+      "missing_frames": 0,
+      "max_abs_delta_ms": 70.559488,
+      "p95_abs_delta_ms": 10.794418
+    },
+    "gnss": {
+      "matched_frames": 0,
+      "missing_frames": 1205,
+      "max_abs_delta_ms": null,
+      "p95_abs_delta_ms": null
+    }
+  },
+  "missing_jpeg_files": [],
+  "orphan_jpeg_files": [],
+  "recorded_metrics": {},
+  "calibration": {
+    "intrinsics": [
+      [
+        707.0912,
+        0.0,
+        601.8873
+      ],
+      [
+        0.0,
+        707.0912,
+        183.1104
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "distortion": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "camera_to_body_rotation": [
+      [
+        -0.0010886351426112838,
+        -0.008512072136469604,
+        0.9999631769967771
+      ],
+      [
+        -0.9999763472008827,
+        -0.006777671151801371,
+        -0.001146342925623756
+      ],
+      [
+        0.006787181800407023,
+        -0.999940871577287,
+        -0.008504493102985438
+      ]
+    ],
+    "phone_to_vehicle": null,
+    "status": "public dataset measured calibration, not phone calibration"
+  },
+  "checks": {
+    "completed_session": true,
+    "required_streams_present": true,
+    "common_overlap_at_least_120_s": true,
+    "all_frames_have_required_imu_match": true,
+    "frame_files_consistent": true,
+    "sequence_integrity": true
+  },
+  "warnings": [
+    "Timestamp association is not hardware synchronization accuracy. Physical acceptance, capture-to-display latency and measured calibration require separate evidence."
+  ]
+}

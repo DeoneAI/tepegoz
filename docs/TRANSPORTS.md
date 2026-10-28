@@ -74,7 +74,7 @@ A successful batch ACK confirms accepted writes. Retries preserve sequence IDs; 
 | JPEG files | Accepted camera frames | Independent replay and inspection | Many files, high bandwidth/storage; not RAW/Bayer |
 | Parquet | Optional finalized-session conversion | Typed times/nulls, compression and columnar analysis | Python/PyArrow dependency and offline conversion step; no live append |
 
-Metadata/telemetry fsync remains enabled; disabling it to claim a speedup would change durability semantics. JPEG writes and metadata appends are not one transaction. Power-loss consistency is not guaranteed.
+Metadata/telemetry fsync remains enabled; disabling it to claim a speedup would change durability semantics. Handled write failures restore affected log lengths before allowing a retry; sequence counters and sample metrics advance only after successful storage. Failed frame writes also attempt JPEG cleanup. If log rollback fails, the session rejects further mutations until the collector is restarted and the files inspected. These recovery steps do not make JPEG writes and metadata appends crash-atomic. Power-loss consistency is not guaranteed.
 
 ## When to revisit the decision
 

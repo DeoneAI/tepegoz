@@ -1,0 +1,54 @@
+{
+  "dataset": "Real EuRoC V1_01_easy subset",
+  "camera_stride": 4,
+  "gyro_bias_assumption": {
+    "accepted": true,
+    "assumption": "initial window is stationary; IMU alone does not prove this",
+    "samples": 150,
+    "duration_s": 0.744999936,
+    "gyro_bias_rad_s": [
+      -0.001982694030265558,
+      0.02071124045699939,
+      0.07842346105627863
+    ],
+    "mean_specific_force_m_s2": [
+      9.066084480833332,
+      0.11631776527777773,
+      -3.684358405
+    ],
+    "reason": "numerical stationary criteria met",
+    "start_offset_s": 1.5,
+    "end_offset_s": 2.244999936,
+    "selection": "first quiet interval in initial search; offline and assumed stationary, not GT-calibrated"
+  },
+  "variants": {
+    "rgb_only": {
+      "pairs": 149,
+      "attempted_features": 75092,
+      "fb_consistent_features": 46585,
+      "fb_consistent_fraction": 0.6203723432589358,
+      "median_pair_gt_sampson_px": 0.48171278893919983
+    },
+    "gyro_seeded": {
+      "pairs": 149,
+      "attempted_features": 75092,
+      "fb_consistent_features": 48485,
+      "fb_consistent_fraction": 0.6456746391093592,
+      "median_pair_gt_sampson_px": 0.45333667371204023
+    },
+    "wrong_gyro_sign": {
+      "pairs": 149,
+      "attempted_features": 75092,
+      "fb_consistent_features": 34405,
+      "fb_consistent_fraction": 0.4581713098599052,
+      "median_pair_gt_sampson_px": 0.4903094693086828
+    }
+  },
+  "ground_truth_usage": "epipolar residual evaluation only, never flow initialization",
+  "limits": [
+    "Feature tracking, not semantic road-user tracking or full VIO",
+    "Forward-backward consistency and epipolar residual do not prove exact landmark identity",
+    "Wrong gyro sign is a deliberate negative control",
+    "Rotation-only initialization ignores translation, rolling shutter and bias/calibration error"
+  ]
+}

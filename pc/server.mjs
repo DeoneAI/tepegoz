@@ -1,6 +1,6 @@
 import http from 'node:http';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
-import { mkdir, readFile, writeFile, readdir, open } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, readdir, open, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mono, ns, validateSample, percentile, sequenceUpdate, measuredRate } from './core.mjs';
@@ -22,7 +22,35 @@ const json=(res,status,obj)=>{res.writeHead(status,{'Content-Type':'application/
 const safeId=id=>/^[a-f0-9]{24}$/.test(id||'');
 const sessionDir=id=>path.join(dataRoot,id);
 const persist=s=>writeFile(path.join(sessionDir(s.id),'manifest.json'),JSON.stringify(s.manifest,null,2));
-async function append(id,name,text) { const f=await open(path.join(sessionDir(id),name),'a');try{await f.write(text);await f.sync();}finally{await f.close();} }
+async function appendRecords(id,records) {
+  const files=[];
+  try {
+    for(const [name,text] of records){
+      // Logs already exist. Read/write access also permits rollback truncation on Windows.
+      const file=await open(path.join(sessionDir(id),name),'r+');
+      const entry={file,size:null};files.push(entry);const stat=await file.stat();
+      if(!stat.isFile())throw new Error('Recording log must be a regular file');
+      entry.size=stat.size;
+      const bytes=Buffer.from(text);let offset=0;
+      while(offset<bytes.length){
+        const {bytesWritten}=await file.write(bytes,offset,bytes.length-offset,entry.size+offset);
+        if(!bytesWritten)throw new Error('Recording write made no progress');
+        offset+=bytesWritten;
+      }
+      await file.sync();
+    }
+  }catch(error){
+    // Restore completed/partial appends before accepting a retry. This is not crash atomicity.
+    const failures=[];
+    for(const {file,size} of files){if(size===null)continue;try{await file.truncate(size);await file.sync();}catch(e){failures.push(e);}}
+    if(failures.length){
+      sessions.get(id).storageError=true;
+      throw Object.assign(new AggregateError([error,...failures],'Recording storage could not be restored. Stop the collector and inspect this session before continuing.'),{status:503});
+    }
+    throw error;
+  }finally{await Promise.allSettled(files.map(({file})=>file.close()));}
+}
+const append=(id,name,text)=>appendRecords(id,[[name,text]]);
 async function body(req,limit=2_000_000) {
   const parts=[];let n=0;for await(const p of req){n+=p.length;if(n>limit)throw Object.assign(new Error('Request too large'),{status:413});parts.push(p);}return Buffer.concat(parts);
 }
@@ -41,7 +69,7 @@ function view(s,sensor) {return {id:s.id,name:s.manifest.name,created_at:s.manif
 async function loadStored(id) {return JSON.parse(await readFile(path.join(sessionDir(id),'manifest.json'),'utf8'));}
 // All per-session mutations are serialized. Stop, frame writes and telemetry cannot race.
 const queues=new Map();
-function serial(id,fn) {const previous=queues.get(id)||Promise.resolve();const next=previous.catch(()=>{}).then(fn);queues.set(id,next);next.finally(()=>{if(queues.get(id)===next)queues.delete(id);}).catch(()=>{});return next;}
+function serial(id,fn,allowStorageError=false) {const previous=queues.get(id)||Promise.resolve();const next=previous.catch(()=>{}).then(()=>{if(sessions.get(id)?.storageError&&!allowStorageError)throw Object.assign(new Error('Recording storage needs inspection. Restart with a fresh session.'),{status:503});return fn();});queues.set(id,next);next.finally(()=>{if(queues.get(id)===next)queues.delete(id);}).catch(()=>{});return next;}
 export const server=http.createServer(async(req,res)=>{
   const origin=req.headers.origin;
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
@@ -140,16 +168,20 @@ export const server=http.createServer(async(req,res)=>{
     if(action==='samples'&&req.method==='POST'&&isPhone) {
       const input=JSON.parse((await body(req,300000)).toString());
       if(!Array.isArray(input.samples)||input.samples.length>1000||!input.samples.every(x=>validateSample(x)&&x.session_id===id))return json(res,400,{error:'Invalid telemetry schema, units, axes or session ID'});
-      return await serial(id,async()=>{if(!s.recording)return json(res,409,{error:'Session stopped'});const accepted=[];let csv='',gnssCsv='';
-        for(const raw of input.samples){if(!sequenceUpdate(s.counters,raw.sensor_type,raw.sequence_id))continue;
-          const sample={...raw,session_id:id,server_receive_ns:ns(mono())};accepted.push(sample);s.latest[sample.sensor_type]=sample;
+      return await serial(id,async()=>{if(!s.recording)return json(res,409,{error:'Session stopped'});const accepted=[],counters=structuredClone(s.counters);let csv='',gnssCsv='';
+        for(const raw of input.samples){if(!sequenceUpdate(counters,raw.sensor_type,raw.sequence_id))continue;
+          const sample={...raw,session_id:id,server_receive_ns:ns(mono())};accepted.push(sample);
           const v=sample.values;if(sample.sensor_type!=='gnss')csv+=`${id},${sample.sensor_type},${sample.timestamp_ns},${sample.sequence_id},${v.x},${v.y},${v.z},${sample.units},browser_accuracy_unavailable,${sample.server_receive_ns}\n`;
+          if(sample.sensor_type==='gnss')gnssCsv+=`${id},${sample.timestamp_ns},${sample.sequence_id},${v.latitude},${v.longitude},${v.altitude??''},${v.speed??''},${v.heading??''},${sample.accuracy_m},${sample.altitude_accuracy_m??''},${sample.server_receive_ns}\n`;
+        }
+        const records=[];if(csv)records.push(['imu.csv',csv]);if(gnssCsv)records.push(['gnss.csv',gnssCsv]);if(accepted.length)records.push(['telemetry.jsonl',accepted.map(x=>JSON.stringify(x)).join('\n')+'\n']);
+        await appendRecords(id,records);s.counters=counters;
+        for(const sample of accepted){
+          s.latest[sample.sensor_type]=sample;
           s.sensorCounts[sample.sensor_type]=(s.sensorCounts[sample.sensor_type]||0)+1;if(sample.sensor_type==='accelerometer')s.motionCount++;
           const timestamp=BigInt(sample.timestamp_ns);const timing=s.sensorTiming[sample.sensor_type]??={count:0,first_ns:timestamp,last_ns:timestamp};
           timing.count++;if(timestamp<timing.first_ns)timing.first_ns=timestamp;if(timestamp>timing.last_ns)timing.last_ns=timestamp;
-          if(sample.sensor_type==='gnss')gnssCsv+=`${id},${sample.timestamp_ns},${sample.sequence_id},${v.latitude},${v.longitude},${v.altitude??''},${v.speed??''},${v.heading??''},${sample.accuracy_m},${sample.altitude_accuracy_m??''},${sample.server_receive_ns}\n`;
         }
-        if(csv)await append(id,'imu.csv',csv);if(gnssCsv)await append(id,'gnss.csv',gnssCsv);if(accepted.length)await append(id,'telemetry.jsonl',accepted.map(x=>JSON.stringify(x)).join('\n')+'\n');
         s.sampleCount+=accepted.length;s.telemetry.push(...accepted);s.telemetry=s.telemetry.slice(-1500);s.lastSeen=mono();s.phoneDropped=Math.max(s.phoneDropped||0,Number(input.dropped_frames)||0);s.phoneDroppedSamples=Math.max(s.phoneDroppedSamples||0,Number(input.dropped_samples)||0);
         return json(res,200,{accepted:accepted.length,recording:s.recording});});
     }
@@ -159,11 +191,15 @@ export const server=http.createServer(async(req,res)=>{
       const jpeg=await body(req,2_000_000);const received=mono();
       if(jpeg[0]!==0xff||jpeg[1]!==0xd8)return json(res,400,{error:'Expected JPEG'});
       return await serial(id,async()=>{if(!s.recording)return json(res,409,{error:'Session stopped'});
-        if(!sequenceUpdate(s.counters,'frame',meta.frame_index))return json(res,409,{error:'Duplicate/out of order frame'});
+        const counters=structuredClone(s.counters);
+        if(!sequenceUpdate(counters,'frame',meta.frame_index))return json(res,409,{error:'Duplicate/out of order frame'});
         const f={...meta,session_id:id,server_receive_ns:ns(received),bytes:jpeg.length,clock_offset_ms:s.clock?.offset_ms??null,clock_rtt_ms:s.clock?.rtt_ms??null};
-        await writeFile(path.join(sessionDir(id),'frames',`${String(f.frame_index).padStart(8,'0')}.jpg`),jpeg);
-        await append(id,'frames.jsonl',JSON.stringify(f)+'\n');
-        await append(id,'frames.csv',`${f.frame_index},${f.timestamp_ns},${f.timestamp_source},${Number(f.media_time_s)||0},${f.server_receive_ns},${f.width},${f.height},${jpeg.length},${f.clock_offset_ms??''},${f.clock_rtt_ms??''}\n`);
+        const imageFile=path.join(sessionDir(id),'frames',`${String(f.frame_index).padStart(8,'0')}.jpg`);
+        try{
+          await writeFile(imageFile,jpeg);
+          await appendRecords(id,[['frames.jsonl',JSON.stringify(f)+'\n'],['frames.csv',`${f.frame_index},${f.timestamp_ns},${f.timestamp_source},${Number(f.media_time_s)||0},${f.server_receive_ns},${f.width},${f.height},${jpeg.length},${f.clock_offset_ms??''},${f.clock_rtt_ms??''}\n`]]);
+        }catch(error){await rm(imageFile,{force:true}).catch(()=>{});throw error;}
+        s.counters=counters;
         if(s.clock){s.latency.push(Math.max(0,received-(Number(f.timestamp_ns)/1e6+s.clock.offset_ms)));s.latency=s.latency.slice(-600);}
         s.lastFrame=f;s.lastJpeg=jpeg;s.frameCount++;s.bytes+=jpeg.length;s.lastSeen=mono();return json(res,200,{stored:true,frame_index:f.frame_index});});
     }
@@ -180,5 +216,5 @@ if(process.env.SENSORLINK_TEST!=='1')server.listen(port,process.env.HOST||'127.0
   console.log('For phone access: run an HTTPS tunnel to this port, then use its https:// URL in Connection settings.');
 });
 let closing=false;
-async function shutdown(){if(closing)return;closing=true;for(const s of sessions.values())await serial(s.id,async()=>{if(s.recording){s.recording=false;s.stopAt=mono();s.manifest.status='interrupted';s.manifest.metrics=metrics(s);await persist(s);}});server.close(()=>process.exit(0));}
+async function shutdown(){if(closing)return;closing=true;for(const s of sessions.values())await serial(s.id,async()=>{if(s.recording){s.recording=false;s.stopAt=mono();s.manifest.status='interrupted';if(s.storageError)s.manifest.storage_error='Rollback failed; inspect raw files before using this session.';s.manifest.metrics=metrics(s);await persist(s);}},true);server.close(()=>process.exit(0));}
 process.on('SIGINT',shutdown);process.on('SIGTERM',shutdown);

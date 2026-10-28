@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp,readFile,rm } from 'node:fs/promises';
+import { mkdtemp,readFile,rm,mkdir,rename,readdir,open } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { Readable } from 'node:stream';
@@ -66,4 +66,66 @@ test('collector authenticates, stores, freezes and replays protocol messages thr
   assert.equal((await req(route+'/stop',token,'POST',{})).json().recording,false);
   assert.equal((await req(route+'/samples',s.phone_key,'POST',{samples})).status,409);
   const manifest=JSON.parse(await readFile(path.join(data,s.id,'manifest.json'),'utf8'));assert.equal(manifest.status,'completed');assert.equal(manifest.metrics.frames,2);assert.equal(manifest.metrics.samples,5);
+
+  await t.test('telemetry write failure rolls back logs and allows the same sequence IDs to be retried',async()=>{
+    const session=(await req('/api/sessions',token,'POST',{name:'Telemetry retry'})).json();
+    const folder=path.join(data,session.id),endpoint=`/api/sessions/${session.id}`;
+    const batch=more.map(sample=>({...sample,session_id:session.id}));
+    const canonical=path.join(folder,'telemetry.jsonl');
+    await rename(canonical,canonical+'.saved');await mkdir(canonical);
+    try{
+      assert.equal((await req(endpoint+'/samples',session.phone_key,'POST',{samples:batch})).status,500);
+      assert.equal((await readFile(path.join(folder,'imu.csv'),'utf8')).trim().split('\n').length,1,'partial IMU CSV append is rolled back');
+      assert.equal((await readFile(path.join(folder,'gnss.csv'),'utf8')).trim().split('\n').length,1,'partial GNSS CSV append is rolled back');
+      const state=(await req(endpoint)).json();
+      assert.equal(state.metrics.samples,0);assert.deepEqual(state.metrics.sensor_counts,{});
+      assert.equal(state.metrics.sequence_gaps,0);assert.deepEqual(state.latest,{});
+    }finally{await rm(canonical,{recursive:true});await rename(canonical+'.saved',canonical);}
+    assert.equal((await req(endpoint+'/samples',session.phone_key,'POST',{samples:batch})).json().accepted,3);
+    assert.equal((await req(endpoint+'/samples',session.phone_key,'POST',{samples:batch})).json().accepted,0);
+    assert.equal((await readFile(canonical,'utf8')).trim().split('\n').length,3);
+    assert.equal((await readFile(path.join(folder,'imu.csv'),'utf8')).trim().split('\n').length,3);
+    assert.equal((await readFile(path.join(folder,'gnss.csv'),'utf8')).trim().split('\n').length,2);
+    assert.equal((await req(endpoint)).json().metrics.sequence_gaps,4,'gaps are counted only once on successful retry');
+  });
+
+  await t.test('frame write failure removes the JPEG and partial metadata before retry',async()=>{
+    const session=(await req('/api/sessions',token,'POST',{name:'Frame retry'})).json();
+    const folder=path.join(data,session.id),endpoint=`/api/sessions/${session.id}`;
+    const csvFile=path.join(folder,'frames.csv'),frameMeta={...meta,frame_index:2};
+    await rename(csvFile,csvFile+'.saved');await mkdir(csvFile);
+    const upload=()=>req(endpoint+'/frame',session.phone_key,'POST',jpeg,{'x-frame-meta':JSON.stringify(frameMeta)});
+    try{
+      assert.equal((await upload()).status,500);
+      assert.equal(await readFile(path.join(folder,'frames.jsonl'),'utf8'),'','partial frame log append is rolled back');
+      assert.deepEqual(await readdir(path.join(folder,'frames')),[],'unacknowledged JPEG is removed');
+      const state=(await req(endpoint)).json();
+      assert.equal(state.metrics.frames,0);assert.equal(state.metrics.sequence_gaps,0);assert.equal(state.last_frame,null);
+      assert.equal((await req(endpoint+'/live-image')).status,204);
+    }finally{await rm(csvFile,{recursive:true});await rename(csvFile+'.saved',csvFile);}
+    assert.equal((await upload()).status,200);
+    assert.equal((await upload()).status,409,'successful storage still deduplicates repeated frame IDs');
+    assert.equal((await readFile(path.join(folder,'frames.jsonl'),'utf8')).trim().split('\n').length,1);
+    assert.equal((await readFile(csvFile,'utf8')).trim().split('\n').length,2);
+    const state=(await req(endpoint)).json();assert.equal(state.metrics.frames,1);assert.equal(state.metrics.sequence_gaps,2);
+    assert.deepEqual((await req(endpoint+'/image?index=2')).bytes,jpeg);
+  });
+
+  await t.test('failed rollback blocks further uploads and completed-session claims',async t=>{
+    const session=(await req('/api/sessions',token,'POST',{name:'Rollback failure'})).json();
+    const folder=path.join(data,session.id),endpoint=`/api/sessions/${session.id}`;
+    const canonical=path.join(folder,'telemetry.jsonl');
+    const probe=await open(path.join(folder,'imu.csv'),'r+');
+    const filePrototype=Object.getPrototypeOf(probe);await probe.close();
+    await rename(canonical,canonical+'.saved');await mkdir(canonical);
+    const truncate=t.mock.method(filePrototype,'truncate',async()=>{throw new Error('Simulated rollback failure');});
+    try{
+      const result=await req(endpoint+'/samples',session.phone_key,'POST',{samples:[{...samples[0],session_id:session.id}]});
+      assert.equal(result.status,503);assert.match(result.json().error,/could not be restored/);
+    }finally{truncate.mock.restore();await rm(canonical,{recursive:true});await rename(canonical+'.saved',canonical);}
+    assert.equal((await req(endpoint+'/samples',session.phone_key,'POST',{samples:[]})).status,503);
+    assert.equal((await req(endpoint+'/stop',token,'POST',{})).status,503,'uncertain storage cannot be finalized as completed');
+    assert.equal((await req(endpoint)).json().metrics.samples,0);
+    assert.equal(JSON.parse(await readFile(path.join(folder,'manifest.json'),'utf8')).status,'recording');
+  });
 });

@@ -1,0 +1,8 @@
+{
+  "description": "Fill with measured calibration for the exact saved image size/rotation. Nulls intentionally prevent accidental identity assumptions.",
+  "camera_intrinsics": null,
+  "R_body_camera": null,
+  "image_width": null,
+  "image_height": null,
+  "gyro_bias_rad_s": null
+}

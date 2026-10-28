@@ -88,10 +88,14 @@ RTT/2 is a symmetric-path uncertainty estimate, not a complete bound on network 
 
 Replay selects the nearest same-clock sample per sensor type, with maximum ±100 ms mismatch and explicit missing values/deltas. No interpolation hides gaps. The window is not a hardware synchronization guarantee. Intrinsics/distortion/extrinsics remain null until measured.
 
+The [coordinate-frame and timing guide](FRAMES-AND-TIMING.md) diagrams phone/body, camera, vehicle and world conventions. The offline analyzer exports same-phone-clock frame↔sensor matches and shared-time plots from finalized sessions; real-device plots and calibration evidence are still required.
+
 ## Authentication, storage and overload
 
 The collector token grants PC control/read access; a separate phone key grants upload to one session. Phone fragments are removed from the address bar after loading and retained in tab sessionStorage. USB management requires admin auth plus local socket/Host/Origin and fixed ADB argument arrays. Localhost pairing is permitted only for the explicit same-origin USB mode; ordinary LAN HTTP does not receive that exception.
 
 One JPEG request may be in flight; busy/failed target opportunities are counted as skips. Telemetry attempts to flush every 100 ms, with batches up to 500 and a buffer up to 2000 samples. Timeouts retry bounded telemetry with the same IDs. Sequence gaps and buffer drops can overlap; TCP retransmissions are not application sequence gaps.
 
-Metadata/telemetry appends fsync and frame ACK follows completed writes. Multi-file atomicity and power-loss consistency are not guaranteed. Phone Stop attempts to flush; PC Stop & save finalizes. Restart invalidates upload keys; raw recordings remain local. Parquet conversion is optional and post-finalization, preserves int64 times/nulls, checks row count and leaves raw logs unchanged.
+Metadata/telemetry appends fsync and frame ACK follows completed writes. Sequence counters and received-sample metrics commit only after storage succeeds. A handled write failure restores affected log lengths and attempts to remove an unacknowledged JPEG so the same sequence IDs can be retried. If log rollback itself fails, further session mutations return 503 and require inspection. Multi-file atomicity and power-loss consistency are not guaranteed.
+
+Phone Stop awaits the active telemetry request, then makes up to four batch-flush attempts. If samples remain queued, capture stays stopped and a retry button is shown; keep the tab open and retry before PC Stop & save finalizes. A session that has already ended reports unsent samples explicitly. This queue remains in memory, not durable browser storage. Restart invalidates upload keys; raw recordings remain local. Parquet conversion is optional and post-finalization, preserves int64 times/nulls, checks row count and leaves raw logs unchanged.

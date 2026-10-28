@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="640" viewBox="0 0 1120 640" role="img" aria-labelledby="title desc">
+  <title id="title">Tepegoz coordinate-frame conventions</title>
+  <desc id="desc">Four independent right-handed frames: phone x right, y top, z out of screen; camera x image-right, y image-down, z optical-forward; vehicle x forward, y left, z up; local world x east, y north, z up. A dot points toward the viewer; a cross points away. Drawing orientations are independent, and no calibrated transform is implied.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>
+  <style>text{font-family:Arial,sans-serif;fill:#233448;font-size:16px}.heading{font-size:20px;font-weight:bold}.note{font-size:14px;fill:#536578}.panel{fill:#f6f8fb;stroke:#cbd4df;rx:14}.axis{stroke-width:3;marker-end:url(#arrow)}.x{stroke:#b53c30}.y{stroke:#218454}.z{stroke:#3569ba}.symbol{fill:#fff;stroke:#3569ba;stroke-width:2.5}</style>
+  <rect width="1120" height="640" fill="white"/>
+  <text x="24" y="30" class="heading">Phone / camera / vehicle / world: independent conventions</text>
+  <text x="24" y="54" class="note">Axes are illustrative. Camera and mounting transforms remain uncalibrated.</text>
+  <rect x="20" y="72" width="530" height="240" class="panel"/>
+  <text x="40" y="103" class="heading">B — phone / body</text>
+  <text x="40" y="126" class="note">Viewed from the screen; standard portrait axes</text>
+  <line x1="190" y1="230" x2="348" y2="230" class="axis x"/><text x="356" y="235">+X right</text>
+  <line x1="190" y1="230" x2="190" y2="153" class="axis y"/><text x="205" y="163">+Y top</text>
+  <circle cx="190" cy="230" r="9" class="symbol"/><circle cx="190" cy="230" r="3" fill="#3569ba"/>
+  <text x="104" y="270">+Z out of screen (toward viewer)</text>
+  <rect x="570" y="72" width="530" height="240" class="panel"/>
+  <text x="590" y="103" class="heading">C — camera optical frame</text>
+  <text x="590" y="126" class="note">Image plane view; image rotation must be recorded</text>
+  <line x1="740" y1="166" x2="892" y2="166" class="axis x"/><text x="900" y="171">+X right</text>
+  <line x1="740" y1="166" x2="740" y2="250" class="axis y"/><text x="755" y="246">+Y down</text>
+  <circle cx="740" cy="166" r="9" class="symbol"/><path d="M734 160L746 172M734 172L746 160" class="z" stroke-width="2"/>
+  <text x="625" y="287">+Z forward along optical axis (away from viewer)</text>
+  <rect x="20" y="330" width="530" height="240" class="panel"/>
+  <text x="40" y="362" class="heading">V — vehicle (chosen FLU convention)</text>
+  <text x="40" y="385" class="note">Viewed from vehicle's right side</text>
+  <line x1="190" y1="494" x2="348" y2="494" class="axis x"/><text x="356" y="499">+X forward</text>
+  <line x1="190" y1="494" x2="190" y2="410" class="axis z"/><text x="205" y="420">+Z up</text>
+  <circle cx="190" cy="494" r="9" fill="white" stroke="#218454" stroke-width="2.5"/><path d="M184 488L196 500M184 500L196 488" class="y" stroke-width="2"/>
+  <text x="110" y="543">+Y vehicle-left (away from viewer)</text>
+  <rect x="570" y="330" width="530" height="240" class="panel"/>
+  <text x="590" y="362" class="heading">W — local world (chosen ENU convention)</text>
+  <text x="590" y="385" class="note">Top view; origin and world pose are not measured</text>
+  <line x1="740" y1="494" x2="892" y2="494" class="axis x"/><text x="900" y="499">+X east</text>
+  <line x1="740" y1="494" x2="740" y2="410" class="axis y"/><text x="755" y="420">+Y north</text>
+  <circle cx="740" cy="494" r="9" class="symbol"/><circle cx="740" cy="494" r="3" fill="#3569ba"/>
+  <text x="634" y="542">+Z up (toward viewer); gravity points along −Z</text>
+  <text x="24" y="602">Circle + dot: toward viewer. Circle + cross: away from viewer. All frames are right-handed.</text>
+  <text x="24" y="626" class="note">p_W = R_WB p_B + t_WB. Rotating the mount changes the body-to-vehicle transform; gravity is not vehicle acceleration.</text>
+</svg>
