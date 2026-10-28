@@ -1,5 +1,12 @@
 # Validation
 
+## 28 October 2026 — branch acceptance and lane-render corrections
+
+- Accepted `feat/weeks-1-3-baselines` (`cdee933`) into local `main` by fast-forward, then corrected two reviewed rendering defects: low-confidence boundaries/centerlines were drawn despite suppressed corridor shading, and the computed image-space offset indicator was not displayed. Shared thresholds now gate all lane geometry at 0.4 and a valid left/right/centered indicator at 0.6. The indicator explicitly states `UNCALIBRATED`; raw JSONL estimates remain unchanged by rendering.
+- **23 Node tests and 44 Python tests passed without skips**, and the static frontend build passed. Four new renderer regressions cover actual sparse-mask fitter output, inclusive threshold boundaries, all three visible directions, missing/invalid geometry, and preservation of source pixels/raw estimates. Local runtime: Node 24.15.0, Python 3.14.4, NumPy 2.5.4, OpenCV 5.0.0 and ONNX Runtime 1.31.1; CI separately checks its declared runtimes.
+- Ran the updated combined CLI on 20 frames of Udacity `solidWhiteRight.mp4` (indices 0–38, stride 2, CPU provider, four threads), using the pinned YOLOP and YOLOX Tiny models. It emitted independent logs, benchmark/run metadata, preview images and an MP4; source hashes stayed unchanged during the run. Inspected the first side-by-side preview: both lane methods show geometry and the image-space `CENTERED | UNCALIBRATED` label. This is a smoke check, not a replacement benchmark or a lane-accuracy measurement. Generated output remains ignored at `.tools/week2-render-fixed-smoke/`.
+- Reopened Day 7 temporal/visual quality acceptance and added the [lane-quality protocol](LANE-QUALITY.md). Historical reports retain their original code hashes and measurements. Temporal/day-night review and the original phone-footage outcome remain pending; no physical recording or new frontend deployment is claimed here.
+
 ## 28 October 2026 — coworker handoff readiness
 
 - Prepared [fresh-PC setup](handoff/START-HERE.md), separate Week 1/2/3 operator guides and an evidence template. The workflow uses the coworker's existing Vercel project and leaves branch/commit/push operations to the repository owner. Portable binaries, models/datasets, raw recordings and account credentials are explicitly not clone contents.

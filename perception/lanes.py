@@ -2,6 +2,9 @@
 import cv2
 import numpy as np
 
+LANE_GEOMETRY_CONFIDENCE = .4
+LANE_DEPARTURE_CONFIDENCE = .6
+
 
 def fit_lane_mask(mask, method="mask", top_fraction=.58):
     height, width = mask.shape[:2]
@@ -47,7 +50,7 @@ def fit_lane_mask(mask, method="mask", top_fraction=.58):
             result["confidence"] = 0.; return result
         center = (l + r) / 2
         result["centerline"] = center.tolist(); result["corridor"] = np.vstack([l, r[::-1]]).tolist()
-        if result["confidence"] >= .6:
+        if result["confidence"] >= LANE_DEPARTURE_CONFIDENCE:
             offset = float((width / 2 - center[-1, 0]) / widths[-1])
             result["image_center_offset_lane_widths"] = offset
             result["image_departure_indicator"] = "right" if offset > .25 else "left" if offset < -.25 else "centered"

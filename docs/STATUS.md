@@ -2,19 +2,20 @@
 
 Last updated: **28 October 2026** (Asia/Baku).
 
-Current milestone: **Weeks 2–3 PC baselines completed with public-data evidence; Week 1 physical acceptance remains partial**. No finalized phone recording is available; the user requested continuing with public datasets. This file records development progress, not an automatic repository monitor. The full checklist is in [ROADMAP.md](ROADMAP.md), results in [the measured report](reports/WEEKS-2-3.md), and checks in [VALIDATION.md](VALIDATION.md).
+Current milestone: **Weeks 2–3 PC baselines implemented with public-data evidence; Week 2 quality acceptance and Week 1 physical acceptance remain partial**. No finalized phone recording is available; public datasets support PC development without replacing phone-domain evidence. This file records development progress, not an automatic repository monitor. The full checklist is in [ROADMAP.md](ROADMAP.md), results in [the measured report](reports/WEEKS-2-3.md), and checks in [VALIDATION.md](VALIDATION.md).
 
 ## Milestones
 
 | Milestone | Status | Remaining acceptance work |
 |---|---|---|
 | W1: acquisition, synchronization, recording and replay | Software implemented; physical gate partial | Phone camera/IMU recording, USB/tunnel comparison, measured timing/rates and phone calibration; diagrams and public-data timeline analysis now exist |
-| W2: lanes and object detection/tracking | Public-data baseline complete | Three indexed road clips, classical/YOLOP comparison, Tiny/Nano labeled subset, tracking ablation and failure review; phone-domain validation remains pending |
+| W2: lanes and object detection/tracking | Implemented; acceptance partial | Three indexed road clips, classical/YOLOP comparison, Tiny/Nano labeled subset and tracking ablation exist; scoped temporal/day-night lane-quality review and phone-domain validation remain pending |
 | W3: depth and motion-assisted processing | Public-data baseline complete; phone workflow pending | Two depth alternatives, KF/gyro/VO/OpenVINS demos and public motion ablations exist. Phone yaw-export adapter, derived image preparation and measured matching motion calibration remain; no validated meter distance or custom phone VIO |
 | W4: final integration and submission | Pending | Some offline integration/benchmarks already work; live phone demonstration, final report/video, technical defense and full acceptance still required |
 
 ## Latest completed work
 
+- [x] Accept the Weeks 1–3 branch and fix lane rendering: suppress all lane geometry below confidence 0.4 and show the image-space/uncalibrated offset indicator only with valid geometry at confidence 0.6 or above. Verify **23 Node + 44 Python tests**, static build and a 20-frame real-model smoke run; reopen the Day 7 quality item with a [review protocol](LANE-QUALITY.md).
 - [x] Implement and execute lanes, six-class detection/tracking, two depth models and per-track associations with explicit units, confidence and stale flags.
 - [x] Benchmark 15 matched road cases serially; save model/code hashes, independent indexed logs, raw depth maps and overlays. Document qualitative day/night/snow failures and the small labeled COCO detector comparison.
 - [x] Implement scalar/2D Joseph-form Kalman filtering and mathematical exercises, variable dt/missing/outlier/turning cases, covariance plots and checked nonlinear Jacobian.
@@ -40,6 +41,7 @@ Current milestone: **Weeks 2–3 PC baselines completed with public-data evidenc
 
 | Priority | Task | Required evidence / dependency |
 |---|---|---|
+| 1 | Complete Day 7 temporal/day-night lane-quality review | Scoped frame-level review, continuity/missing/false-marking findings and indexed overlays following the [protocol](LANE-QUALITY.md); confidence availability alone is insufficient |
 | 1 | Confirm real accelerometer and gyroscope availability | Authorized physical phone; observed readings and measured rates. Evaluate native acquisition if browser gyro is unavailable |
 | 2 | Record and replay a compliant two-minute camera + accelerometer + gyroscope session | Finalized local session, clock log, frame metadata, sensor counts and alignment results |
 | 3 | Compare USB and HTTPS tunnel at matched settings | Physical cable/ADB authorization, sustained FPS/Hz, interruption/recovery results and measured latency definitions |
@@ -52,6 +54,6 @@ Current milestone: **Weeks 2–3 PC baselines completed with public-data evidenc
 - Logging uses live CSV/JSONL and optional finalized-session Parquet. The source does not explicitly require live Parquet append; this is the selected implementation, not an approval dependency.
 - Browser timestamps remain estimates; clock correction and the ±100 ms association window do not establish hardware exposure timing.
 - Physical-device availability, real gyro readings and measured calibration cannot be replaced by fixture tests.
-- The latest code, tests and documentation changes are currently uncommitted. The frontend is deployed; local Vercel account/project bindings and credentials remain ignored.
+- Historical reports retain the hashes/settings of the code that produced them. Rendering fixes must not be presented as a reproduction of every older benchmark; local Vercel account/project bindings and credentials remain ignored.
 
 Update this tracker when work is completed or new evidence changes a milestone. Keep individual assignment checkboxes in [ROADMAP.md](ROADMAP.md); mark a gate complete only when its acceptance evidence exists.

@@ -54,7 +54,7 @@ The classical baseline uses HLS white/yellow masks, grayscale blur/Canny, a trap
 
 The pretrained alternative is [YOLOP](https://github.com/hustvl/YOLOP)'s lane-segmentation head. The adapter uses its centered letterbox, RGB/ImageNet normalization and two-class lane mask. Segmentation labels pixels; road-user detection produces boxes/classes and tracking associates them across time. These are different tasks. YOLOP's full multi-head inference cost is included even though this adapter consumes only the lane output.
 
-Outputs contain left/right boundaries, a centerline, corridor and a heuristic support/fit confidence. Confidence is not a calibrated probability. Corridor shading needs confidence ≥0.4; the image-center offset indicator needs ≥0.6. It refers to image geometry, not a validated vehicle departure alarm. Missing sides remain null. Availability/continuity counts do not establish lane accuracy; review overlays and failures.
+Outputs contain left/right boundaries, a centerline, corridor and a heuristic support/fit confidence. Confidence is not a calibrated probability. All rendered lane geometry, including boundary/centerline polylines and corridor shading, requires confidence ≥0.4. The renderer displays `Lane offset (image): LEFT/RIGHT/CENTERED | UNCALIBRATED` only at confidence ≥0.6 with both a corridor and centerline present. This is image geometry, not a validated vehicle departure alarm. Raw low-confidence estimates remain in the independent logs; suppression affects visualization only. Missing sides remain null. Availability does not establish temporal continuity or lane accuracy; use the [lane-quality protocol](LANE-QUALITY.md) for the remaining evidence.
 
 ## Detection and tracking
 

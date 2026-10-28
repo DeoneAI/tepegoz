@@ -2,6 +2,8 @@
 
 Recorded **28 October 2026**, Asia/Baku. Public datasets were used because no finalized phone recording is available. This evidence covers PC processing and the learning experiments; physical Week 1 acceptance remains pending. Methods, exact contracts and commands are in [the implementation guide](../PERCEPTION-AND-ESTIMATION.md), with [upstream attribution](../THIRD-PARTY.md).
 
+**Version scope:** the benchmark hashes below retain the baseline code that produced these measurements. The subsequent lane-render review fixes confidence gating and displays the computed image-offset indicator; it does not retroactively regenerate these timings or turn availability into lane accuracy. The remaining Day 7 review follows [LANE-QUALITY.md](../LANE-QUALITY.md), so Week 2 is not marked fully accepted.
+
 ## Road perception and runtime
 
 The serial benchmark uses three supplied Udacity clips, original indices 0,2,…,198 for 100-frame lane/object runs, and 0,10,…,110 for 12-frame depth comparisons. Both lane baselines run when lanes are enabled. Tiny detection uses score ≥0.25, class-aware NMS IoU 0.45, and the tracker starts new IDs at score ≥0.4. Depth uses dynamic ViT-S inputs with a 518-pixel long edge rounded to multiples of 14. These are selected subsets, not exhaustive road validation.

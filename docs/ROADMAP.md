@@ -86,7 +86,8 @@ Outcome: independent, measurable vision baselines before fusion. Implemented and
 ### Day 7 — lane baseline
 
 - [x] Implement a classical lane method and compare it to a pretrained lane-specific/segmentation model.
-- [x] Benchmark continuity, missing/false markings, day/night sensitivity and inference time.
+- [x] Measure inference time and confidence-based availability on three public clips; retain qualitative day/night/snow still-image findings.
+- [ ] Complete a scoped temporal/visual benchmark for continuity, missing/false markings and day/night sensitivity using the [lane-quality protocol](LANE-QUALITY.md). Availability and still images alone do not complete this item.
 - [x] Render a corridor/centerline and a departure indicator only when confidence supports it.
 
 ### Day 8 — road-user detection
@@ -107,7 +108,7 @@ Outcome: independent, measurable vision baselines before fusion. Implemented and
 - [x] Measure each module and total runtime/FPS; build a failure-case gallery.
 - [x] Deliver indexed lane overlays, object tracks and model-selection evidence with hardware/settings recorded.
 
-**Gate W2 (public-data baseline):** lane and object overlays share the same recorded sequence and stable frame indices; model outputs are stored independently. Three public clips and day/night/snow stills provide measured runtime and qualitative failures; lane accuracy and exhaustive tracking identities are not annotated. Explain segmentation vs detection/lane tasks, ambiguous image proximity and why ego-motion affects tracking.
+**Gate W2 (public-data functional check):** lane and object overlays share the same recorded sequence and stable frame indices; model outputs are stored independently. This narrower check does not mark all Week 2 tasks complete: the Day 7 quality review above and recorded-phone-footage outcome remain open. Three public clips and day/night/snow stills provide measured runtime and qualitative failures; lane accuracy and exhaustive tracking identities are not annotated. Explain segmentation vs detection/lane tasks, ambiguous image proximity and why ego-motion affects tracking.
 
 ## Week 3 — depth and multi-sensor foundations (Days 11–15)
 

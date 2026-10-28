@@ -8,7 +8,7 @@ Tepegoz contains the **Sensorlink acquisition prototype** plus offline PC lanes,
 
 **Development frontend:** [tepegoz-tawny.vercel.app](https://tepegoz-tawny.vercel.app). The coworker handoff uses the team's existing Vercel project instead; no account migration is required. Network capture uses an HTTPS tunnel to the running PC collector; recordings and offline analysis stay on the PC. USB setup uses the local dashboard at `http://localhost:8787`.
 
-**Current milestone: Weeks 2–3 implemented and evaluated with public datasets; Week 1 physical acceptance remains partial.** No new phone recording is available. Public data exercises the PC pipeline without establishing phone/USB performance. The local estimator is an attitude-only experiment, not full VIO/SLAM. Android Camera2 and SensorManager remain acquisition alternatives to the current browser client.
+**Current milestone: Weeks 2–3 baselines implemented with public datasets; Week 2 quality acceptance and Week 1 physical acceptance remain partial.** The [Day 7 lane-quality review](docs/LANE-QUALITY.md) and recorded-phone-footage outcome remain open. Public data exercises the PC pipeline without establishing phone/USB performance. The local estimator is an attitude-only experiment, not full VIO/SLAM. Android Camera2 and SensorManager remain acquisition alternatives to the current browser client.
 
 [Getting started](BASLA.md) · [Progress tracker](docs/STATUS.md) · [20-day checklist](docs/ROADMAP.md) · [Perception and estimation](docs/PERCEPTION-AND-ESTIMATION.md) · [Measured results](docs/reports/WEEKS-2-3.md) · [Validation](docs/VALIDATION.md)
 

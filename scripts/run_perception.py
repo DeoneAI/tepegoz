@@ -13,7 +13,7 @@ from contextlib import ExitStack
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import cv2
 import numpy as np
-from perception.lanes import ClassicalLaneDetector
+from perception.lanes import ClassicalLaneDetector, LANE_GEOMETRY_CONFIDENCE
 from perception.depth import DepthAnythingOnnx, box_depth, normalize_relative, render_depth
 from perception.models import YoloPLaneDetector, YoloXDetector, ROAD_CLASSES
 from perception.motion_input import SessionRotationCompensation
@@ -69,7 +69,7 @@ def run(args):
                 estimates = {}
                 for name, model in lanes.items():
                     before = time.perf_counter(); estimate, mask = model(frame.image); timing[f"lane_{name}_ms"] = (time.perf_counter() - before) * 1000
-                    estimates[name] = estimate; lane_available[name] += estimate["confidence"] >= .4
+                    estimates[name] = estimate; lane_available[name] += estimate["confidence"] >= LANE_GEOMETRY_CONFIDENCE
                     logs["lanes_" + name].write(json.dumps({**metadata, **estimate}, allow_nan=False) + "\n")
                 before = time.perf_counter(); detections = detector(frame.image) if detector else []; timing["detector_ms"] = (time.perf_counter() - before) * 1000
                 detections_total += len(detections)

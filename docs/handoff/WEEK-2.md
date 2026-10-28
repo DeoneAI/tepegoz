@@ -67,6 +67,8 @@ Do not treat the session overlay MP4's constant playback FPS as original capture
 
 Select and retain an explicit review sample with frame indices, reviewer and source. Include curves, weak/worn markings, shade, junctions, distant objects and occlusion when available. If night video is unavailable, state that rather than extrapolating from the six stills.
 
+Use the [lane-quality review protocol](../LANE-QUALITY.md). The combined Day 7 continuity/missing/false/day-night benchmark remains open until that scoped evidence exists; runtime/confidence availability and illustrative stills do not close it.
+
 For lanes, note missing sides, wrong boundaries, crossing/implausible corridors and centerline discontinuity. Existing confidence-availability counts are useful but not labeled lane accuracy. For detections, document the six actual supported classes (person, bicycle, car, motorcycle, bus, truck), score/NMS settings, misses and false positives. Label a small phone sample if reporting class-specific precision/recall; do not invent mAP from raw output logs.
 
 For tracking, inspect short occlusions and cases where the same real object changes ID or different objects share an ID. A small consecutively labeled clip can support an explicitly scoped ID-switch result. The current aggregate unique-ID/short-track counts are only fragmentation proxies. Report a no-improvement case as well as improvements; the reference yellow-clip prediction ablation does not improve that proxy.
