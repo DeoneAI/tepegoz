@@ -6,7 +6,7 @@
 
 Tepegoz contains the **Sensorlink acquisition prototype** plus offline PC lanes, road-user detection/tracking, depth, Kalman exercises, gyro orientation and visual-inertial experiments. The project follows the supplied [one-month assignment and technical addendum](docs/roadmap/assignment.pdf).
 
-**Development frontend:** [tepegoz-tawny.vercel.app](https://tepegoz-tawny.vercel.app). The coworker handoff uses the team's existing Vercel project instead; no account migration is required. Network capture uses an HTTPS tunnel to the running PC collector; recordings and offline analysis stay on the PC. USB setup uses the local dashboard at `http://localhost:8787`.
+**Hosted dashboard:** [tepegoz-deone.vercel.app](https://tepegoz-deone.vercel.app) (optional; only needed to view the dashboard from another computer). Everyday use is the local dashboard at `http://localhost:8787` on the collector PC. Recordings and offline analysis stay on the PC.
 
 **Current milestone: Weeks 2–3 baselines implemented with public datasets; Week 2 quality acceptance and Week 1 physical acceptance remain partial.** The [Day 7 lane-quality review](docs/LANE-QUALITY.md) and recorded-phone-footage outcome remain open. Public data exercises the PC pipeline without establishing phone/USB performance. The local estimator is an attitude-only experiment, not full VIO/SLAM. Android Camera2 and SensorManager remain acquisition alternatives to the current browser client.
 

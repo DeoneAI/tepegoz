@@ -29,6 +29,10 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
 
   async function openSettings() {
     $('local-setup').hidden = !ctx.isLocalPage;
+    $('hosted-note').hidden = ctx.isLocalPage; // the online copy explains why Wi-Fi/USB live on the PC
+    $('settings-title').textContent = ctx.isLocalPage ? 'Connect phone' : 'Connect to your collector';
+    $('remote-hint').hidden = !ctx.isLocalPage; // the hosted note already says this
+    $('remote-summary').textContent = ctx.isLocalPage ? 'Remote dashboard' : 'Collector address and token';
     // On the collector PC the remote fields are never needed: hide them so they cannot be filled by mistake.
     $('remote-setup').hidden = ctx.isLocalPage;
     $('remote-setup').open = !ctx.isLocalPage;

@@ -109,6 +109,10 @@ main { margin-left: var(--sidebar); min-width: 0; }
 .route-status.ok { color: var(--ok); }
 .route-status.warn { color: var(--warn); }
 details.advanced { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+#local-setup[hidden] + details.advanced { margin-top: 0; padding-top: 0; border-top: 0; }
+.hosted-note { margin-bottom: 14px; padding: 12px 14px; border-radius: 8px; background: var(--surface-2); font-size: 13px; }
+.hosted-note p { margin-bottom: 8px; color: var(--text-2); }
+.hosted-note ol { list-style: decimal; padding-left: 18px; display: grid; gap: 4px; color: var(--text-2); }
 details.advanced summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
 details.advanced[open] summary { margin-bottom: 10px; }
 .form-error:not(:empty) { margin-top: 12px; }

@@ -238,6 +238,15 @@
         <button type="button" class="icon-button ghost" data-close aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button>
       </header>
       <div class="dialog-body">
+        <div class="hosted-note" id="hosted-note" hidden>
+          <p><strong>This is the online copy of the dashboard.</strong> Wi-Fi and USB are set up on the collector PC itself, at <code>http://localhost:8787</code>. For safety, a website can never start the link or talk to USB on your PC.</p>
+          <p>Here you can only view a running collector from another computer:</p>
+          <ol>
+            <li>On the collector PC: start the Wi-Fi link and copy its address (<em>Running · …trycloudflare.com</em>).</li>
+            <li>On the collector PC: run <code>npm run token</code> and copy the token.</li>
+            <li>Paste both below and press <strong>Connect</strong>.</li>
+          </ol>
+        </div>
         <div id="local-setup">
           <p class="status-line" id="signed-in"><i class="dot online"></i>Collector running on this PC</p>
           <div class="field">
@@ -261,8 +270,8 @@
           </div>
         </div>
         <details class="advanced" id="remote-setup">
-          <summary>Remote dashboard</summary>
-          <p class="small muted">Only for the hosted copy. Get the token with <code>npm run token</code> on the PC; the collector must list this site in ALLOWED_ORIGINS.</p>
+          <summary id="remote-summary">Remote dashboard</summary>
+          <p class="small muted" id="remote-hint">Only for the hosted copy. Get the token with <code>npm run token</code> on the PC; the collector must list this site in ALLOWED_ORIGINS.</p>
           <label>Collector address<input id="server-url" placeholder="https://….trycloudflare.com" type="url"></label>
           <label>Collector token<input id="remote-token" type="password" autocomplete="off"></label>
         </details>

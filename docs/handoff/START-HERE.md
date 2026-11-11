@@ -89,7 +89,7 @@ Tracked `docs/reports/` contains selected reference metrics/plots, not the full 
 
 ## Continue using your existing Vercel project
 
-Use **your team's existing project** for the previous version. The additional `tepegoz-tawny.vercel.app` deployment is development reference only; you do not need to migrate to that Vercel account or copy its credentials.
+Use **your team's existing project** for the previous version. The current hosted copy is `tepegoz-deone.vercel.app` (deployed with `vercel deploy --prod` from `main`); you do not need to migrate to that Vercel account or copy its credentials.
 
 After the owner publishes the handoff branch, verify in your existing Vercel project that the intended deployment uses that branch/commit. Use these project settings:
 
