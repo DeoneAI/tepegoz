@@ -46,7 +46,8 @@ export function createSupabaseMirror({ url = process.env.SUPABASE_URL, key = pro
       try {
         const response = await fetchImpl(endpoint, {
           method: 'POST',
-          headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=minimal' },
+          // Legacy service_role keys are JWTs (eyJ…) and also go in Authorization; new sb_secret_… keys only in apikey.
+          headers: { apikey: key, ...(key.startsWith('eyJ') ? { Authorization: `Bearer ${key}` } : {}), 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=minimal' },
           body: JSON.stringify({ ...meta, manifest: JSON.parse(manifest) }),
           signal: AbortSignal.timeout(8000),
         });

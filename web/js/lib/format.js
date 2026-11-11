@@ -17,4 +17,4 @@ export function duration(seconds) {
 export const nsToSeconds = (ns, digits = 3) => (Number(ns) / 1e9).toFixed(digits);
 
 /** Six-digit, zero-padded frame label. */
-export const frameLabel = index => `FRAME ${String(index).padStart(6, '0')}`;
+export const frameLabel = index => `#${String(index).padStart(6, '0')}`;

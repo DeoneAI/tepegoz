@@ -11,7 +11,15 @@ const URL_PATTERN = /https:\/\/[a-z0-9-]+\.trycloudflare\.com/;
 export function findCloudflared(root, env = process.env) {
   if (env.CLOUDFLARED_PATH) return env.CLOUDFLARED_PATH;
   const bundled = path.join(root, '.tools', process.platform === 'win32' ? 'cloudflared.exe' : 'cloudflared');
-  return existsSync(bundled) ? bundled : 'cloudflared';
+  if (existsSync(bundled)) return bundled;
+  // winget/MSI install folders: found even when the terminal was opened before the install updated PATH.
+  if (process.platform === 'win32') {
+    for (const base of [env['ProgramFiles(x86)'], env.ProgramFiles]) {
+      const candidate = base && path.join(base, 'cloudflared', 'cloudflared.exe');
+      if (candidate && existsSync(candidate)) return candidate;
+    }
+  }
+  return 'cloudflared';
 }
 
 /** Extract the public quick-tunnel URL from cloudflared's log output, or null. */

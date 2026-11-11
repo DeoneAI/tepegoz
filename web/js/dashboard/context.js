@@ -25,8 +25,10 @@ function consumeLoginLink(storage, location, history) {
 export function createContext({ storage = sessionStorage, location = window.location, history = window.history } = {}) {
   consumeLoginLink(storage, location, history);
   const listeners = new Set();
+  // On the collector PC the dashboard is trusted without a token (see pc/local.mjs).
+  const localDefault = isLocalHost(location.hostname) ? { server: location.origin, token: '', mode: 'tunnel' } : null;
   const ctx = {
-    config: loadConfig(storage),
+    config: loadConfig(storage) ?? localDefault,
     online: false,
     active: null,          // session currently shown on the Live page
     sensor: 'accelerometer',

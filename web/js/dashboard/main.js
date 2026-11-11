@@ -9,7 +9,7 @@ import { createLibrary } from './library.js';
 import { createReplay } from './replay.js';
 import { loadProjectStatus, renderProject } from './project.js';
 
-const PAGES = { live: 'Live acquisition', sessions: 'Session library', project: 'Project status', guide: 'Setup & protocol' };
+const PAGES = { live: 'Live', sessions: 'Sessions', project: 'Project', guide: 'Setup' };
 
 initTheme($('theme-btn'));
 const ctx = createContext();

@@ -7,8 +7,11 @@ import { mono, ns, validateSample, percentile, sequenceUpdate, measuredRate } fr
 import { createUsbBridge, isLocalUsbRequest } from './usb.mjs';
 import { createTunnel } from './tunnel.mjs';
 import { openStore } from './store.mjs';
+import { isTrustedLocalBrowser } from './local.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+// Optional settings (Supabase mirror, TUNNEL, ALLOWED_ORIGINS) from .env, however the collector is started.
+if(process.env.SENSORLINK_TEST!=='1'){try{process.loadEnvFile(path.join(root,'.env'));}catch{/* no .env: defaults */}}
 const dataRoot=path.resolve(process.env.DATA_DIR || path.join(root,'data'));
 await mkdir(dataRoot,{recursive:true});
 const store=await openStore(dataRoot);
@@ -98,10 +101,12 @@ export const server=http.createServer(async(req,res)=>{
       const file=path.join(root,'web',name);
       const bytes=await readFile(file);
       res.writeHead(200,{'Content-Type':({'html':'text/html','css':'text/css','js':'text/javascript','svg':'image/svg+xml','json':'application/json'})[name.split('.').pop()]||'application/octet-stream',
-        'Permissions-Policy':'camera=(self), microphone=(), geolocation=(self), accelerometer=(self), gyroscope=(self)'});return res.end(bytes);
+        'Permissions-Policy':'camera=(self), microphone=(), geolocation=(self), accelerometer=(self), gyroscope=(self)',
+        'Cache-Control':'no-cache'});return res.end(bytes); // revalidate so updates are never served stale
     }
     const token=req.headers.authorization?.replace(/^Bearer /,'');
-    const isAdmin=same(token,admin);
+    // The dashboard on this PC needs no token; remote dashboards use the collector token.
+    const isAdmin=same(token,admin)||isTrustedLocalBrowser(req,port);
     if(url.pathname==='/api/usb') {
       if(!isAdmin)return json(res,401,{error:'Collector admin token required'});
       if(!isLocalUsbRequest(req,port))return json(res,403,{error:'Manage USB from http://localhost:'+port+' on the collector PC.'});
@@ -230,8 +235,9 @@ server.requestTimeout=30000;server.headersTimeout=15000;
 if(process.env.SENSORLINK_TEST!=='1')server.listen(port,process.env.HOST||'127.0.0.1',()=>{
   console.log(`\nTEPEGOZ • PC collector  (recordings: ${dataRoot})`);
   console.log(`  Session index: ${store.kind==='sqlite'?'SQLite (data/sessions.sqlite)':'manifest files'}${store.mirrored?' + Supabase mirror':''}\n`);
-  console.log(`  Open the dashboard (this link signs you in):\n  http://localhost:${port}/#token=${admin}\n`);
-  console.log('  Then choose how the phone connects: Wi-Fi (secure tunnel) or USB cable.\n');
+  console.log(`  Open on this PC:  http://localhost:${port}\n`);
+  console.log('  Then click "Connect phone" and choose Wi-Fi or USB. No token is needed on this PC.');
+  console.log('  (Remote dashboard only: npm run token prints the collector token.)\n');
   if(process.argv.includes('--tunnel')||process.env.TUNNEL==='1')tunnel.start(u=>allowed.add(u)).then(t=>console.log(t.url?`  Wi-Fi tunnel ready: ${t.url}\n`:`  Tunnel not started: ${t.error}\n  ${t.install_hint}\n`));
 });
 let closing=false;

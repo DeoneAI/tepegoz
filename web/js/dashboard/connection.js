@@ -14,7 +14,7 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
   let pairURL = null;
 
   const route = () => document.querySelector('input[name="route"]:checked')?.value || 'wifi';
-  const token = () => ctx.config?.token || $('server-token').value.trim();
+  const token = () => ctx.config?.token || '';
   const local = (path, options) => request(location.origin, token(), path, options).then(r => r.json());
 
   // ---------------------------------------------------------------- dialog
@@ -25,33 +25,30 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
   }
 
   async function openSettings() {
-    const signedIn = Boolean(ctx.config?.token);
     $('local-setup').hidden = !ctx.isLocalPage;
     $('remote-setup').open = !ctx.isLocalPage;
-    $('token-field').hidden = signedIn;
-    $('signed-in').hidden = !signedIn;
+    $('signed-in').hidden = !ctx.online;
     $('server-url').value = ctx.config && !ctx.isLocalPage ? ctx.config.server : '';
-    $('server-token').value = '';
     $('connection-error').textContent = '';
     const usb = ctx.config?.mode === 'usb-adb';
     $(usb ? 'route-usb' : 'route-wifi').checked = true;
     showRoute();
     $('settings-dialog').showModal();
-    if (ctx.isLocalPage && signedIn) refreshTunnel();
+    if (ctx.isLocalPage) refreshTunnel();
   }
 
   function renderTunnel(status) {
     const box = $('tunnel-status');
     if (status.url) {
       box.className = 'route-status ok';
-      box.textContent = `Secure link is running: ${status.url}`;
+      box.textContent = `Running · ${status.url.replace('https://', '')}`;
       $('tunnel-start').hidden = true;
     } else if (status.starting) {
       box.className = 'route-status';
-      box.textContent = 'Starting the secure link…';
+      box.textContent = 'Starting…';
     } else {
       box.className = status.error ? 'route-status warn' : 'route-status';
-      box.textContent = status.error ? `${status.error} ${status.install_hint}` : 'Not started yet. It starts automatically when you continue.';
+      box.textContent = status.error ? `${status.error} ${status.install_hint}` : 'Not started';
       $('tunnel-start').hidden = false;
     }
   }
@@ -78,17 +75,16 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
       const remote = !ctx.isLocalPage || $('server-url').value.trim();
       if (remote) {
         const remoteToken = $('remote-token').value.trim() || ctx.config?.token;
-        if (!remoteToken) throw new Error('Paste the collector token from the PC.');
+        if (!remoteToken) throw new Error('Paste the collector token (run "npm run token" on the PC).');
         config = { server: validateServer($('server-url').value.trim()), token: remoteToken, mode: 'tunnel' };
         await request(config.server, config.token, '/api/sessions');
       } else {
-        if (!token()) throw new Error('Open the sign-in link printed by the collector, or paste its token.');
-        await request(location.origin, token(), '/api/sessions'); // checks the token
+        await request(location.origin, token(), '/api/sessions'); // is the collector running?
         if (route() === 'wifi') {
           config = { server: await startTunnel(), token: token(), mode: 'tunnel' };
         } else {
           const serial = $('usb-device').value;
-          if (!serial) throw new Error('Click "Find my phone" and pick your device first.');
+          if (!serial) throw new Error('Click Find and choose your phone first.');
           const usb = await local('/api/usb', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serial }), signal: AbortSignal.timeout(45000) });
           config = { server: usb.phone_origin, token: token(), mode: 'usb-adb' };
         }
@@ -98,7 +94,7 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
       ctx.emit('connection');
       ctx.setOnline(true);
       $('settings-dialog').close();
-      toast(config.mode === 'usb-adb' ? 'USB link ready. Create a session to pair your phone.' : 'Ready. Create a session and scan the QR code with your phone.');
+      toast(config.mode === 'usb-adb' ? 'USB connected. Create a session.' : 'Wi-Fi link ready. Create a session.');
       await onConnected();
     } catch (error) {
       $('connection-error').textContent = explainNetworkError(error, 'Cannot reach the collector. Is "npm start" still running on the PC?');
@@ -115,8 +111,8 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
       $('usb-device').replaceChildren(...result.devices.map(device =>
         el('option', { value: device.serial, text: `${device.model || device.serial} · ${device.state}`, disabled: device.state !== 'device' })));
       $('usb-status').textContent = !result.available ? result.error
-        : result.devices.length ? 'Phone found. Continue to connect.'
-        : 'No phone found. Plug in the cable, unlock the phone and allow USB debugging.';
+        : result.devices.length ? 'Phone found.'
+        : 'No phone found. Check the cable, unlock the phone and allow USB debugging.';
     } catch (error) {
       $('usb-status').textContent = error.message;
     } finally {
@@ -129,7 +125,7 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
     if (!ctx.config || !ctx.online) return openSettings();
     // Signed in on the PC but no phone route chosen yet.
     if (ctx.isLocalPage && ctx.config.server === location.origin && ctx.config.mode !== 'usb-adb') {
-      toast('First choose how your phone connects.');
+      toast('Choose how the phone connects first.');
       return openSettings();
     }
     if (ctx.active?.recording) { toast('Stop & save the current session before creating another.'); return; }
@@ -150,7 +146,7 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
       $('create-dialog').close();
       showPage('live');
       ctx.setActive(session);
-      toast('Session created. Scan the QR code with your phone.');
+      toast('Session created. Scan the QR code with the phone.');
     } catch (error) {
       toast(error.message);
     } finally {
@@ -160,7 +156,7 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
 
   function showPairing(mode) {
     $('phone-link').value = pairURL;
-    $('connection-mode-tag').textContent = mode === 'usb-adb' ? 'USB' : 'WI-FI';
+    $('connection-mode-tag').textContent = mode === 'usb-adb' ? 'USB' : 'Wi-Fi';
     $('pairing-empty').hidden = true;
     $('pairing-ready').hidden = false;
     const box = $('qr-wrap');

@@ -47,7 +47,7 @@ test('Supabase mirror is off without credentials and upserts metadata (not frame
   const mirror = createSupabaseMirror({ url: 'https://x.supabase.co/', key: 'k', fetchImpl: async (u, o) => { calls.push([u, o]); return { ok: true }; } });
   await mirror.upsert(toRow(manifest('d'.repeat(24), '2026-11-03T00:00:00Z', { metrics: { frames: 3 } })));
   assert.equal(calls[0][0], 'https://x.supabase.co/rest/v1/sessions?on_conflict=id');
-  assert.match(calls[0][1].headers.Prefer, /merge-duplicates/);
+  assert.match(calls[0][1].headers.Prefer, /merge-duplicates/); assert.equal(calls[0][1].headers.Authorization, undefined, 'non-JWT keys are not sent as Bearer');
   const body = JSON.parse(calls[0][1].body);
   assert.equal(body.frames, 3); assert.equal(typeof body.manifest, 'object');
   const failing = createSupabaseMirror({ url: 'https://x', key: 'k', fetchImpl: async () => { throw new Error('offline'); }, log: () => {} });

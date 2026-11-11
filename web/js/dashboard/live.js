@@ -46,7 +46,7 @@ export function createLivePage(ctx, { toast, openReplay }) {
     for (const id of ['session-dot', 'device-dot']) toggle(id, 'online', live);
     toggle('record-dot', 'online', s.recording && live);
     setText('record-label', s.recording ? (live ? 'Recording to PC' : 'Waiting for phone') : 'Saved to PC');
-    setText('feed-status', !s.recording ? '● SESSION SAVED' : live ? '● LIVE · RECORDING' : '● AWAITING DEVICE');
+    setText('feed-status', !s.recording ? 'Saved' : live ? 'Live · recording' : 'Waiting for phone');
     $('stop-session').disabled = !s.recording;
     $('replay-current').disabled = !m.frames;
     setStep('step-phone', live);
@@ -56,16 +56,16 @@ export function createLivePage(ctx, { toast, openReplay }) {
     setText('clock-rtt', fmt(m.clock_rtt_ms, 1) + ' ms');
     setText('clock-error', '± ' + fmt(m.clock_uncertainty_ms, 1) + ' ms');
     setText('clock-drift', fmt(m.clock_drift_ppm, 1) + ' ppm');
-    setText('sync-tag', s.clock ? 'ESTIMATED' : 'UNSYNCED');
+    setText('sync-tag', s.clock ? 'Estimated' : 'Unsynced');
     toggle('sync-tag', 'accent', s.clock);
 
     const ua = s.device?.user_agent;
-    setText('device-name', ua ? deviceLabel(ua) : 'No device yet');
-    setText('device-detail', s.device ? `${s.device.connection_mode === 'usb-adb' ? 'USB / ADB' : 'HTTPS'} · ${s.device.client || 'browser'}` : 'Pair a phone to begin');
+    setText('device-name', ua ? deviceLabel(ua) : 'No phone');
+    setText('device-detail', s.device ? `${s.device.connection_mode === 'usb-adb' ? 'USB' : 'Wi-Fi'} · ${s.device.client || 'browser'}` : 'Not paired');
 
     const sample = s.latest?.[ctx.sensor];
     for (const axis of ['x', 'y', 'z']) setText('axis-' + axis, fmt(sample?.values?.[axis], 3));
-    setText('sensor-status', sample ? `${fmt(m.per_sensor_hz?.[ctx.sensor])} Hz · browser accuracy unknown` : 'No measurements / sensor may be unavailable');
+    setText('sensor-status', sample ? `${fmt(m.per_sensor_hz?.[ctx.sensor])} Hz · browser accuracy unknown` : 'No samples');
     const traces = s.telemetry?.filter(x => x.sensor_type === ctx.sensor).slice(-150) || [];
     $('chart-empty').hidden = traces.length > 0;
     drawTraces($('imu-chart'), traces);
@@ -76,12 +76,12 @@ export function createLivePage(ctx, { toast, openReplay }) {
       setText('frame-number', frameLabel(f.frame_index));
       setText('frame-time', `${nsToSeconds(f.timestamp_ns)} s · ${f.timestamp_source}`);
       setText('frame-size', `${f.width} × ${f.height}`);
-      setText('camera-format', `${f.width} × ${f.height} / JPEG`);
+      setText('camera-format', `${f.width}×${f.height} JPEG`);
     }
   }
 
   function renderInventory(s) {
-    setText('device-route', ctx.config?.mode === 'usb-adb' ? 'USB / ADB' : 'HTTPS');
+    setText('device-route', ctx.config?.mode === 'usb-adb' ? 'USB' : 'Wi-Fi');
     $('sensor-inventory-rows').replaceChildren(...SENSORS.map(([key, label, unit]) => {
       const state = s.device?.capabilities?.sensors?.[key]?.state || 'not checked';
       return el('tr', {},

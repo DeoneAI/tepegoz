@@ -3,123 +3,129 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b0e11">
-  <meta name="description" content="Tepegoz research workspace: phone-to-PC camera and inertial acquisition, synchronized recording, replay and project status.">
+  <meta name="theme-color" content="#faf9f7">
+  <meta name="description" content="Tepegoz: phone-to-PC camera and inertial acquisition, recording, replay and project status.">
   <meta name="referrer" content="no-referrer">
-  <title>Tepegoz — Research workspace</title>
+  <title>Tepegoz</title>
   <link rel="icon" href="/mark.svg">
   <link rel="stylesheet" href="/styles/base.css">
   <link rel="stylesheet" href="/styles/components.css">
   <link rel="stylesheet" href="/styles/dashboard.css">
 </head>
 <body>
+  <svg width="0" height="0" class="sprite" aria-hidden="true">
+    <symbol id="i-live" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.75"/><circle cx="8" cy="8" r="2" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-sessions" viewBox="0 0 16 16"><path d="M2.75 4h10.5M2.75 8h10.5M2.75 12h10.5"/></symbol>
+    <symbol id="i-project" viewBox="0 0 16 16"><path d="M3.5 13V8.5M8 13V3M12.5 13V6"/></symbol>
+    <symbol id="i-setup" viewBox="0 0 16 16"><path d="M2.75 3.25h3.5A1.75 1.75 0 0 1 8 5v8a1.5 1.5 0 0 0-1.5-1.5H2.75zM13.25 3.25h-3.5A1.75 1.75 0 0 0 8 5v8a1.5 1.5 0 0 1 1.5-1.5h3.75z"/></symbol>
+    <symbol id="i-theme" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.75"/><path d="M8 2.25v11.5a5.75 5.75 0 0 0 0-11.5z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 16 16"><rect x="4.25" y="1.75" width="7.5" height="12.5" rx="1.75"/><path d="M7 11.75h2"/></symbol>
+    <symbol id="i-close" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 16 16"><rect x="5.25" y="5.25" width="8" height="8" rx="1.5"/><path d="M2.75 10.25v-6.5c0-.55.45-1 1-1h6.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></symbol>
+  </svg>
+
   <aside class="sidebar">
-    <a class="brand" href="#live"><img src="/deoneai-mark.svg" alt="" width="28" height="28"><span><span class="brand-name">Tepegoz</span><span class="brand-by">by DeoneAI</span></span></a>
-    <div class="sidebar-label">Workspace</div>
+    <a class="brand" href="#live" aria-label="Tepegoz">
+      <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M5 32C14 18.5 22.5 12 32 12C41.5 12 50 18.5 59 32C50 45.5 41.5 52 32 52C22.5 52 14 45.5 5 32Z" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linejoin="round"/><circle cx="32" cy="32" r="10.5" class="brand-iris"/></svg>
+      <span class="brand-name">Tepegoz</span>
+    </a>
     <nav aria-label="Main navigation">
-      <a class="nav-item" href="#live" data-page="live"><span aria-hidden="true">◉</span><b>Live acquisition</b></a>
-      <a class="nav-item" href="#sessions" data-page="sessions"><span aria-hidden="true">▤</span><b>Session library</b></a>
-      <a class="nav-item" href="#project" data-page="project"><span aria-hidden="true">◆</span><b>Project status</b></a>
-      <a class="nav-item" href="#guide" data-page="guide"><span aria-hidden="true">⌘</span><b>Setup &amp; protocol</b></a>
+      <a class="nav-item" href="#live" data-page="live"><svg class="icon"><use href="#i-live"/></svg><b>Live</b></a>
+      <a class="nav-item" href="#sessions" data-page="sessions"><svg class="icon"><use href="#i-sessions"/></svg><b>Sessions</b></a>
+      <a class="nav-item" href="#project" data-page="project"><svg class="icon"><use href="#i-project"/></svg><b>Project</b></a>
+      <a class="nav-item" href="#guide" data-page="guide"><svg class="icon"><use href="#i-setup"/></svg><b>Setup</b></a>
     </nav>
     <a class="milestone-card" href="#project" data-page="project">
-      <div class="eyebrow">Current milestone</div>
-      <h3 id="milestone-title">Loading project status…</h3>
-      <p id="milestone-week">—</p>
-      <div class="milestone-track" id="milestone-track"><i></i><i></i><i></i><i></i></div>
+      <span class="label">Milestone</span>
+      <strong id="milestone-title">Loading…</strong>
+      <span id="milestone-week" class="muted">—</span>
+      <span class="milestone-track" id="milestone-track"><i></i><i></i><i></i><i></i></span>
     </a>
     <div class="sidebar-device">
-      <div class="device-avatar" aria-hidden="true">▣</div>
-      <div><span id="device-name">No device yet</span><small id="device-detail">Pair a phone to begin</small></div>
       <span class="dot" id="device-dot"></span>
+      <div><span id="device-name">No phone</span><small id="device-detail">Not paired</small></div>
     </div>
+    <div class="sidebar-foot">by DeoneAI</div>
   </aside>
 
   <main>
     <header class="topbar">
-      <div class="breadcrumbs">Workspace <span>/</span> <strong id="crumb">Live acquisition</strong></div>
+      <div class="breadcrumbs"><strong id="crumb">Live</strong></div>
       <div class="top-actions">
-        <span class="connection-pill" id="collector-status" role="status"><i></i><span>Collector offline</span></span>
-        <button class="icon-button" id="theme-btn" aria-label="Switch light or dark theme" title="Theme">◐</button>
-        <button class="button secondary small" id="settings-btn">📱 <span class="settings-label">Connect phone</span></button>
+        <span class="status-text" id="collector-status" role="status"><i></i><span>Collector offline</span></span>
+        <button class="icon-button" id="theme-btn" aria-label="Switch theme" title="Switch theme"><svg class="icon"><use href="#i-theme"/></svg></button>
+        <button class="button secondary small" id="settings-btn"><svg class="icon"><use href="#i-phone"/></svg><span class="settings-label">Connect phone</span></button>
       </div>
     </header>
 
     <!-- ============================================================ LIVE -->
     <section id="live-page" class="page" aria-labelledby="live-title">
       <div class="page-heading">
-        <div>
-          <div class="eyebrow accent">Live acquisition</div>
-          <h1 id="live-title">Every signal. One timeline.</h1>
-          <p>Your phone is the sensor. Your PC is the lab.</p>
+        <h1 id="live-title">Live</h1>
+        <button class="button primary small" id="new-session"><svg class="icon"><use href="#i-plus"/></svg>New session</button>
+      </div>
+
+      <div class="panel stats">
+        <div class="session-line">
+          <span class="dot" id="session-dot"></span>
+          <strong id="session-name">No active session</strong>
+          <span class="mono muted" id="session-id"></span>
+          <span class="mono session-time" id="session-duration">00:00</span>
         </div>
-        <button class="button primary" id="new-session">＋ New session</button>
-      </div>
-
-      <div class="session-bar">
-        <div><span class="dot" id="session-dot"></span><strong id="session-name">Ready for your first session</strong><span class="mono muted" id="session-id">—</span></div>
-        <div class="mono" id="session-duration">00:00</div>
-      </div>
-
-      <div class="metrics-grid">
-        <article class="metric"><div class="metric-label">Video</div><div class="metric-value"><span id="fps">—</span><small>fps</small></div><div class="metric-foot">Received &amp; saved frames</div></article>
-        <article class="metric"><div class="metric-label">Accelerometer</div><div class="metric-value"><span id="hz">—</span><small>Hz</small></div><div class="metric-foot">Measured from phone timestamps</div></article>
-        <article class="metric"><div class="metric-label">Latency · p95</div><div class="metric-value"><span id="latency">—</span><small>ms</small></div><div class="metric-foot">Clock-corrected browser estimate</div></article>
-        <article class="metric"><div class="metric-label">Sequence gaps</div><div class="metric-value"><span id="gaps">—</span><small>events</small></div><div class="metric-foot"><span id="dropped">0</span> frames skipped on phone</div></article>
+        <dl class="stat-row">
+          <div><dt>Video</dt><dd><span id="fps">—</span> <small>fps</small></dd></div>
+          <div><dt>Accelerometer</dt><dd><span id="hz">—</span> <small>Hz</small></dd></div>
+          <div><dt>Latency p95</dt><dd><span id="latency">—</span> <small>ms</small></dd></div>
+          <div><dt>Sequence gaps</dt><dd><span id="gaps">—</span> <small><span id="dropped">0</span> skipped</small></dd></div>
+        </dl>
       </div>
 
       <div class="split-grid">
-        <article class="panel camera-panel">
-          <div class="panel-heading"><h2>Camera feed</h2><span class="tag" id="camera-format">RGB / REAR CAMERA</span></div>
+        <section class="panel camera-panel" aria-labelledby="camera-title">
+          <div class="panel-heading"><h2 id="camera-title">Camera</h2><span class="mono muted small" id="camera-format"></span></div>
           <div class="camera-stage">
             <img id="live-image" alt="Latest phone camera frame" hidden>
-            <div class="viewfinder" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
             <div class="camera-empty" id="camera-empty">
-              <div class="camera-symbol" aria-hidden="true">▣</div>
-              <h3>No frames yet</h3>
-              <p>Pair your phone to begin streaming.<br>Frames appear here as they reach your PC.</p>
-              <button class="button secondary" id="pair-shortcut">Connect a device ↗</button>
+              <p>No frames yet</p>
+              <button class="button secondary small" id="pair-shortcut">Create session</button>
             </div>
-            <div class="feed-top"><span class="feed-badge" id="feed-status">● AWAITING DEVICE</span><span class="feed-badge mono" id="frame-number">FRAME —</span></div>
-            <div class="feed-bottom"><span class="mono" id="frame-time">NO SIGNAL</span><span class="mono" id="frame-size">— × —</span></div>
+            <div class="feed-top"><span class="feed-badge" id="feed-status">Waiting for phone</span><span class="feed-badge mono" id="frame-number">—</span></div>
+            <div class="feed-bottom"><span class="mono" id="frame-time"></span><span class="mono" id="frame-size"></span></div>
           </div>
           <div class="camera-controls">
-            <span><i class="dot" id="record-dot"></i><span id="record-label">Nothing recording</span></span>
+            <span><i class="dot" id="record-dot"></i><span id="record-label">Not recording</span></span>
             <div>
-              <button class="button secondary small" id="replay-current" disabled>▷ Replay</button>
-              <button class="button danger small" id="stop-session" disabled>■ Stop &amp; save</button>
+              <button class="button secondary small" id="replay-current" disabled>Replay</button>
+              <button class="button danger small" id="stop-session" disabled>Stop &amp; save</button>
             </div>
           </div>
-        </article>
+        </section>
 
-        <article class="panel pairing-panel">
-          <div class="panel-heading"><h2>Device link</h2><span class="tag" id="connection-mode-tag">Not paired</span></div>
+        <section class="panel pairing-panel" aria-labelledby="phone-title">
+          <div class="panel-heading"><h2 id="phone-title">Phone</h2><span class="tag" id="connection-mode-tag">Not paired</span></div>
           <div class="pairing-body" id="pairing-empty">
-            <div class="pair-art" aria-hidden="true"><div class="phone-shape"><span>↗</span></div><div class="pair-orbit"></div></div>
-            <h3>Connect. Capture. Explore.</h3>
-            <p>One link turns your phone into a portable sensor rig.</p>
-            <button class="button primary full" id="pair-create">Create pairing link ↗</button>
+            <p>Create a session to get a QR code for the phone.</p>
+            <button class="button secondary small" id="pair-create">Create session</button>
           </div>
           <div class="pairing-body" id="pairing-ready" hidden>
             <div class="qr-wrap" id="qr-wrap"></div>
-            <h3>Open on your phone</h3>
-            <p>Scan the code or share the link. Keep the phone page open while recording.</p>
-            <div class="link-box"><input id="phone-link" readonly aria-label="Phone pairing link"><button id="copy-link" aria-label="Copy pairing link" title="Copy">⧉</button></div>
-            <button class="button secondary full" id="share-link">Share link ↗</button>
-            <p class="small muted">The link grants upload access to this session only. Share it only with your capture device.</p>
+            <p>Scan with the phone camera. Keep the page open while recording.</p>
+            <div class="link-box"><input id="phone-link" readonly aria-label="Phone link"><button id="copy-link" aria-label="Copy link" title="Copy link"><svg class="icon"><use href="#i-copy"/></svg></button></div>
+            <button class="button secondary small" id="share-link">Share link</button>
           </div>
-          <ol class="connection-steps">
-            <li id="step-server">PC collector online</li>
+          <ul class="checklist">
+            <li id="step-server">Collector</li>
             <li id="step-phone">Phone connected</li>
-            <li id="step-stream">Receiving sensor data</li>
-          </ol>
-        </article>
+            <li id="step-stream">Receiving data</li>
+          </ul>
+        </section>
       </div>
 
       <div class="split-grid">
-        <article class="panel telemetry-panel">
+        <section class="panel telemetry-panel" aria-labelledby="imu-title">
           <div class="panel-heading">
-            <h2>Inertial telemetry</h2>
+            <h2 id="imu-title">Motion</h2>
             <div class="segmented" role="group" aria-label="Sensor">
               <button class="active" data-sensor="accelerometer">Accelerometer</button>
               <button data-sensor="gyroscope">Gyroscope</button>
@@ -127,70 +133,57 @@
           </div>
           <div class="chart-title">
             <strong id="sensor-unit">m/s² <span>including gravity</span></strong>
-            <div class="legend"><span class="x">● X</span><span class="y">● Y</span><span class="z">● Z</span></div>
+            <div class="legend"><span class="x">X</span><span class="y">Y</span><span class="z">Z</span></div>
           </div>
-          <div class="chart-wrap"><canvas id="imu-chart" aria-label="Live sensor traces for X, Y and Z"></canvas><div id="chart-empty">Waiting for real sensor measurements</div></div>
-          <div class="axis-values"><span>X <b id="axis-x">—</b></span><span>Y <b id="axis-y">—</b></span><span>Z <b id="axis-z">—</b></span><span id="sensor-status" class="muted">No samples received</span></div>
-        </article>
+          <div class="chart-wrap"><canvas id="imu-chart" aria-label="Live X, Y and Z sensor traces"></canvas><div id="chart-empty">No samples</div></div>
+          <div class="axis-values"><span>X <b id="axis-x">—</b></span><span>Y <b id="axis-y">—</b></span><span>Z <b id="axis-z">—</b></span><span id="sensor-status" class="muted"></span></div>
+        </section>
 
-        <article class="panel clock-panel">
-          <div class="panel-heading"><h2>Time alignment</h2><span class="tag" id="sync-tag">UNSYNCED</span></div>
+        <section class="panel clock-panel" aria-labelledby="clock-title">
+          <div class="panel-heading"><h2 id="clock-title">Clock</h2><span class="tag" id="sync-tag">Unsynced</span></div>
           <dl class="kv">
-            <div><dt>Clock offset</dt><dd id="clock-offset">— ms</dd></div>
-            <div><dt>Round-trip time</dt><dd id="clock-rtt">— ms</dd></div>
-            <div><dt>Offset uncertainty</dt><dd id="clock-error">— ms</dd></div>
-            <div><dt>Offset drift</dt><dd id="clock-drift">— ppm</dd></div>
-            <div><dt>Frame ↔ IMU</dt><dd>Nearest · ≤100 ms</dd></div>
+            <div><dt>Offset</dt><dd id="clock-offset">— ms</dd></div>
+            <div><dt>Round trip</dt><dd id="clock-rtt">— ms</dd></div>
+            <div><dt>Uncertainty</dt><dd id="clock-error">— ms</dd></div>
+            <div><dt>Drift</dt><dd id="clock-drift">— ppm</dd></div>
+            <div><dt>Frame ↔ IMU</dt><dd>nearest ≤100 ms</dd></div>
           </dl>
-          <div class="note">One phone monotonic clock. Offset is estimated over HTTPS; camera timestamps may be composition estimates.</div>
-        </article>
+        </section>
       </div>
 
-      <article class="panel">
-        <div class="panel-heading"><h2>Device sensor inventory</h2><span class="tag" id="device-route">NOT PAIRED</span></div>
-        <p class="panel-text">Portrait phone axes: +X right, +Y top, +Z out of screen. GNSS uses WGS84. Browser IMU does not expose hardware accuracy.</p>
+      <section class="panel" aria-labelledby="inventory-title">
+        <div class="panel-heading"><h2 id="inventory-title">Sensors</h2><span class="mono muted small" id="device-route"></span></div>
         <div class="table-scroll">
           <table>
-            <thead><tr><th>Sensor / unit</th><th>Preflight</th><th class="num">Received Hz</th><th class="num">Samples</th><th class="num">Sequence gaps</th></tr></thead>
-            <tbody id="sensor-inventory-rows"><tr><td colspan="5">Run Check sensors on the phone before capture.</td></tr></tbody>
+            <thead><tr><th>Sensor</th><th>Check</th><th class="num">Hz</th><th class="num">Samples</th><th class="num">Gaps</th></tr></thead>
+            <tbody id="sensor-inventory-rows"><tr><td colspan="5" class="muted">Run “Check sensors” on the phone.</td></tr></tbody>
           </table>
         </div>
-        <p class="panel-text small" id="sample-drop-summary">Phone buffer drops: 0</p>
-        <p class="panel-text small" id="gnss-latest">GNSS is optional and requires location permission.</p>
-      </article>
-
-      <footer class="page-footer"><span>Built for observation and reproducible research. Not a driving or safety system.</span><span>ACQUIRE → SYNC → RECORD → REPLAY</span></footer>
+        <p class="panel-text small muted"><span id="sample-drop-summary">Phone buffer drops: 0</span> · <span id="gnss-latest">GNSS optional</span></p>
+      </section>
     </section>
 
     <!-- ============================================================ SESSIONS -->
     <section id="sessions-page" class="page" hidden aria-labelledby="sessions-title">
       <div class="page-heading">
-        <div>
-          <div class="eyebrow accent">Stored on this PC</div>
-          <h1 id="sessions-title">Signals worth keeping.</h1>
-          <p id="library-count">Timestamped sessions, ready to inspect and replay.</p>
-        </div>
-        <button class="button secondary" id="refresh-sessions">↻ Refresh</button>
+        <div><h1 id="sessions-title">Sessions</h1><p id="library-count" class="muted">Stored on this PC</p></div>
+        <button class="button secondary small" id="refresh-sessions">Refresh</button>
       </div>
       <div class="panel">
         <div class="table-scroll">
           <table>
-            <thead><tr><th>Session</th><th>Recorded</th><th>Status</th><th class="num">Frames</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Name</th><th>Recorded</th><th>Status</th><th class="num">Frames</th><th></th></tr></thead>
             <tbody id="session-rows"></tbody>
           </table>
         </div>
-        <div id="library-empty" class="empty-state"><h3>No sessions yet</h3><p>Connect the collector and record a session to build your dataset.</p></div>
+        <div id="library-empty" class="empty-state">No sessions yet.</div>
       </div>
     </section>
 
     <!-- ============================================================ PROJECT -->
     <section id="project-page" class="page" hidden aria-labelledby="project-title">
       <div class="page-heading">
-        <div>
-          <div class="eyebrow accent">Roadmap · 4 weeks</div>
-          <h1 id="project-title">Where Tepegoz stands.</h1>
-          <p id="project-updated">Loading…</p>
-        </div>
+        <div><h1 id="project-title">Project</h1><p id="project-updated" class="muted">Loading…</p></div>
       </div>
       <div class="progress-row">
         <span id="checklist-summary">—</span>
@@ -198,126 +191,122 @@
       </div>
       <div class="milestones" id="milestones"></div>
       <div class="split-grid">
-        <article class="panel">
-          <div class="panel-heading"><h2>Model-only inference benchmark</h2><span class="tag">MEASURED</span></div>
+        <section class="panel" aria-labelledby="bench-title">
+          <div class="panel-heading"><h2 id="bench-title">Inference benchmark</h2><span class="muted small">model only</span></div>
           <div class="table-scroll"><table class="compact"><thead id="bench-head"></thead><tbody id="bench-rows"></tbody></table></div>
-          <p class="panel-text small" id="bench-note"></p>
-        </article>
-        <article class="panel">
-          <div class="panel-heading"><h2>Next priorities</h2></div>
+          <p class="panel-text small muted" id="bench-note"></p>
+        </section>
+        <section class="panel" aria-labelledby="next-title">
+          <div class="panel-heading"><h2 id="next-title">Next</h2></div>
           <ol class="next-list" id="next-steps"></ol>
-        </article>
+        </section>
       </div>
-      <article class="panel protocol">
-        <h2>Decisions so far</h2>
+      <section class="panel protocol" aria-labelledby="decisions-title">
+        <h2 id="decisions-title">Decisions</h2>
         <dl id="decisions"></dl>
-      </article>
+      </section>
     </section>
 
-    <!-- ============================================================ GUIDE -->
+    <!-- ============================================================ SETUP -->
     <section id="guide-page" class="page" hidden aria-labelledby="guide-title">
-      <div class="page-heading">
-        <div>
-          <div class="eyebrow accent">Quick start</div>
-          <h1 id="guide-title">Three steps to your first recording.</h1>
-          <p>No accounts, no configuration files.</p>
-        </div>
-      </div>
+      <div class="page-heading"><h1 id="guide-title">Setup</h1></div>
       <ol class="steps-flow">
-        <li><b>1</b><div><h3>Start the collector on your PC</h3><p>In the project folder run <code>npm start</code>. It prints one link: open it and you are signed in.</p></div></li>
-        <li><b>2</b><div><h3>Choose how the phone connects</h3><p><strong>Wi-Fi</strong> (any network, a secure link is created for you) or <strong>USB cable</strong> (Android).</p></div></li>
-        <li><b>3</b><div><h3>Scan and record</h3><p>Create a session, scan the QR code with the phone, tap <em>Check sensors</em>, then <em>Start capture</em>.</p></div></li>
+        <li><b>1</b><div><h3>Start the collector</h3><p>Run <code>npm start</code> in the project folder, then open <code>http://localhost:8787</code> on the same PC.</p></div></li>
+        <li><b>2</b><div><h3>Connect the phone</h3><p><strong>Wi-Fi</strong> works on any network through a temporary HTTPS link. <strong>USB</strong> is Android-only and the most stable.</p></div></li>
+        <li><b>3</b><div><h3>Record</h3><p>New session, scan the QR code, <em>Check sensors</em>, <em>Start capture</em>. Stop &amp; save when done.</p></div></li>
       </ol>
-      <div class="guide-grid">
-        <article class="panel guide-card"><span class="guide-number">Where is my data?</span><h2>On your PC, always</h2><p>Every session is a folder in <code>data/</code>: JPEG frames, IMU CSV, telemetry, clock estimates and a manifest. A local SQLite index makes the library fast; an optional Supabase mirror shares the session list with your team.</p></article>
-        <article class="panel guide-card"><span class="guide-number">Why a secure link?</span><h2>Phones require HTTPS</h2><p>Browsers only give camera and motion sensors to secure pages. The Wi-Fi option uses a free Cloudflare quick tunnel (install once: <code>winget install Cloudflare.cloudflared</code>). USB avoids it because the phone talks to its own localhost.</p></article>
-      </div>
-      <div class="panel protocol">
-        <h2>Acquisition contract</h2>
+      <section class="panel protocol" aria-labelledby="contract-title">
+        <h2 id="contract-title">Reference</h2>
         <dl>
-          <div><dt>Transport</dt><dd>HTTPS POST: timestamped JPEG frames plus batched telemetry. Bounded queue; overload skips are counted.</dd></div>
-          <div><dt>Coordinates</dt><dd>Phone portrait +X right, +Y top, +Z out of screen. Vehicle and camera extrinsics are uncalibrated.</dd></div>
-          <div><dt>Angular velocity</dt><dd>Browser rotation rate converted from deg/s to rad/s: X←beta, Y←gamma, Z←alpha.</dd></div>
-          <div><dt>Timing</dt><dd>Decimal nanosecond fields encode browser monotonic time. Nanosecond units do not imply nanosecond precision.</dd></div>
-          <div><dt>Calibration</dt><dd>No intrinsics or distortion calibration is claimed. Native Camera2/SensorManager is the next step for precise hardware timing.</dd></div>
-          <div><dt>Week 1 gate</dt><dd>Every frame timestamped; real accelerometer + gyroscope available and alignable; measured 2-minute recording, replay and stress report. The hardware gate stays unverified until tested on your phone.</dd></div>
+          <div><dt>Storage</dt><dd>Each session is a folder in <code>data/</code> (JPEG frames, IMU CSV, telemetry, clock estimates, manifest), indexed in <code>data/sessions.sqlite</code>. Supabase mirroring of the session list is optional.</dd></div>
+          <div><dt>Access</dt><dd>On this PC no token is needed. A remote dashboard needs the collector token: run <code>npm run token</code>.</dd></div>
+          <div><dt>Wi-Fi link</dt><dd>Phones only expose camera and motion sensors on HTTPS pages. The collector opens a Cloudflare quick tunnel; install once with <code>winget install --id Cloudflare.cloudflared</code>.</dd></div>
+          <div><dt>USB</dt><dd>Needs Android Platform-Tools and USB debugging. The phone reaches the collector at its own localhost through <code>adb reverse</code>.</dd></div>
+          <div><dt>Axes and units</dt><dd>Phone portrait: +X right, +Y top, +Z out of screen. Accelerometer m/s² including gravity; gyroscope rad/s.</dd></div>
+          <div><dt>Timing</dt><dd>Browser monotonic time serialized as nanoseconds; the unit does not imply nanosecond precision.</dd></div>
+          <div><dt>Calibration</dt><dd>None claimed. Camera intrinsics and mount transform are uncalibrated.</dd></div>
         </dl>
-      </div>
+      </section>
     </section>
   </main>
 
   <!-- ============================================================ DIALOGS -->
   <dialog id="settings-dialog" aria-labelledby="settings-title">
     <form id="connection-form">
-      <div class="dialog-top"><div class="eyebrow">Step 2 of 3</div><button type="button" class="icon-button" data-close aria-label="Close">×</button></div>
-      <h2 id="settings-title">How should your phone connect?</h2>
-      <p>Your recordings are saved on this PC. Pick the way your phone reaches it.</p>
-
-      <div id="local-setup">
-        <div class="signed-in" id="signed-in">✓ This PC's collector is connected</div>
-        <label id="token-field">Collector token
-          <input id="server-token" type="password" placeholder="Open the sign-in link from the terminal, or paste the token" autocomplete="off">
-        </label>
-
-        <div class="route-cards" role="radiogroup" aria-label="Phone connection">
-          <label class="route-card"><input type="radio" name="route" value="wifi" id="route-wifi" checked>
-            <em aria-hidden="true">📶</em><strong>Wi-Fi or mobile data</strong><span>Easiest. Works on any network through a secure link.</span></label>
-          <label class="route-card"><input type="radio" name="route" value="usb" id="route-usb">
-            <em aria-hidden="true">🔌</em><strong>USB cable</strong><span>Android only. Most stable for long recordings.</span></label>
+      <header class="dialog-head">
+        <h2 id="settings-title">Connect phone</h2>
+        <button type="button" class="icon-button ghost" data-close aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button>
+      </header>
+      <div class="dialog-body">
+        <div id="local-setup">
+          <p class="status-line" id="signed-in"><i class="dot online"></i>Collector running on this PC</p>
+          <div class="field">
+            <span class="field-label">Connection</span>
+            <div class="seg-control" role="radiogroup" aria-label="Connection">
+              <label><input type="radio" name="route" value="wifi" id="route-wifi" checked><span>Wi-Fi</span></label>
+              <label><input type="radio" name="route" value="usb" id="route-usb"><span>USB · Android</span></label>
+            </div>
+          </div>
+          <div class="route-panel" id="wifi-setup">
+            <p>Opens a temporary HTTPS link to this PC. Works on any network.</p>
+            <div class="route-row"><span class="route-status" id="tunnel-status" role="status">Not started</span><button type="button" class="button secondary small" id="tunnel-start">Start link</button></div>
+          </div>
+          <div class="route-panel" id="usb-setup" hidden>
+            <p>Plug in the phone and turn on USB debugging (Developer options).</p>
+            <div class="route-row">
+              <select id="usb-device" aria-label="Phone"><option value="">No phone found</option></select>
+              <button type="button" class="button secondary small" id="usb-check">Find</button>
+            </div>
+            <span class="route-status" id="usb-status" role="status">Requires Android Platform-Tools.</span>
+          </div>
         </div>
-
-        <div class="route-panel" id="wifi-setup">
-          <p>Tepegoz opens a temporary secure (HTTPS) link to this PC. Phones only allow camera and motion sensors on secure pages.</p>
-          <button type="button" class="button secondary small" id="tunnel-start">Start secure link now</button>
-          <div class="route-status" id="tunnel-status" role="status">Starts automatically when you continue.</div>
-        </div>
-
-        <div class="route-panel" id="usb-setup" hidden>
-          <ol>
-            <li>Plug the phone into this PC with a USB data cable.</li>
-            <li>On the phone: Developer options → USB debugging → On, then tap Allow.</li>
-          </ol>
-          <button type="button" class="button secondary small" id="usb-check">Find my phone</button>
-          <label>Phone<select id="usb-device"><option value="">Click "Find my phone" first</option></select></label>
-          <div class="route-status" id="usb-status" role="status">Needs Android Platform-Tools (ADB) on this PC.</div>
-        </div>
+        <details class="advanced" id="remote-setup">
+          <summary>Remote dashboard</summary>
+          <p class="small muted">Only for the hosted copy. Get the token with <code>npm run token</code> on the PC; the collector must list this site in ALLOWED_ORIGINS.</p>
+          <label>Collector address<input id="server-url" placeholder="https://….trycloudflare.com" type="url"></label>
+          <label>Collector token<input id="remote-token" type="password" autocomplete="off"></label>
+        </details>
+        <div id="connection-error" class="form-error" role="alert"></div>
       </div>
-
-      <details class="advanced" id="remote-setup">
-        <summary>Advanced: use this dashboard from another computer</summary>
-        <p class="small muted">Only needed for the online (Vercel) copy of the dashboard. The collector must allow that site in ALLOWED_ORIGINS.</p>
-        <label>Collector address<input id="server-url" placeholder="https://your-link.trycloudflare.com" type="url"></label>
-        <label>Collector token<input id="remote-token" type="password" placeholder="From the PC terminal" autocomplete="off"></label>
-      </details>
-
-      <div id="connection-error" class="form-error" role="alert"></div>
-      <button class="button primary full" type="submit">Continue <span>→</span></button>
+      <footer class="dialog-foot">
+        <button type="button" class="button secondary small" data-close>Cancel</button>
+        <button type="submit" class="button primary small">Connect</button>
+      </footer>
     </form>
   </dialog>
 
   <dialog id="create-dialog" aria-labelledby="create-title">
     <form id="create-form">
-      <div class="dialog-top"><div class="eyebrow">Step 3 of 3</div><button type="button" class="icon-button" data-close aria-label="Close">×</button></div>
-      <h2 id="create-title">Name this recording</h2>
-      <p>A session accepts data after phone preflight and Start capture. USB links need the cable and ADB mapping to stay connected.</p>
-      <label>Session name<input id="new-name" value="Stationary test" maxlength="80" required></label>
-      <div class="note">Start with a stationary test, then a handheld walking sequence. Record road-facing video only as a passenger.</div>
-      <button type="submit" class="button primary full">Create session →</button>
+      <header class="dialog-head">
+        <h2 id="create-title">New session</h2>
+        <button type="button" class="icon-button ghost" data-close aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button>
+      </header>
+      <div class="dialog-body">
+        <label>Name<input id="new-name" value="Stationary test" maxlength="80" required></label>
+        <p class="small muted">Record road-facing video only as a passenger.</p>
+      </div>
+      <footer class="dialog-foot">
+        <button type="button" class="button secondary small" data-close>Cancel</button>
+        <button type="submit" class="button primary small">Create</button>
+      </footer>
     </form>
   </dialog>
 
   <dialog id="replay-dialog" class="wide" aria-labelledby="replay-name">
-    <div class="dialog-top"><div class="eyebrow">Replay</div><button type="button" class="icon-button" data-close aria-label="Close">×</button></div>
-    <h2 id="replay-name">Session replay</h2>
-    <div class="replay-stage"><img id="replay-image" alt="Recorded phone camera frame"><div id="replay-loading">Loading recorded session…</div></div>
-    <div class="replay-controls">
-      <button class="button primary small" id="play-replay">▷ Play</button>
-      <input type="range" id="replay-range" min="0" max="0" value="0" aria-label="Replay frame">
-      <span class="mono small" id="replay-position">0 / 0</span>
-      <select id="replay-speed" aria-label="Playback speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select>
+    <header class="dialog-head">
+      <h2 id="replay-name">Replay</h2>
+      <button type="button" class="icon-button ghost" data-close aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button>
+    </header>
+    <div class="dialog-body">
+      <div class="replay-stage"><img id="replay-image" alt="Recorded frame"><div id="replay-loading">Loading…</div></div>
+      <div class="replay-controls">
+        <button class="button secondary small" id="play-replay">Play</button>
+        <input type="range" id="replay-range" min="0" max="0" value="0" aria-label="Frame">
+        <span class="mono small muted" id="replay-position">0 / 0</span>
+        <select id="replay-speed" aria-label="Speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select>
+      </div>
+      <div class="mono replay-meta" id="replay-meta"></div>
     </div>
-    <div class="mono replay-meta" id="replay-meta"></div>
-    <p class="small muted">Nearest IMU sample in the original phone clock. Missing samples remain missing. Copy the full session folder from your PC for offline analysis.</p>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

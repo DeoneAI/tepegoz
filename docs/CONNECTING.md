@@ -32,8 +32,7 @@ sequenceDiagram
     participant Dash as Dashboard (PC browser)
     participant Phone
     You->>PC: npm start
-    PC-->>You: prints http://localhost:8787/#token=…
-    You->>Dash: open that link (signed in automatically)
+    You->>Dash: open http://localhost:8787 (no token on this PC)
     You->>Dash: Connect phone → choose Wi-Fi or USB
     alt Wi-Fi
         Dash->>PC: start secure link
@@ -71,7 +70,7 @@ flowchart TD
 
 | Before | Now |
 |---|---|
-| Copy a 64-character token into a form | Open the sign-in link the collector prints |
+| Copy a 64-character token into a form | Nothing: the dashboard on the PC is trusted (remote dashboards: `npm run token`) |
 | Run `cloudflared` in a second terminal and paste its URL | The dashboard starts the secure link (or `npm run start:wifi`) |
 | Add the Vercel site to `ALLOWED_ORIGINS` and restart | Not needed: the phone page comes from the collector through the link |
 | Use the Vercel site | Optional, only to view the dashboard from another computer (Advanced in the dialog) |

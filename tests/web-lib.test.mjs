@@ -10,7 +10,7 @@ import { deviceLabel } from '../web/js/dashboard/live.js';
 
 test('format helpers never print NaN or Infinity', () => {
   assert.equal(fmt(NaN), '—'); assert.equal(fmt(Infinity), '—'); assert.equal(fmt('3'), '—'); assert.equal(fmt(1.234, 2), '1.23');
-  assert.equal(duration(125.9), '02:05'); assert.equal(duration(undefined), '00:00'); assert.equal(frameLabel(42), 'FRAME 000042');
+  assert.equal(duration(125.9), '02:05'); assert.equal(duration(undefined), '00:00'); assert.equal(frameLabel(42), '#000042');
 });
 
 test('collector origin must be HTTPS except localhost, and bare', () => {

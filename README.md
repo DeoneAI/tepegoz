@@ -27,7 +27,7 @@ Tepegoz contains the **Sensorlink acquisition prototype** plus offline PC lanes,
 
 ## Quick start
 
-Acquisition requires **Node.js 22.13+** and a phone browser. Offline perception/estimation requires **Python 3.10+** (below). The collector has no npm dependencies. **Step-by-step guide with diagrams: [docs/CONNECTING.md](docs/CONNECTING.md).**
+Acquisition requires **Node.js 22.13+** and a phone browser. Offline perception/estimation requires **Python 3.10+** (below). The collector has no npm dependencies. **Start here: [HOW_TO_USE.md](HOW_TO_USE.md).** Technical details: [docs/CONNECTING.md](docs/CONNECTING.md).
 
 ```bash
 git clone https://github.com/DeoneAI/tepegoz.git
@@ -35,7 +35,7 @@ cd tepegoz
 npm start
 ```
 
-1. Open the link the collector prints (`http://localhost:8787/#token=…`). It signs you in; there is nothing to copy.
+1. Open **http://localhost:8787** on the same PC. No token is needed there.
 2. Click **Connect phone** and pick **Wi-Fi or mobile data** (the collector opens a secure link for you; needs `winget install --id Cloudflare.cloudflared` once) or **USB cable** (Android, needs Platform-Tools).
 3. **New session** → scan the QR code with the phone → **Check sensors** → **Start capture**.
 4. Stop on the phone, then **Stop & save** on the PC. **Session library → Replay** to inspect.

@@ -14,13 +14,12 @@
 <body class="phone-body">
   <main class="phone-shell">
     <header class="phone-top">
-      <a href="/" class="brand"><img src="/deoneai-mark.svg" width="26" height="26" alt=""><span class="brand-name">Tepegoz</span></a>
+      <a href="/" class="brand" aria-label="Tepegoz"><svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M5 32C14 18.5 22.5 12 32 12C41.5 12 50 18.5 59 32C50 45.5 41.5 52 32 52C22.5 52 14 45.5 5 32Z" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linejoin="round"/><circle cx="32" cy="32" r="10.5" class="brand-iris"/></svg><span class="brand-name">Tepegoz</span></a>
       <span class="tag accent" id="paired-session">NOT PAIRED</span>
     </header>
 
     <section class="phone-hero">
-      <div class="eyebrow accent">Phone capture</div>
-      <h1>Your phone is the sensor.</h1>
+      <h1>Phone capture</h1>
       <p>Camera and motion data go straight to your PC collector. Nothing is stored on this phone.</p>
     </section>
 
@@ -53,12 +52,12 @@
 
     <ol class="phone-steps">
       <li>
-        <button class="button secondary full" id="check-sensors">1 · Check sensors</button>
+        <button class="button secondary full" id="check-sensors">Check sensors</button>
         <p>A short motion test checks browser access. It cannot prove a physical sensor is absent. Camera and location are not recorded during this check.</p>
       </li>
       <li>
-        <button class="button primary full" id="start-capture">2 · Start capture <span>↗</span></button>
-        <button class="button danger full" id="stop-capture" hidden>■ Stop capture on this phone</button>
+        <button class="button primary full" id="start-capture">Start capture</button>
+        <button class="button danger full" id="stop-capture" hidden>Stop capture</button>
       </li>
     </ol>
 
@@ -71,7 +70,7 @@
   <dialog id="sensor-dialog" aria-labelledby="sensor-dialog-title">
     <div class="dialog-top">
       <div class="eyebrow">Sensor check</div>
-      <button type="button" class="icon-button" data-close aria-label="Close">×</button>
+      <button type="button" class="icon-button ghost" data-close aria-label="Close">×</button>
     </div>
     <h2 id="sensor-dialog-title">Sensor check</h2>
     <ul class="sensor-list" id="sensor-check-results"></ul>
