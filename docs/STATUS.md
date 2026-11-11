@@ -17,7 +17,7 @@ Current milestone: **Weeks 2–3 PC baselines implemented with public-data evide
 
 ## Latest completed work
 
-- [x] Accept the Weeks 1–3 branch and fix lane rendering: suppress all lane geometry below confidence 0.4 and show the image-space/uncalibrated offset indicator only with valid geometry at confidence 0.6 or above. Verify **23 Node + 44 Python tests**, static build and a 20-frame real-model smoke run; reopen the Day 7 quality item with a [review protocol](LANE-QUALITY.md).
+- [x] Accept the Weeks 1–3 branch and fix lane rendering: suppress all lane geometry below confidence 0.4 and show the image-space/uncalibrated offset indicator only with valid geometry at confidence 0.6 or above. Verify **23 Node + 44 Python tests**, static build and a 20-frame real-model smoke run; reopen the Day 7 quality item with a review protocol.
 - [x] Implement and execute lanes, six-class detection/tracking, two depth models and per-track associations with explicit units, confidence and stale flags.
 - [x] Benchmark 15 matched road cases serially; save model/code hashes, independent indexed logs, raw depth maps and overlays. Document qualitative day/night/snow failures and the small labeled COCO detector comparison.
 - [x] Implement scalar/2D Joseph-form Kalman filtering and mathematical exercises, variable dt/missing/outlier/turning cases, covariance plots and checked nonlinear Jacobian.
@@ -28,26 +28,26 @@ Current milestone: **Weeks 2–3 PC baselines implemented with public-data evide
 - [x] Fix the final JPEG Stop race as well as telemetry draining. Verify **23 Node + 40 Python tests**, the static build and source-provenance checks; actual model/Docker demonstrations are separate from fixture tests.
 - [x] Bound archive downloads before body consumption, test ignored/oversized ranges, and verify the streamed implementation against the public ZIP endpoint.
 - [x] Re-audit the original PDF through Day 15; add the missing 240-step scalar noisy-observation experiment/CSV, mark the assumed quiet interval on real IMU plots, and distinguish semantic/instance/lane/detection tasks in the glossary. See the [requirement evidence audit](reports/THROUGH-WEEK-3-AUDIT.md).
-- [x] Add the [checkerboard calibration workflow](CALIBRATION.md), including held-out views, duplicate/size checks, corner previews, lens correction preview and residual diagnostics. Execute it on 13 public images; keep phone/mount calibration unclaimed.
+- [x] Add the checkerboard calibration workflow, including held-out views, duplicate/size checks, corner previews, lens correction preview and residual diagnostics. Execute it on 13 public images; keep phone/mount calibration unclaimed.
 - [x] Prepare the [coworker handoff](handoff/START-HERE.md), three week guides and an evidence template. Recreate ignored local dependencies/assets, and leave branch/commit/push operations to the repository owner. Explicitly identify the remaining phone orientation/export and image/calibration preparation tasks.
 - [x] Review project architecture and compare the attached assignment with the repository PDF. All 11 pages have identical extracted text.
 - [x] Fix phone Stop to await active telemetry uploads and drain queued samples.
 - [x] Keep unsent telemetry visible and offer bounded retries before PC finalization.
 - [x] Commit collector sequence counters and sample metrics after successful storage; roll back failed log appends and attempt failed-frame cleanup.
 - [x] Reject further session mutations and completed-session claims when log rollback fails.
-- [x] Add the [phone/body, camera, vehicle and world diagram](FRAMES-AND-TIMING.md) with transform notation and gravity direction.
+- [x] Add the phone/body, camera, vehicle and world diagram with transform notation and gravity direction.
 - [x] Implement finalized-session analysis with alignment CSV/JSON and shared-time video/gyro/acceleration plots. Real-device timeline evidence remains pending.
 
 ## Next work
 
 | Priority | Task | Required evidence / dependency |
 |---|---|---|
-| 1 | Complete Day 7 temporal/day-night lane-quality review | Scoped frame-level review, continuity/missing/false-marking findings and indexed overlays following the [protocol](LANE-QUALITY.md); confidence availability alone is insufficient |
+| 1 | Complete Day 7 temporal/day-night lane-quality review | Scoped frame-level review, continuity/missing/false-marking findings and indexed overlays following the protocol; confidence availability alone is insufficient |
 | 1 | Confirm real accelerometer and gyroscope availability | Authorized physical phone; observed readings and measured rates. Evaluate native acquisition if browser gyro is unavailable |
 | 2 | Record and replay a compliant two-minute camera + accelerometer + gyroscope session | Finalized local session, clock log, frame metadata, sensor counts and alignment results |
 | 3 | Compare USB and HTTPS tunnel at matched settings | Physical cable/ADB authorization, sustained FPS/Hz, interruption/recovery results and measured latency definitions |
 | 4 | Apply the working public-data timelines and inference to a phone recording | EuRoC/KITTI analysis and real dataset calibration work; physical phone samples and phone-specific calibration are still needed |
-| 5 | Finish timing, calibration and stress-test evidence | Capture-to-display experiment, calibration results or documented practical limits, and the [acceptance matrix](STRESS-TEST.md) |
+| 5 | Finish timing, calibration and stress-test evidence | Capture-to-display experiment, calibration results or documented practical limits, and the acceptance matrix |
 
 ## Open decisions and dependencies
 

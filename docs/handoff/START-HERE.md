@@ -83,7 +83,7 @@ The handoff baseline has **23 Node tests and 40 Python tests**. With all require
 | `.venv/`, `node_modules/` | Local dependencies; install on your PC |
 | `.env*` | Credentials; do not copy the original developer's files |
 
-Tracked `docs/reports/` contains selected reference metrics/plots, not the full raw experiments. Fetching assets checks the registered byte size/SHA-256. Your timing results may differ; record your own hardware, settings and versions. Keep licensing/attribution from [THIRD-PARTY.md](../THIRD-PARTY.md).
+Tracked `docs/reports/` contains selected reference metrics/plots, not the full raw experiments. Fetching assets checks the registered byte size/SHA-256. Your timing results may differ; record your own hardware, settings and versions. Keep the licensing and attribution of every model and dataset you use.
 
 ## Other devices and the cloud (optional)
 

@@ -1,0 +1,62 @@
+{
+  "script_sha256": "4a319dcd93eb51dcc8de548530d64049a97d059d6bacfc7b87d9794446709979",
+  "host": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "python": "3.14.4",
+    "machine": "AMD64",
+    "logical_cpus": 12,
+    "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "ram_gib": 15.6,
+    "physical_cores": 8,
+    "cpu_name": "Intel(R) Core(TM) 5 210H"
+  },
+  "argv": [
+    "--model",
+    ".tools/models/yolox_nano.onnx",
+    "--model",
+    ".tools/models/yolox_tiny.onnx",
+    "--model",
+    ".tools/models/yolox_tiny.int8-synthcal.onnx",
+    "--model",
+    ".tools/models/yolox_s.onnx",
+    "--model",
+    ".tools/models/yolox_s.int8-synthcal.onnx",
+    "--target",
+    "ort:cpu",
+    "--target",
+    "ov:CPU",
+    "--target",
+    "ov:GPU.0",
+    "--target",
+    "ov:GPU.1",
+    "--threads",
+    "1,2,4,6,8,12,16",
+    "--warmup",
+    "10",
+    "--iterations",
+    "100",
+    "--min-seconds",
+    "3",
+    "--output",
+    ".tools/experiments/bench-ort-ov-002"
+  ],
+  "protocol": {
+    "pattern": "single-stream, batch 1, synchronous",
+    "input": "seeded uniform random (seed 0)",
+    "warmup_runs": 10,
+    "min_iterations": 100,
+    "min_seconds": 3.0,
+    "excluded": [
+      "model download",
+      "image decode",
+      "preprocessing",
+      "postprocessing/NMS",
+      "rendering",
+      "I/O"
+    ],
+    "notes": [
+      "Run serially on an otherwise idle, plugged-in machine",
+      "Model-only FPS is not end-to-end FPS"
+    ]
+  }
+}

@@ -1,9 +1,16 @@
 # How to use Tepegoz
 
-Record your phone's camera and motion sensors on your PC, then replay and analyse them.
+Record your phone's camera and motion sensors, then replay and analyse them.
 
-**You do not need a token, an account, or any configuration.** One program runs on your PC,
-and you use it from your PC's browser.
+**On your own PC you do not need a token, an account, or any configuration.** One program (the *collector*)
+runs on your PC, and you use it from your PC's browser.
+
+| I want to… | Use | Section |
+|---|---|---|
+| Record with my PC next to me (normal use) | PC collector at `http://localhost:8787` | 2 – 4 |
+| Watch a recording from a laptop or another phone | **View from another device → Create link** | 3 |
+| Record without keeping a PC on | Cloud collector on Render (free) | 8 |
+| Understand why the frame rate is low | Speed tips | 9 |
 
 ---
 
@@ -28,7 +35,7 @@ flowchart LR
     B --> C["3 · Connect phone<br/>Wi-Fi or USB"]
     C --> D["4 · New session<br/>QR code appears"]
     D --> E["5 · Phone: scan QR<br/>Check sensors → Start capture"]
-    E --> F["6 · Stop & save<br/>Sessions → Replay"]
+    E --> F["6 · Stop on the phone<br/>(saves automatically)<br/>Sessions → Replay"]
 ```
 
 1. **Start the collector.** In the project folder:
@@ -40,7 +47,9 @@ flowchart LR
 3. **Connect phone** (top-right). Choose **Wi-Fi** or **USB · Android**, then **Connect** (every option is explained in section 3).
 4. **New session.** Give it a name. A QR code appears in the *Phone* panel.
 5. **On the phone:** scan the QR code with the camera, tap **Check sensors**, then **Start capture**. Keep the page open and the screen on.
-6. When done: **Stop capture** on the phone, then **Stop & save** on the PC. Open **Sessions → Replay** to watch it.
+6. When done, press **Stop capture** on the phone. It finishes uploading and then **saves the session by itself**:
+   the dashboard changes from *Recording* to *Saved to PC* a moment later. (**Stop & save** on the dashboard still
+   works if you would rather end it from the PC.) Open **Sessions → Replay** to watch it.
 
 ---
 
@@ -56,7 +65,7 @@ flowchart TD
     W --> C["Connect"]
     U --> C
     C --> N["Window closes →<br/>click New session"]
-    R["View from another device<br/>Create link → QR code"] --> V["Online dashboard opens<br/>already connected"]
+    R["View from another device<br/>Create link → QR code"] --> V["Dashboard opens on that device<br/>already signed in"]
 ```
 
 **① Status line: "Collector running on this PC"**
@@ -182,8 +191,10 @@ sequenceDiagram
         Phone->>PC: frames + motion + clock sync
         PC-->>Dash: live preview and metrics
     end
-    You->>Dash: Stop & save
-    PC->>PC: write data/<session>/ and index it
+    You->>Phone: Stop capture
+    Phone->>PC: last frames and samples, then "save"
+    PC->>PC: finalize data/<session>/ and index it
+    PC-->>Dash: Saved to PC
 ```
 
 ---
@@ -208,6 +219,9 @@ data/
 If the dashboard says **Collector offline**, nothing is lost. The collector simply isn't running;
 start it with `npm start`.
 
+On the **cloud collector** (section 8) the files first live on a temporary disk, so each finished session is
+also copied to your Supabase Storage (bucket `recordings`) and downloaded again when you open it.
+
 ---
 
 ## 7. Optional extras
@@ -218,15 +232,54 @@ start it with `npm start`.
 2. Copy `.env.example` to `.env` and fill in `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 3. `npm start`. The terminal shows `SQLite + Supabase mirror`.
 
-**No PC running? Use the cloud collector.** Deploy the same collector to Render's free plan and the phone connects straight to it: see [docs/RENDER.md](docs/RENDER.md).
-
 **Open the dashboard from another device.** On the PC: **Connect phone → View from another device →
 Create link**, then scan the QR code (section 3, part ③). `npm run token` is only needed for the manual
 fallback.
 
 ---
 
-## 8. Troubleshooting
+## 8. No PC? Use the cloud collector (Render, free)
+
+The same collector can run on [Render](https://render.com/docs/free). The phone then connects straight to
+the Render address (already HTTPS), so there is no Cloudflare link and no USB.
+
+```mermaid
+flowchart LR
+    Phone["Phone"] -->|HTTPS| R["Render free web service"]
+    Laptop["Any browser"] -->|HTTPS + token| R
+    R --> T[("Supabase table<br/>session list")]
+    R --> S[("Supabase Storage<br/>recordings")]
+```
+
+1. Deploy once: **Render → New → Blueprint** with this repository (`render.yaml`), and paste your
+   `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. Full steps: [docs/RENDER.md](docs/RENDER.md).
+2. Open your address, for example `https://tepegoz-collector.onrender.com`. The address is already filled in;
+   paste `COLLECTOR_TOKEN` (Render → your service → **Environment**) and press **Connect**.
+3. **New session**, scan the QR code, record, press **Stop** on the phone. It is saved and backed up.
+
+Free-plan limits: the first page load after 15 idle minutes takes about a minute (open the dashboard before you
+leave), and recordings that are cut off before **Stop** are lost at the next restart. After a code change,
+use **Manual Deploy → Deploy latest commit** in Render.
+
+---
+
+## 9. Speed tips: why is my frame rate low?
+
+The dashboard shows **fps while frames were arriving** (not diluted by the time before the phone started).
+Over the internet a single upload takes several hundred milliseconds, so the phone keeps up to **8 frames
+uploading at once** and the collector stores them in order. On a typical connection:
+
+| Situation | What to do |
+|---|---|
+| USB, or the phone and PC on the same network | Nothing: this is the fastest route. |
+| Cloudflare link or Render, 1280×720 | Expect roughly 10 fps. Measured: 10.3 fps with a 243 ms round trip (it was 2.3 fps with one upload at a time). |
+| Still too slow | Choose **640×360** on the phone page (about a quarter of the data) or a lower target fps. |
+| Render only | Create the service in the region closest to you (Frankfurt for Europe/Caucasus): a lower round trip means more fps. |
+| *Skipped frames* is large | All upload slots were busy; the connection cannot keep up with the chosen size and rate. |
+
+---
+
+## 10. Troubleshooting
 
 | Problem | Fix |
 |---|---|
@@ -237,5 +290,9 @@ fallback.
 | Gyroscope "unavailable" | Allow *Motion sensors* in the browser's site settings, or try Chrome. Missing sensors are never faked. |
 | QR code no longer works | The Wi-Fi link changes when the collector restarts. Create a new session. |
 | Frames stop when the phone screen locks | Keep the capture page visible and the screen on. |
+| Dashboard still says *Recording* after Stop on the phone | Wait a few seconds. If the phone said it could not save (poor connection), press **Stop & save** on the dashboard. |
+| Frame rate is low | See section 9. |
+| Cloud page takes a minute to load | The free Render service was asleep; wait, then reload. |
+| Cloud sign-in says 401 / invalid token | Copy `COLLECTOR_TOKEN` again from Render → Environment. |
 
 Research use only. Record road-facing video only as a passenger.

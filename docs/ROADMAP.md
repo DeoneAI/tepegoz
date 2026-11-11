@@ -25,7 +25,7 @@ flowchart TD
 
 ## Week 1 — acquisition and synchronization (Days 1–5)
 
-Outcome: stable, timestamped multi-sensor ingest. The phone acquires data; the PC runs analysis/inference. Detailed software status is in the [README](../README.md#week-1-task-status).
+Outcome: stable, timestamped multi-sensor ingest. The phone acquires data; the PC runs analysis/inference. Detailed software status is in the [README](../README.md#status-and-todos).
 
 ### Day 1 — research sensors and streaming options
 
@@ -56,16 +56,16 @@ Outcome: stable, timestamped multi-sensor ingest. The phone acquires data; the P
 - [x] Implement minimum-RTT clock estimates, periodic resync, same-phone-clock nearest matching and explicit missing associations.
 - [x] Explain nearest vs interpolation and preserve uncalibrated/null intrinsics/extrinsics.
 - [ ] Record checkerboard images when practical, estimate intrinsics/distortion, report reprojection error and measure the mount transform.
-- Preparation: [checkerboard CLI](CALIBRATION.md) is implemented and validated on public samples; phone capture and the mount transform above still require physical evidence.
+- Preparation: checkerboard CLI is implemented and validated on public samples; phone capture and the mount transform above still require physical evidence.
 - [ ] Validate timestamp quality and frame↔IMU errors on controlled motion; ±100 ms matching is not a timing accuracy claim.
-- [x] Add the addendum's explicit [phone/body-camera-vehicle-world axes diagram](FRAMES-AND-TIMING.md), transform notation and gravity explanation.
+- [x] Add the addendum's explicit phone/body-camera-vehicle-world axes diagram, transform notation and gravity explanation.
 - [x] Implement offline shared-time gyro/acceleration/video plots and frame-to-IMU alignment CSV/report export.
 - [ ] Generate and interpret the synchronized timeline from a real compliant phone recording; synthetic QA is not acceptance evidence.
 
 ### Day 5 — stress test and document
 
-- [x] Deliver runnable acquisition, PC logging/replay, run instructions and a concise [decision note](DESIGN.md).
-- [x] Implement runtime metric collection and prepare the [physical acceptance sheet](STRESS-TEST.md).
+- [x] Deliver runnable acquisition, PC logging/replay, run instructions and a concise decision note.
+- [x] Implement runtime metric collection and prepare the physical acceptance sheet.
 - [ ] Execute indoor, stationary/rotation, walking/handheld and safely recorded passenger-only road-facing tests.
 - [ ] Compare real USB and tunnel routes, including interruption/recovery, permission denial and background/screen-lock behavior.
 - [ ] Publish achieved FPS/IMU Hz, p50/p95 latency with its definition, jitter, sequence gaps, buffer drops and skipped frames.
@@ -87,7 +87,7 @@ Outcome: independent, measurable vision baselines before fusion. Implemented and
 
 - [x] Implement a classical lane method and compare it to a pretrained lane-specific/segmentation model.
 - [x] Measure inference time and confidence-based availability on three public clips; retain qualitative day/night/snow still-image findings.
-- [ ] Complete a scoped temporal/visual benchmark for continuity, missing/false markings and day/night sensitivity using the [lane-quality protocol](LANE-QUALITY.md). Availability and still images alone do not complete this item.
+- [ ] Complete a scoped temporal/visual benchmark for continuity, missing/false markings and day/night sensitivity using the lane-quality protocol. Availability and still images alone do not complete this item.
 - [x] Render a corridor/centerline and a departure indicator only when confidence supports it.
 
 ### Day 8 — road-user detection
@@ -195,7 +195,7 @@ Full ORB-SLAM3 integration with custom phone data is **stretch work**, not a blo
 
 ## Technical learning addendum — cross-cutting checklist
 
-- [x] Draw phone/body B, camera C, vehicle V and world W frames; explain `p_W = R_WB p_B + t_WB` and gravity direction in the [frame guide](FRAMES-AND-TIMING.md).
+- [x] Draw phone/body B, camera C, vehicle V and world W frames; explain `p_W = R_WB p_B + t_WB` and gravity direction in the frame guide.
 - [x] Solve the yaw-bias exercise: measured 0.11 rad/s, bias 0.01 rad/s, duration 10 s; compare corrected/uncorrected angles in radians and degrees.
 - [x] Plot real three-axis gyro/acceleration/yaw and stationary segments; distinguish phone orientation from vehicle heading.
 - [x] Explain Euler/matrix/quaternion representations, gimbal lock and bias-driven integration drift.

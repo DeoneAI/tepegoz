@@ -5,7 +5,7 @@
 - Accepted `feat/weeks-1-3-baselines` (`cdee933`) into local `main` by fast-forward, then corrected two reviewed rendering defects: low-confidence boundaries/centerlines were drawn despite suppressed corridor shading, and the computed image-space offset indicator was not displayed. Shared thresholds now gate all lane geometry at 0.4 and a valid left/right/centered indicator at 0.6. The indicator explicitly states `UNCALIBRATED`; raw JSONL estimates remain unchanged by rendering.
 - **23 Node tests and 44 Python tests passed without skips**, and the static frontend build passed. Four new renderer regressions cover actual sparse-mask fitter output, inclusive threshold boundaries, all three visible directions, missing/invalid geometry, and preservation of source pixels/raw estimates. Local runtime: Node 24.15.0, Python 3.14.4, NumPy 2.5.4, OpenCV 5.0.0 and ONNX Runtime 1.31.1; CI separately checks its declared runtimes.
 - Ran the updated combined CLI on 20 frames of Udacity `solidWhiteRight.mp4` (indices 0–38, stride 2, CPU provider, four threads), using the pinned YOLOP and YOLOX Tiny models. It emitted independent logs, benchmark/run metadata, preview images and an MP4; source hashes stayed unchanged during the run. Inspected the first side-by-side preview: both lane methods show geometry and the image-space `CENTERED | UNCALIBRATED` label. This is a smoke check, not a replacement benchmark or a lane-accuracy measurement. Generated output remains ignored at `.tools/week2-render-fixed-smoke/`.
-- Reopened Day 7 temporal/visual quality acceptance and added the [lane-quality protocol](LANE-QUALITY.md). Historical reports retain their original code hashes and measurements. Temporal/day-night review and the original phone-footage outcome remain pending; no physical recording or new frontend deployment is claimed here.
+- Reopened Day 7 temporal/visual quality acceptance and added the lane-quality protocol. Historical reports retain their original code hashes and measurements. Temporal/day-night review and the original phone-footage outcome remain pending; no physical recording or new frontend deployment is claimed here.
 
 ## 28 October 2026 — coworker handoff readiness
 
@@ -32,7 +32,7 @@
 
 ## 27 October 2026 — coordinate frames and session analysis
 
-- Added an SVG diagram and [frame/timing guide](FRAMES-AND-TIMING.md) covering phone/body, camera, chosen vehicle/world conventions, transform direction and gravity. Rendered the SVG in headless Chrome and visually reviewed it.
+- Added an SVG diagram and frame/timing guide covering phone/body, camera, chosen vehicle/world conventions, transform direction and gravity. Rendered the SVG in headless Chrome and visually reviewed it.
 - Added `scripts/analyze_session.py`: exact-integer timestamp subtraction, nearest association with explicit missing values, alignment CSV, JSON diagnostics, and Matplotlib SVG/PNG timelines. Reports include sequence and JPEG/log consistency checks; none certifies physical acceptance.
 - **10 Python tests passed**: eight analysis tests (including actual CLI plot export) and the two existing Parquet tests. Coverage includes one-nanosecond window boundaries, ties/unsorted input, missing gyro, unchanged raw files, conflicting session IDs/units, malformed input, active/storage-error refusal and explicit incomplete sessions. Matplotlib 3.11.0 was available locally; CI installs analysis and Parquet dependencies.
 - **22 Node tests passed**, static production build passed, and `git diff --check` passed after integration. Prior recording reliability fixes remain covered.
@@ -59,7 +59,7 @@ Software checks, simulated acquisition and physical evidence are kept separate. 
 | Android Platform-Tools | Official Windows portable ADB installed under `.tools/platform-tools`; version 37.0.1; discovery executed | No attached authorized device was listed; real USB reverse/capture remains unverified |
 | Existing physical phone data | A previous session contained 2,263 accelerometer and 2,263 linear acceleration samples, zero gyroscope samples; its recorded average saved FPS was approximately 0.55 and clock RTT approximately 562 ms | One development recording; not a compliant two-minute full-IMU/stress benchmark; no gyro hardware conclusion from browser output |
 | Physical USB/Wi‑Fi comparison | **Not completed** | Authorized phone, data cable, driver, fixed settings and controlled-duration captures required |
-| Full W1 stress / calibration / display latency | **Not completed** | See `STRESS-TEST.md`; no measured camera intrinsics/extrinsics or true capture-to-display experiment |
+| Full W1 stress / calibration / display latency | **Not completed** | No measured camera intrinsics/extrinsics or true capture-to-display experiment |
 
 The receiver test's tiny JPEG-signature fixture proves protocol/file handling, not JPEG image quality. The separate simulated browser test uses Chrome's fake media device to exercise actual JPEG encoding/upload and receiver acceptance. Neither establishes hardware exposure timestamps or achieved phone FPS/Hz.
 
@@ -74,4 +74,4 @@ python -m unittest discover -s tests -p "test_*.py"
 
 Without optional PyArrow, Python tests explicitly skip. During development PyArrow was installed only under `.tools/python` and tests were run with `PYTHONPATH` pointing there. The browser QA harness and screenshots are development artifacts in `.tools/`; they use an isolated test collector/data directory, not personal recordings.
 
-USB acceptance requires the real workflow in the README and the added USB/preflight checklist in `STRESS-TEST.md`. Missing gyro, a browser timestamp estimate or insufficient achieved rate must remain visible in any final lead/senior report.
+USB acceptance requires the real workflow in the README. Missing gyro, a browser timestamp estimate or insufficient achieved rate must remain visible in any final lead/senior report.

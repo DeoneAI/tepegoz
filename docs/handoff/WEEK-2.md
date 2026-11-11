@@ -6,7 +6,7 @@ The baseline implementations already exist: `perception/lanes.py`, `models.py`, 
 
 ## 1. Understand the reference behavior
 
-Read the geometry/lane/tracker sections of [PERCEPTION-AND-ESTIMATION.md](../PERCEPTION-AND-ESTIMATION.md), the [glossary](../GLOSSARY.md), and [reference results/failures](../reports/WEEKS-2-3.md). Be able to explain:
+Read the [reference results/failures](../reports/WEEKS-2-3.md). Be able to explain:
 
 - Semantic versus instance segmentation, lane fitting, boxes, confidence and class-aware NMS.
 - Why a corridor can be confidently wrong and image proximity is not metric distance.
@@ -67,7 +67,7 @@ Do not treat the session overlay MP4's constant playback FPS as original capture
 
 Select and retain an explicit review sample with frame indices, reviewer and source. Include curves, weak/worn markings, shade, junctions, distant objects and occlusion when available. If night video is unavailable, state that rather than extrapolating from the six stills.
 
-Use the [lane-quality review protocol](../LANE-QUALITY.md). The combined Day 7 continuity/missing/false/day-night benchmark remains open until that scoped evidence exists; runtime/confidence availability and illustrative stills do not close it.
+Use the lane-quality review protocol. The combined Day 7 continuity/missing/false/day-night benchmark remains open until that scoped evidence exists; runtime/confidence availability and illustrative stills do not close it.
 
 For lanes, note missing sides, wrong boundaries, crossing/implausible corridors and centerline discontinuity. Existing confidence-availability counts are useful but not labeled lane accuracy. For detections, document the six actual supported classes (person, bicycle, car, motorcycle, bus, truck), score/NMS settings, misses and false positives. Label a small phone sample if reporting class-specific precision/recall; do not invent mAP from raw output logs.
 

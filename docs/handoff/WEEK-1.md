@@ -1,6 +1,6 @@
 # Week 1 handoff: collect and verify real phone data
 
-Prerequisite: complete [fresh-PC setup](START-HERE.md). The software is present; this week's main remaining work is **physical evidence from your phone and PC**. Keep the [original requirement audit](../reports/THROUGH-WEEK-3-AUDIT.md) and [acceptance sheet](../STRESS-TEST.md) open while working.
+Prerequisite: complete [fresh-PC setup](START-HERE.md). The software is present; this week's main remaining work is **physical evidence from your phone and PC**. Keep the [original requirement audit](../reports/THROUGH-WEEK-3-AUDIT.md) and acceptance sheet open while working.
 
 ## 1. Record the device/setup information
 
@@ -58,7 +58,7 @@ Parquet export is optional and runs after finalization; raw CSV/JSONL remain can
 - Every saved JPEG has a matching indexed metadata entry, and its timestamp-source label is defensible. Check missing/orphan files, duplicates, regressions and sequence gaps.
 - Measured frame/sensor rates are plausible and sustained. Review intervals/short time windows as well as a whole-session average; a preflight probe rate is not sustained capture Hz.
 - Inspect nearest-match differences and missing associations. The default ±100 ms window is a matching rule, not proof of timestamp accuracy.
-- Interpret phone axes/gyro signs, stationary specific force and clock estimates using [FRAMES-AND-TIMING.md](../FRAMES-AND-TIMING.md). Browser timestamps remain labeled estimates; nanosecond units do not give nanosecond accuracy.
+- Interpret phone axes/gyro signs, stationary specific force and clock estimates. Browser timestamps remain labeled estimates; nanosecond units do not give nanosecond accuracy.
 
 The analyzer deliberately reports `requires_physical_validation`; it does not issue an automatic acceptance pass. Record your review separately. It plots gyro/acceleration and association timing, not a phone orientation/yaw estimate; that remaining adapter task is listed in [Week 3](WEEK-3.md#phone-specific-work-still-required).
 
@@ -99,7 +99,7 @@ Collector `latency_p50_ms`/`latency_p95_ms` are estimated **ingest** delay, not 
 
 ## 7. Calibrate your camera and document transforms
 
-Follow [CALIBRATION.md](../CALIBRATION.md). Capture 15–20 distinct well-lit checkerboard views with unchanged lens/resolution/crop/focus settings; count internal corners and measure the printed square edge.
+Use `scripts/calibrate_camera.py` (run it with `--help`). Capture 15–20 distinct well-lit checkerboard views with unchanged lens/resolution/crop/focus settings; count internal corners and measure the printed square edge.
 
 ```powershell
 & .\.venv\Scripts\python.exe scripts/calibrate_camera.py data/my-checkerboard-images --output .tools/experiments/phone-calibration-01 --columns 9 --rows 6 --square-size-m 0.025

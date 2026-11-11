@@ -42,7 +42,7 @@ Write your own calculation for x=10, P=4, Q=1, z=14 at R=9, then R=1 and 100; th
 
 This is actual public monochrome camera/IMU data with supplied calibration. Inspect gyro/acceleration/yaw/error/flow plots and the shaded **assumed** quiet interval, VO rejection reasons, sign conventions and no/incorrect gyro controls. A quiet low-variance interval is not independent proof of stationarity. Ground truth is used for stated evaluation/alignment, not estimator feedback.
 
-The local complementary estimator is attitude-only; essential VO translation has arbitrary scale and rejected intervals. Read [VO-VIO-SLAM.md](../VO-VIO-SLAM.md) to distinguish these from position/velocity/bias VIO, mapping, preintegration, optimization, loop closure and relocalization.
+The local complementary estimator is attitude-only; essential VO translation has arbitrary scale and rejected intervals. Keep these distinct from position/velocity/bias VIO, mapping, preintegration, optimization, loop closure and relocalization.
 
 For the separate actual mono VIO demonstration, if your PC supports Docker's Linux engine:
 
