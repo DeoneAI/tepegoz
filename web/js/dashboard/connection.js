@@ -10,6 +10,9 @@ import { $, el } from '../lib/dom.js';
 import { explainNetworkError, request, validateServer } from '../lib/http.js';
 import { buildPairingLink } from '../phone/pairing.js';
 
+/** Accept an address typed without a scheme (abc.trycloudflare.com → https://abc.trycloudflare.com). */
+export const withScheme = value => (value && !/^[a-z][a-z0-9+.-]*:\/\//i.test(value) ? `https://${value}` : value);
+
 export function createConnection(ctx, { toast, onConnected, showPage }) {
   let pairURL = null;
 
@@ -26,6 +29,8 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
 
   async function openSettings() {
     $('local-setup').hidden = !ctx.isLocalPage;
+    // On the collector PC the remote fields are never needed: hide them so they cannot be filled by mistake.
+    $('remote-setup').hidden = ctx.isLocalPage;
     $('remote-setup').open = !ctx.isLocalPage;
     $('signed-in').hidden = !ctx.online;
     $('server-url').value = ctx.config && !ctx.isLocalPage ? ctx.config.server : '';
@@ -72,11 +77,11 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
     $('connection-error').textContent = '';
     try {
       let config;
-      const remote = !ctx.isLocalPage || $('server-url').value.trim();
+      const remote = !ctx.isLocalPage;
       if (remote) {
         const remoteToken = $('remote-token').value.trim() || ctx.config?.token;
         if (!remoteToken) throw new Error('Paste the collector token (run "npm run token" on the PC).');
-        config = { server: validateServer($('server-url').value.trim()), token: remoteToken, mode: 'tunnel' };
+        config = { server: validateServer(withScheme($('server-url').value.trim())), token: remoteToken, mode: 'tunnel' };
         await request(config.server, config.token, '/api/sessions');
       } else {
         await request(location.origin, token(), '/api/sessions'); // is the collector running?

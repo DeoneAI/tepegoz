@@ -7,6 +7,7 @@ import { nearestSample, exchangeEstimate, bestEstimate, replayDueAt, sortReplay 
 import { readPairing, buildPairingLink, PAIRING_KEY } from '../web/js/phone/pairing.js';
 import { progress } from '../web/js/dashboard/project.js';
 import { deviceLabel } from '../web/js/dashboard/live.js';
+import { withScheme } from '../web/js/dashboard/connection.js';
 
 test('format helpers never print NaN or Infinity', () => {
   assert.equal(fmt(NaN), '—'); assert.equal(fmt(Infinity), '—'); assert.equal(fmt('3'), '—'); assert.equal(fmt(1.234, 2), '1.23');
@@ -91,4 +92,11 @@ test('every script and stylesheet referenced by the pages exists', async () => {
   };
   await check('../web/js/dashboard/', dashboard);
   await check('../web/js/phone/', phoneIds);
+});
+
+test('collector address may be typed without https://', () => {
+  assert.equal(withScheme('abc-def.trycloudflare.com'), 'https://abc-def.trycloudflare.com');
+  assert.equal(withScheme('https://abc.trycloudflare.com'), 'https://abc.trycloudflare.com');
+  assert.equal(withScheme('http://localhost:8787'), 'http://localhost:8787');
+  assert.equal(withScheme(''), '');
 });
