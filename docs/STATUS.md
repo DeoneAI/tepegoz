@@ -1,6 +1,8 @@
 # Tepegoz progress tracker
 
-Last updated: **28 October 2026** (Asia/Baku).
+Last updated: **11 November 2026** (Asia/Baku).
+
+Since 28 October: phone connection simplified (no token on the collector PC, Wi-Fi link started by the collector, USB from the same dialog; [HOW_TO_USE.md](../HOW_TO_USE.md)); sessions indexed in SQLite with an optional Supabase mirror; dashboard redesigned and published at [tepegoz-deone.vercel.app](https://tepegoz-deone.vercel.app); model-only inference benchmarks on CPU, iGPU and GPU with plots (`scripts/bench_inference.py`, `scripts/plot_benchmarks.py`). The first phone recording ("Stationary test", 211 frames) exists locally; physical acceptance measurements are still open.
 
 Current milestone: **Weeks 2–3 PC baselines implemented with public-data evidence; Week 2 quality acceptance and Week 1 physical acceptance remain partial**. No finalized phone recording is available; public datasets support PC development without replacing phone-domain evidence. This file records development progress, not an automatic repository monitor. The full checklist is in [ROADMAP.md](ROADMAP.md), results in [the measured report](reports/WEEKS-2-3.md), and checks in [VALIDATION.md](VALIDATION.md).
 

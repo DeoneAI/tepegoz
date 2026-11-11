@@ -4,7 +4,7 @@ Prerequisite: complete [fresh-PC setup](START-HERE.md). The software is present;
 
 ## 1. Record the device/setup information
 
-In a local copy of the [evidence template](EVIDENCE-TEMPLATE.md), write the exact phone model/variant, OS/browser versions, PC CPU/RAM, connection route, camera settings, screen orientation and mount. Do not infer hardware gyro availability from the product name or the interface's old Galaxy A15 label.
+In a local copy of the [evidence template](EVIDENCE-TEMPLATE.md), write the exact phone model/variant, OS/browser versions, PC CPU/RAM, connection route, camera settings, screen orientation and mount. Do not infer hardware gyro availability from the product name.
 
 Download Google Platform-Tools and extract its folder so `.tools/platform-tools/adb.exe` exists, or install `adb` on PATH. The collector discovers the bundled path automatically.
 
@@ -24,11 +24,11 @@ In terminal A, from the project root:
 npm.cmd start
 ```
 
-Keep it running and the PC awake. Open **http://localhost:8787** on the PC and copy its printed collector token into **Connection settings**. Keep the token private.
+Keep it running and the PC awake. Open **http://localhost:8787** on the PC; no token is needed there.
 
-Select **USB cable / Android ADB → Find USB devices → choose the authorized device → Test & connect**. Create a fresh session named, for example, `usb-rotation-01`. Open its generated pairing link on the phone. The phone's localhost reaches the PC only because the verified ADB reverse mapping is active.
+Click **Connect phone → USB · Android → Find**, choose the authorized device and press **Connect**. Create a fresh session named, for example, `usb-rotation-01`. Open its generated pairing link on the phone. The phone's localhost reaches the PC only because the verified ADB reverse mapping is active.
 
-Tap **Check sensors before capture**. Allow requested motion permission and gently rotate the phone. Record the availability and probe rates. The preflight does not start the camera.
+Tap **Check sensors**. Allow requested motion permission and gently rotate the phone. Record the availability and probe rates. The preflight does not start the camera.
 
 If gyro is unavailable, investigate browser motion permission, browser support and the exact physical sensor inventory. Missing browser readings do not prove missing hardware. If the hardware lacks gyro, a suitable different device or acquisition route is required; zero-filled/invented gyro is not a solution.
 
@@ -79,26 +79,13 @@ After a clean baseline, repeat matched stationary/rotation settings over both US
 
 Use separate sessions for a 10-second connection interruption/recovery, permission denial/restoration, switching apps and screen lock. For USB, also test cable removal/remapping and an Internet-disabled cable-only path. Keep pre-failure files and report losses/recovery behavior. Expected browser suspension is a limitation to measure, not hide.
 
-## HTTPS tunnel and the existing Vercel site
+## Wi-Fi link and the hosted dashboard
 
-Use your team's current frontend origin, not the original developer's account binding. Keep the tunnel running while you restart the collector to add its exact URL.
+On the collector PC open `http://localhost:8787` → **Connect phone → Wi-Fi → Start link** (or start the collector with `npm run start:wifi`). The collector starts a Cloudflare quick tunnel and serves the phone page through it, so no second terminal and no `ALLOWED_ORIGINS` change are needed for recording. Create a **new** session and scan its QR code.
 
-1. With the collector initially running in terminal A, start terminal B:
+A quick tunnel gets a new address on every restart: create a new session after restarting. [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/) are temporary development/test endpoints with no uptime guarantee.
 
-```powershell
-cloudflared tunnel --url http://127.0.0.1:8787
-```
-
-2. Copy the printed `https://...trycloudflare.com` origin. Finalize any active recording before stopping terminal A with Ctrl+C. In terminal A, replace **both** example origins with the actual values:
-
-```powershell
-$env:ALLOWED_ORIGINS='http://localhost:8787,http://127.0.0.1:8787,https://YOUR-TEAM-SITE.vercel.app,https://YOUR-TUNNEL.trycloudflare.com'
-npm.cmd start
-```
-
-3. Open the team's hosted dashboard. Select **Wi-Fi / Internet HTTPS tunnel**, enter the tunnel origin and this PC's collector token, connect, and create a **new** session. Open the new pairing link on the phone. Keep terminals A and B running.
-
-A new quick tunnel can have a different URL; update the origin list before starting a new capture and recreate pairing. [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/) are temporary development/test endpoints. Do not assume a stable production URL or guaranteed uptime. If running the `START-PC.ps1` helper instead of the explicit commands, note that its current prompt accepts only one frontend origin; it does not add the tunnel origin automatically.
+To watch from another computer through the hosted dashboard, add its exact origin to `ALLOWED_ORIGINS` in `.env`, restart the collector, then in the hosted copy use **Connect to your collector** with the Wi-Fi link address and the token from `npm run token`. See [HOW_TO_USE.md](../../HOW_TO_USE.md).
 
 ## 6. Measure actual display latency separately
 

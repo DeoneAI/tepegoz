@@ -2,7 +2,7 @@
 
 Prepared 28 October 2026. These instructions target **Windows PowerShell** from the repository root. The repository owner handles the branch, commits and push; begin after cloning/checking out the branch they provide. Do not continue from an older `main` checkout by mistake.
 
-The acquisition interface still says **Sensorlink**. **Tepegoz** is the repository/project name.
+For day-to-day recording, follow [HOW_TO_USE.md](../../HOW_TO_USE.md): `npm start`, open `http://localhost:8787` (no token needed on that PC), **Connect phone** (Wi-Fi or USB), **New session**.
 
 ## Read and execute in this order
 
@@ -87,11 +87,9 @@ The handoff baseline has **23 Node tests and 40 Python tests**. With all require
 
 Tracked `docs/reports/` contains selected reference metrics/plots, not the full raw experiments. Fetching assets checks the registered byte size/SHA-256. Your timing results may differ; record your own hardware, settings and versions. Keep licensing/attribution from [THIRD-PARTY.md](../THIRD-PARTY.md).
 
-## Continue using your existing Vercel project
+## Hosted dashboard (optional)
 
-Use **your team's existing project** for the previous version. The current hosted copy is `tepegoz-deone.vercel.app` (deployed with `vercel deploy --prod` from `main`); you do not need to migrate to that Vercel account or copy its credentials.
-
-After the owner publishes the handoff branch, verify in your existing Vercel project that the intended deployment uses that branch/commit. Use these project settings:
+Recording does not need Vercel: the collector serves the dashboard and the phone page itself. The hosted copy `tepegoz-deone.vercel.app` is only a remote viewer (deployed with `vercel deploy --prod` from `main`). If you host your own copy, use these project settings:
 
 | Setting | Value |
 |---|---|
@@ -101,11 +99,9 @@ After the owner publishes the handoff branch, verify in your existing Vercel pro
 | Output directory | `dist` |
 | Node | 22.x for reproducibility |
 
-Keep `vercel.json` and `.vercelignore` from this branch. Do not set the recording collector token as a frontend/Vercel environment variable. The collector token is generated on your PC and entered into dashboard connection settings.
+Keep `vercel.json` and `.vercelignore`. Never put the collector token in Vercel. To let a hosted copy talk to your collector, add its exact origin to `ALLOWED_ORIGINS` in `.env` on the collector PC, then use **Connect to your collector** with the Wi-Fi link address and `npm run token`.
 
-Check that both `/` and `/phone.html` on the chosen team URL load on the phone. Preview deployment protection can require a Vercel login; confirm phone access before using the URL in a recording. Use the intended stable team URL and put its exact origin in the collector's `ALLOWED_ORIGINS`. Do not change project access policy or switch production branches without coordinating with the owner.
-
-USB administration always uses `http://localhost:8787` on the collector PC. Hosted capture uses an HTTPS tunnel to that PC; detailed terminal order is in [Week 1](WEEK-1.md#https-tunnel-and-the-existing-vercel-site).
+Wi-Fi links and USB are always set up from `http://localhost:8787` on the collector PC; see [Week 1](WEEK-1.md#wi-fi-link-and-the-hosted-dashboard).
 
 ## Working rules and troubleshooting
 
@@ -121,7 +117,7 @@ USB administration always uses `http://localhost:8787` on the collector PC. Host
 | Import/module missing | Run pip with `.venv\Scripts\python.exe`, then use that same executable for scripts/tests |
 | Model missing/incomplete | Run the appropriate `fetch_assets.py --group ...`; do not rename a different model to bypass checks |
 | ADB missing/unauthorized | Follow Week 1's extraction, cable, unlock and debugging authorization checks |
-| Collector unreachable/CORS error | Check process, exact tunnel URL, `ALLOWED_ORIGINS` and the new token/session after a restart |
+| Collector unreachable/CORS error | On the PC use `http://localhost:8787`. For a hosted copy check the current Wi-Fi link address, `ALLOWED_ORIGINS` in `.env` and `npm run token`; create a new session after a restart |
 | Gyro unavailable | Separate browser permissions/support from actual hardware inventory; no synthetic replacement |
 | Recording active/storage error | Finalize normally or investigate the storage error before analysis/inference |
 | ONNX Runtime DLL/import failure | Check interpreter architecture and [official installation prerequisites](https://onnxruntime.ai/docs/install/); preserve the error text |

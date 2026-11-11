@@ -23,4 +23,4 @@ scripts/requirements-*.txt
 *.py[cod]
 __pycache__/
 README.md
-BASLA.md
+HOW_TO_USE.md

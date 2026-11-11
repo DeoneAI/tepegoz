@@ -4,13 +4,13 @@
 
 **Smartphone-to-PC acquisition and recorded road perception with depth and motion experiments.**
 
-Tepegoz contains the **Sensorlink acquisition prototype** plus offline PC lanes, road-user detection/tracking, depth, Kalman exercises, gyro orientation and visual-inertial experiments. The project follows the supplied [one-month assignment and technical addendum](docs/roadmap/assignment.pdf).
+Tepegoz contains the **phone acquisition prototype** (collector + dashboard) plus offline PC lanes, road-user detection/tracking, depth, Kalman exercises, gyro orientation and visual-inertial experiments. The project follows the supplied [one-month assignment and technical addendum](docs/roadmap/assignment.pdf).
 
 **Hosted dashboard:** [tepegoz-deone.vercel.app](https://tepegoz-deone.vercel.app) (optional; only needed to view the dashboard from another computer). Everyday use is the local dashboard at `http://localhost:8787` on the collector PC. Recordings and offline analysis stay on the PC.
 
 **Current milestone: Weeks 2–3 baselines implemented with public datasets; Week 2 quality acceptance and Week 1 physical acceptance remain partial.** The [Day 7 lane-quality review](docs/LANE-QUALITY.md) and recorded-phone-footage outcome remain open. Public data exercises the PC pipeline without establishing phone/USB performance. The local estimator is an attitude-only experiment, not full VIO/SLAM. Android Camera2 and SensorManager remain acquisition alternatives to the current browser client.
 
-[Getting started](BASLA.md) · [Progress tracker](docs/STATUS.md) · [20-day checklist](docs/ROADMAP.md) · [Perception and estimation](docs/PERCEPTION-AND-ESTIMATION.md) · [Measured results](docs/reports/WEEKS-2-3.md) · [Validation](docs/VALIDATION.md)
+[How to use](HOW_TO_USE.md) · [Progress tracker](docs/STATUS.md) · [20-day checklist](docs/ROADMAP.md) · [Perception and estimation](docs/PERCEPTION-AND-ESTIMATION.md) · [Measured results](docs/reports/WEEKS-2-3.md) · [Validation](docs/VALIDATION.md)
 
 ## What works today
 
@@ -121,7 +121,7 @@ sequenceDiagram
   Collector->>Disk: Completed manifest
 ```
 
-Detailed Mermaid [architecture](docs/diagrams/architecture.mmd), [sequence](docs/diagrams/sequence.mmd) and qualitative [transport radar](docs/diagrams/radar.mmd) sources also have SVG fallbacks in the same directory. Radar scores express design judgments, not measured performance.
+Architecture, connection and recording diagrams (Mermaid) are in [HOW_TO_USE.md](HOW_TO_USE.md) and [docs/CONNECTING.md](docs/CONNECTING.md). The qualitative [transport radar](docs/diagrams/radar.mmd) has an SVG fallback in the same directory; its scores express design judgments, not measured performance.
 
 ## Week 1 task status
 

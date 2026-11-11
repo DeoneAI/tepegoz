@@ -1,4 +1,4 @@
-"""Convert a finalized Sensorlink session to typed Parquet, without changing raw logs."""
+"""Convert a finalized recording session to typed Parquet, without changing raw logs."""
 import argparse
 import json
 from pathlib import Path
