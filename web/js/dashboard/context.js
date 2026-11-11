@@ -1,0 +1,54 @@
+// Shared dashboard state: the collector connection, the active session and a change signal.
+// Modules read `ctx` and call ctx.emit(); nothing else holds global mutable state.
+
+import { createClient, isLocalHost } from '../lib/http.js';
+
+const STORAGE_KEY = 'tepegoz-connection';
+const LEGACY_KEY = 'sensorlink-connection';
+
+function loadConfig(storage) {
+  try { return JSON.parse(storage.getItem(STORAGE_KEY) || storage.getItem(LEGACY_KEY) || 'null'); } catch { return null; }
+}
+
+/**
+ * The collector prints http://localhost:8787/#token=… at start-up. Opening that link on the PC signs
+ * the dashboard in: the token moves to this tab's session storage and leaves the address bar.
+ */
+function consumeLoginLink(storage, location, history) {
+  if (!isLocalHost(location.hostname)) return;
+  const token = new URLSearchParams(location.hash.slice(1)).get('token');
+  if (!token || !/^[\w.-]{16,256}$/.test(token)) return;
+  storage.setItem(STORAGE_KEY, JSON.stringify({ server: location.origin, token, mode: 'tunnel' }));
+  history?.replaceState(null, '', `${location.pathname}#live`);
+}
+
+export function createContext({ storage = sessionStorage, location = window.location, history = window.history } = {}) {
+  consumeLoginLink(storage, location, history);
+  const listeners = new Set();
+  const ctx = {
+    config: loadConfig(storage),
+    online: false,
+    active: null,          // session currently shown on the Live page
+    sensor: 'accelerometer',
+    isLocalPage: isLocalHost(location.hostname),
+
+    /** On the collector PC the dashboard talks to its own origin; elsewhere to the configured tunnel. */
+    collectorOrigin(server = ctx.config?.server) {
+      return ctx.isLocalPage ? location.origin : server;
+    },
+    client() {
+      if (!ctx.config) throw new Error('Connect your PC collector first.');
+      return createClient(ctx.collectorOrigin(), ctx.config.token);
+    },
+    saveConfig(config) {
+      ctx.config = config;
+      storage.setItem(STORAGE_KEY, JSON.stringify(config));
+      storage.removeItem(LEGACY_KEY);
+    },
+    setActive(session) { ctx.active = session; ctx.emit('session'); },
+    setOnline(value) { if (ctx.online !== value) { ctx.online = value; ctx.emit('online'); } },
+    on(listener) { listeners.add(listener); return () => listeners.delete(listener); },
+    emit(reason) { for (const listener of listeners) listener(reason, ctx); },
+  };
+  return ctx;
+}

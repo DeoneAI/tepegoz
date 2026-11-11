@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "purpose": "Tepegoz target classes and how each public dataset's labels map onto them. null = the dataset has no usable label for that class.",
+  "classes": [
+    {"id": 0, "name": "person", "task": "detection", "priority": "must"},
+    {"id": 1, "name": "rider", "task": "detection", "priority": "should", "note": "person on bicycle/motorcycle; falls back to person when a dataset has no rider label"},
+    {"id": 2, "name": "car", "task": "detection", "priority": "must"},
+    {"id": 3, "name": "truck", "task": "detection", "priority": "must"},
+    {"id": 4, "name": "bus", "task": "detection", "priority": "must"},
+    {"id": 5, "name": "two_wheeler", "task": "detection", "priority": "should", "note": "bicycle + motorcycle merged; small, few samples per class otherwise"},
+    {"id": 6, "name": "traffic_sign", "task": "detection", "priority": "must", "note": "one generic class at detection stage; sign type is a second-stage classifier"},
+    {"id": 7, "name": "traffic_light", "task": "detection", "priority": "should"},
+    {"id": 8, "name": "lane", "task": "lane/segmentation", "priority": "must", "note": "NOT a box class; handled by the lane head (YOLOP/UFLD-style)"},
+    {"id": 9, "name": "obstacle", "task": "open-set", "priority": "stretch", "note": "unknown objects on the road; needs depth/free-space or anomaly segmentation, not a closed-set box class"}
+  ],
+  "mappings": {
+    "coco": {"person": "person", "bicycle": "two_wheeler", "motorcycle": "two_wheeler", "car": "car", "truck": "truck", "bus": "bus", "traffic light": "traffic_light", "stop sign": "traffic_sign"},
+    "bdd100k": {"pedestrian": "person", "rider": "rider", "car": "car", "truck": "truck", "bus": "bus", "bicycle": "two_wheeler", "motorcycle": "two_wheeler", "traffic sign": "traffic_sign", "traffic light": "traffic_light", "train": null, "lane/*": "lane"},
+    "mapillary_traffic_sign": {"*": "traffic_sign"},
+    "kitti": {"Pedestrian": "person", "Cyclist": "rider", "Car": "car", "Van": "car", "Truck": "truck", "Tram": null, "Person_sitting": "person"}
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "updated": "2026-11-11",
+  "checklist": {
+    "done": 55,
+    "total": 85,
+    "source": "docs/ROADMAP.md"
+  },
+  "milestones": [
+    {
+      "week": "W1",
+      "title": "Acquisition, sync, recording, replay",
+      "state": "partial",
+      "label": "Physical gate open",
+      "remaining": "Phone camera + IMU recording, USB vs tunnel comparison, measured timing and rates, phone calibration."
+    },
+    {
+      "week": "W2",
+      "title": "Lanes, detection, tracking",
+      "state": "partial",
+      "label": "Acceptance partial",
+      "remaining": "Day 7 temporal and day/night lane review; phone-domain validation."
+    },
+    {
+      "week": "W3",
+      "title": "Depth and motion-assisted processing",
+      "state": "partial",
+      "label": "Public data only",
+      "remaining": "Phone yaw export, derived image preparation, measured motion calibration. No validated metric distance."
+    },
+    {
+      "week": "W4",
+      "title": "Integration, evaluation, demo",
+      "state": "pending",
+      "label": "Not started",
+      "remaining": "Unified runtime, controlled validation, profiling, live demo, report, video and technical defense."
+    }
+  ],
+  "next": [
+    "Record and replay a compliant two-minute camera + accelerometer + gyroscope session on a real phone.",
+    "Complete the Day 7 temporal and day/night lane-quality review.",
+    "Compare USB and HTTPS tunnel at matched settings; measure capture-to-display latency.",
+    "Build the 8-class training/eval set (BDD100K + COCO + Mapillary signs) within the 20k-image budget.",
+    "Quantize the selected detector with real road calibration images and re-measure accuracy against FP32.",
+    "Benchmark end-to-end FPS (not model-only) on CPU, iGPU and GPU with scripts/bench_inference.py and run_road_benchmarks.py."
+  ],
+  "benchmarks": {
+    "columns": [
+      {
+        "key": "model",
+        "label": "Model"
+      },
+      {
+        "key": "precision",
+        "label": "Precision"
+      },
+      {
+        "key": "target",
+        "label": "Runtime · device"
+      },
+      {
+        "key": "p50",
+        "label": "p50 ms",
+        "numeric": true
+      },
+      {
+        "key": "p95",
+        "label": "p95 ms",
+        "numeric": true
+      },
+      {
+        "key": "fps",
+        "label": "Model-only FPS",
+        "numeric": true
+      }
+    ],
+    "rows": [
+      {
+        "model": "YOLOX-Nano 416",
+        "precision": "FP32",
+        "target": "ONNX Runtime · CPU · 6 thr",
+        "p50": "6.7",
+        "p95": "7.4",
+        "fps": "148"
+      },
+      {
+        "model": "YOLOX-Nano 416",
+        "precision": "FP32",
+        "target": "OpenVINO · CPU · 4 thr",
+        "p50": "6.3",
+        "p95": "7.8",
+        "fps": "154"
+      },
+      {
+        "model": "YOLOX-Nano 416",
+        "precision": "FP32",
+        "target": "OpenVINO · Intel iGPU",
+        "p50": "5.6",
+        "p95": "6.4",
+        "fps": "176"
+      },
+      {
+        "model": "YOLOX-Nano 416",
+        "precision": "FP32",
+        "target": "DirectML · RTX 4050",
+        "p50": "3.1",
+        "p95": "4.7",
+        "fps": "294"
+      },
+      {
+        "model": "YOLOX-Tiny 416",
+        "precision": "FP32",
+        "target": "ONNX Runtime · CPU · 6 thr",
+        "p50": "18.1",
+        "p95": "19.3",
+        "fps": "55"
+      },
+      {
+        "model": "YOLOX-Tiny 416",
+        "precision": "FP32",
+        "target": "OpenVINO · CPU · 4 thr",
+        "p50": "19.6",
+        "p95": "23.5",
+        "fps": "51"
+      },
+      {
+        "model": "YOLOX-Tiny 416",
+        "precision": "FP32",
+        "target": "OpenVINO · Intel iGPU",
+        "p50": "10.2",
+        "p95": "11.1",
+        "fps": "96"
+      },
+      {
+        "model": "YOLOX-Tiny 416",
+        "precision": "FP32",
+        "target": "DirectML · RTX 4050",
+        "p50": "5.2",
+        "p95": "6.5",
+        "fps": "186"
+      },
+      {
+        "model": "YOLOX-Tiny 416",
+        "precision": "INT8*",
+        "target": "OpenVINO · CPU · 4 thr",
+        "p50": "13.4",
+        "p95": "16.5",
+        "fps": "75"
+      },
+      {
+        "model": "YOLOX-S 640",
+        "precision": "FP32",
+        "target": "OpenVINO · Intel iGPU",
+        "p50": "34.3",
+        "p95": "42.3",
+        "fps": "28"
+      },
+      {
+        "model": "YOLOX-S 640",
+        "precision": "FP32",
+        "target": "DirectML · RTX 4050",
+        "p50": "9.6",
+        "p95": "11.2",
+        "fps": "102"
+      }
+    ],
+    "note": "Measured 2026-11-11 on an Intel Core 5 210H laptop (Intel iGPU + RTX 4050) with scripts/bench_inference.py: batch 1, model call only (no decode, NMS or rendering), best thread count shown. *INT8 used random calibration, so only its speed is meaningful. YOLOX-S CPU rows omitted (noisy run). Not phone evidence and not end-to-end FPS."
+  },
+  "decisions": [
+    {
+      "topic": "Transport",
+      "decision": "Custom JPEG HTTPS POST + batched JSON telemetry (documented deviation from MJPEG/RTSP/WebRTC)."
+    },
+    {
+      "topic": "Lanes",
+      "decision": "YOLOP is the default lane candidate; the classical fitter stays as the interpretable baseline."
+    },
+    {
+      "topic": "Detector",
+      "decision": "YOLOX-Tiny (Apache-2.0) selected over YOLOX-Nano for accuracy; RT-DETR/D-FINE/RF-DETR (Apache-2.0) are the next candidates. Ultralytics YOLO is AGPL-3.0 and needs a licence review before use."
+    },
+    {
+      "topic": "Depth",
+      "decision": "Depth Anything V2 Small (Apache-2.0) relative and metric outputs kept separate and labelled; neither is validated distance."
+    },
+    {
+      "topic": "Classes",
+      "decision": "person, rider, car, truck, bus, two-wheeler, traffic sign, traffic light + lane head; 'obstacle' is open-set (depth/free-space), not a box class."
+    },
+    {
+      "topic": "Honesty rules",
+      "decision": "Public-data results are not phone evidence; model-only FPS is never reported as end-to-end FPS; missing sensors are never invented."
+    }
+  ]
+}

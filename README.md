@@ -27,7 +27,7 @@ Tepegoz contains the **Sensorlink acquisition prototype** plus offline PC lanes,
 
 ## Quick start
 
-Acquisition requires **Node.js 22+**, a PC, and a phone browser. Android USB mode additionally requires [SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools), a data-capable cable and explicit USB debugging authorization. Offline perception/estimation requires **Python 3.10+** and the dependencies below; the Node collector remains dependency-free.
+Acquisition requires **Node.js 22.13+** and a phone browser. Offline perception/estimation requires **Python 3.10+** (below). The collector has no npm dependencies. **Step-by-step guide with diagrams: [docs/CONNECTING.md](docs/CONNECTING.md).**
 
 ```bash
 git clone https://github.com/DeoneAI/tepegoz.git
@@ -35,15 +35,12 @@ cd tepegoz
 npm start
 ```
 
-No `npm install` is required for the current runtime or build. On Windows PowerShell, use `npm.cmd start` if script policy blocks `npm.ps1`.
+1. Open the link the collector prints (`http://localhost:8787/#token=…`). It signs you in; there is nothing to copy.
+2. Click **Connect phone** and pick **Wi-Fi or mobile data** (the collector opens a secure link for you; needs `winget install --id Cloudflare.cloudflared` once) or **USB cable** (Android, needs Platform-Tools).
+3. **New session** → scan the QR code with the phone → **Check sensors** → **Start capture**.
+4. Stop on the phone, then **Stop & save** on the PC. **Session library → Replay** to inspect.
 
-1. Open **http://localhost:8787** on the collector PC.
-2. Enter the collector token printed in the terminal into **Connection settings**. Keep this admin token on the PC.
-3. Choose a connection route below, create a fresh session and open its QR/link on the phone.
-4. Run **Check sensors**, review the result, then continue to capture. Camera access starts on capture; GNSS is a separate opt-in; audio is never requested.
-5. Stop capture on the phone, then **Stop & save** on the PC. Use **Session library → Replay** to inspect the recording.
-
-The interface retains the Sensorlink name. The public repository is named Tepegoz.
+Recordings are stored on the PC in `data/<session-id>/` and indexed in `data/sessions.sqlite` (built-in SQLite). An optional Supabase mirror of the session list is described in the guide. On Windows PowerShell, use `npm.cmd start` if script policy blocks `npm.ps1`.
 
 ### Continue without a phone recording
 
@@ -63,7 +60,7 @@ The [camera-calibration workflow](docs/CALIBRATION.md) fits checkerboard intrins
 
 Install `adb` on PATH, put the official `platform-tools/` directory under ignored `.tools/`, or set `ADB_PATH` to its executable before starting the collector.
 
-On the **local PC dashboard**, select **USB cable / Android ADB**, supply the collector token, click **Find USB devices**, select an authorized phone and **Test & connect**. The backend verifies physical USB transport, creates the reverse port mapping and confirms it before generating a localhost phone link.
+On the **local PC dashboard**, click **Connect phone → USB cable**, then **Find my phone** and **Continue**. The backend verifies physical USB transport, creates the reverse port mapping and confirms it before generating a localhost phone link.
 
 ```bash
 adb devices -l
@@ -76,20 +73,7 @@ In this mode, the phone's `http://localhost:8787` is forwarded to the PC through
 
 ### Wi-Fi or mobile network: HTTPS tunnel
 
-Use an installed HTTPS tunnel such as Cloudflare Tunnel:
-
-```bash
-cloudflared tunnel --url http://127.0.0.1:8787
-```
-
-Restart the collector with the exact frontend and tunnel origins allowed. For example, in PowerShell:
-
-```powershell
-$env:ALLOWED_ORIGINS='https://YOUR-FRONTEND.example,https://YOUR-TUNNEL.trycloudflare.com,http://localhost:8787,http://127.0.0.1:8787'
-npm.cmd start
-```
-
-Select **Wi-Fi / Internet HTTPS tunnel** and enter that tunnel origin and the collector token in the dashboard. A local PC dashboard reads charts/images directly from the collector while phone traffic uses HTTPS. Include the tunnel origin when it serves the mobile page. A changed tunnel URL requires fresh pairing.
+The dashboard starts a Cloudflare quick tunnel for you (or run `npm run start:wifi`). The phone loads `/phone.html` through that HTTPS link from the collector itself, so `ALLOWED_ORIGINS` is only needed for the optional hosted (Vercel) dashboard. See [docs/CONNECTING.md](docs/CONNECTING.md).
 
 ## Architecture
 

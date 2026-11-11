@@ -1,0 +1,94 @@
+/* Tepegoz / DeoneAI design tokens, reset and typography.
+   Warm stone neutrals, ink-black primary actions, one signature colour: madder red (the root dye of
+   Azerbaijani carpets). Light by default; dark follows the OS unless the user picks a theme
+   (data-theme on <html>). System fonts only, so the pages make no third-party requests. */
+:root {
+  color-scheme: light;
+  --bg: #faf9f7;
+  --bg-raised: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f5f4f1;
+  --surface-3: #ebe8e3;
+  --line: #ebe8e3;
+  --line-strong: #d9d5ce;
+  --text: #1c1917;
+  --text-2: #44403c;
+  --muted: #78716c;
+  --faint: #a8a29e;
+  --accent: #b8322a;
+  --accent-soft: #fbeeec;
+  --primary: #1c1917;
+  --primary-ink: #faf9f7;
+  --ok: #15803d;
+  --ok-soft: #eaf6ee;
+  --warn: #b45309;
+  --warn-soft: #fdf3e3;
+  --bad: #b91c1c;
+  --bad-soft: #fdecec;
+  --grid: #ebe8e3;
+  --axis-x: #b8322a;
+  --axis-y: #0f766e;
+  --axis-z: #4f46e5;
+  --stage: #0c0a09;
+  --shadow: 0 1px 2px rgba(28, 25, 23, 0.04), 0 1px 1px rgba(28, 25, 23, 0.02);
+  --shadow-lg: 0 24px 64px rgba(28, 25, 23, 0.18);
+  --radius: 14px;
+  --radius-sm: 9px;
+  --sidebar: 240px;
+  --font: 'Segoe UI Variable Text', 'Segoe UI', Inter, system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --display: 'Segoe UI Variable Display', 'Segoe UI', Inter, system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --mono: ui-monospace, 'Cascadia Mono', 'SF Mono', 'SFMono-Regular', Consolas, monospace;
+  font-family: var(--font);
+  font-synthesis: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #0c0a09; --bg-raised: #110f0e; --surface: #151311; --surface-2: #1c1917; --surface-3: #292524;
+    --line: #26221f; --line-strong: #3a3531; --text: #f5f4f1; --text-2: #d6d3d1; --muted: #a8a29e; --faint: #6f6964;
+    --accent: #e0564a; --accent-soft: #2a1513; --primary: #f5f4f1; --primary-ink: #0c0a09;
+    --ok: #4ade80; --ok-soft: #10291a; --warn: #fbbf24; --warn-soft: #2e230b; --bad: #f87171; --bad-soft: #331616;
+    --grid: #26221f; --axis-x: #f0796e; --axis-y: #2dd4bf; --axis-z: #a5b4fc;
+    --shadow: 0 0 0 1px rgba(0, 0, 0, 0.2); --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.55);
+  }
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0c0a09; --bg-raised: #110f0e; --surface: #151311; --surface-2: #1c1917; --surface-3: #292524;
+  --line: #26221f; --line-strong: #3a3531; --text: #f5f4f1; --text-2: #d6d3d1; --muted: #a8a29e; --faint: #6f6964;
+  --accent: #e0564a; --accent-soft: #2a1513; --primary: #f5f4f1; --primary-ink: #0c0a09;
+  --ok: #4ade80; --ok-soft: #10291a; --warn: #fbbf24; --warn-soft: #2e230b; --bad: #f87171; --bad-soft: #331616;
+  --grid: #26221f; --axis-x: #f0796e; --axis-y: #2dd4bf; --axis-z: #a5b4fc;
+  --shadow: 0 0 0 1px rgba(0, 0, 0, 0.2); --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.55);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p, dl, dd, ol, ul { margin: 0; }
+ol, ul { padding: 0; list-style: none; }
+h1 { font-family: var(--display); font-size: clamp(26px, 2.3vw, 34px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.12; }
+h2 { font-size: 14px; font-weight: 600; letter-spacing: -0.005em; }
+h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+p { color: var(--muted); line-height: 1.6; }
+a { color: inherit; text-decoration: none; }
+button, input, select { font: inherit; color: inherit; }
+button, a, input, select { touch-action: manipulation; }
+button { cursor: pointer; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+.mono, pre, code, kbd { font-family: var(--mono); }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+.accent { color: var(--accent); }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 12px; font-weight: 500; color: var(--muted); }
+.eyebrow.accent { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

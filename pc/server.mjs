@@ -5,12 +5,18 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mono, ns, validateSample, percentile, sequenceUpdate, measuredRate } from './core.mjs';
 import { createUsbBridge, isLocalUsbRequest } from './usb.mjs';
+import { createTunnel } from './tunnel.mjs';
+import { openStore } from './store.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dataRoot=path.resolve(process.env.DATA_DIR || path.join(root,'data'));
 await mkdir(dataRoot,{recursive:true});
+const store=await openStore(dataRoot);
+export const closeStore=()=>store.close();
+await store.backfill(id=>/^[a-f0-9]{24}$/.test(id));
 const port=Number(process.env.PORT||8787);
 const usb=createUsbBridge({port,root});
+const tunnel=createTunnel({port,root});
 const keyFile=path.join(dataRoot,'.collector-key');
 let admin=process.env.COLLECTOR_TOKEN;
 if(!admin) { try {admin=(await readFile(keyFile,'utf8')).trim();} catch {admin=randomBytes(32).toString('hex');await writeFile(keyFile,admin,{mode:0o600});} }
@@ -21,7 +27,8 @@ const same=(a,b)=>typeof a==='string'&&typeof b==='string'&&a.length===b.length&
 const json=(res,status,obj)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(obj));};
 const safeId=id=>/^[a-f0-9]{24}$/.test(id||'');
 const sessionDir=id=>path.join(dataRoot,id);
-const persist=s=>writeFile(path.join(sessionDir(s.id),'manifest.json'),JSON.stringify(s.manifest,null,2));
+// The manifest file is authoritative; the SQLite/Supabase index is updated after every successful write.
+const persist=s=>writeFile(path.join(sessionDir(s.id),'manifest.json'),JSON.stringify(s.manifest,null,2)).then(()=>store.save(s.manifest));
 async function appendRecords(id,records) {
   const files=[];
   try {
@@ -90,7 +97,7 @@ export const server=http.createServer(async(req,res)=>{
       if(!/^[a-zA-Z0-9_./-]+$/.test(name)||name.includes('..'))return json(res,404,{error:'Not found'});
       const file=path.join(root,'web',name);
       const bytes=await readFile(file);
-      res.writeHead(200,{'Content-Type':({'html':'text/html','css':'text/css','js':'text/javascript','svg':'image/svg+xml'})[name.split('.').pop()]||'application/octet-stream',
+      res.writeHead(200,{'Content-Type':({'html':'text/html','css':'text/css','js':'text/javascript','svg':'image/svg+xml','json':'application/json'})[name.split('.').pop()]||'application/octet-stream',
         'Permissions-Policy':'camera=(self), microphone=(), geolocation=(self), accelerometer=(self), gyroscope=(self)'});return res.end(bytes);
     }
     const token=req.headers.authorization?.replace(/^Bearer /,'');
@@ -102,6 +109,14 @@ export const server=http.createServer(async(req,res)=>{
       if(req.method==='POST'){const input=JSON.parse((await body(req,10000)).toString());return json(res,200,await usb.connect(input.serial));}
       return json(res,405,{error:'Method not allowed'});
     }
+    if(url.pathname==='/api/connection'||url.pathname==='/api/tunnel') {
+      // Phone-route setup is only offered to the dashboard opened on this PC.
+      if(!isAdmin)return json(res,401,{error:'Collector admin token required'});
+      if(!isLocalUsbRequest(req,port))return json(res,403,{error:'Set up the phone connection from http://localhost:'+port+' on the collector PC.'});
+      if(url.pathname==='/api/connection'&&req.method==='GET')return json(res,200,{local_origin:`http://localhost:${port}`,tunnel:tunnel.status()});
+      if(url.pathname==='/api/tunnel'&&req.method==='POST')return json(res,200,await tunnel.start(u=>allowed.add(u)));
+      return json(res,405,{error:'Method not allowed'});
+    }
     const parts=url.pathname.split('/').filter(Boolean);
     const id=parts[2];const action=parts[3];
     if(id&&!safeId(id))return json(res,400,{error:'Invalid session ID'});
@@ -111,7 +126,9 @@ export const server=http.createServer(async(req,res)=>{
     if(url.pathname==='/api/time'&&isAdmin)return json(res,200,{server_ms:mono()});
     if(parts[1]!=='sessions')return json(res,404,{error:'Not found'});
     if(!id&&req.method==='GET'&&isAdmin) {
-      const list=[];for(const d of await readdir(dataRoot)){if(!safeId(d))continue;try{const m=await loadStored(d);list.push({...m,live:sessions.has(d)?view(sessions.get(d)):null});}catch{}}
+      let manifests=store.list();
+      if(!manifests){manifests=[];for(const d of await readdir(dataRoot)){if(!safeId(d))continue;try{manifests.push(await loadStored(d));}catch{}}}
+      const list=manifests.map(m=>({...m,live:sessions.has(m.id)?view(sessions.get(m.id)):null}));
       return json(res,200,list.sort((a,b)=>b.created_at.localeCompare(a.created_at)));
     }
     if(!id&&req.method==='POST'&&isAdmin) {
@@ -211,10 +228,12 @@ export const server=http.createServer(async(req,res)=>{
 const bootId=randomBytes(12).toString('hex');
 server.requestTimeout=30000;server.headersTimeout=15000;
 if(process.env.SENSORLINK_TEST!=='1')server.listen(port,process.env.HOST||'127.0.0.1',()=>{
-  console.log(`\nSENSORLINK • Week 01 collector\nDashboard: http://localhost:${port}\nData directory: ${dataRoot}\n`);
-  console.log(`Collector token (paste into Connection settings):\n${admin}\n`);
-  console.log('For phone access: run an HTTPS tunnel to this port, then use its https:// URL in Connection settings.');
+  console.log(`\nTEPEGOZ • PC collector  (recordings: ${dataRoot})`);
+  console.log(`  Session index: ${store.kind==='sqlite'?'SQLite (data/sessions.sqlite)':'manifest files'}${store.mirrored?' + Supabase mirror':''}\n`);
+  console.log(`  Open the dashboard (this link signs you in):\n  http://localhost:${port}/#token=${admin}\n`);
+  console.log('  Then choose how the phone connects: Wi-Fi (secure tunnel) or USB cable.\n');
+  if(process.argv.includes('--tunnel')||process.env.TUNNEL==='1')tunnel.start(u=>allowed.add(u)).then(t=>console.log(t.url?`  Wi-Fi tunnel ready: ${t.url}\n`:`  Tunnel not started: ${t.error}\n  ${t.install_hint}\n`));
 });
 let closing=false;
-async function shutdown(){if(closing)return;closing=true;for(const s of sessions.values())await serial(s.id,async()=>{if(s.recording){s.recording=false;s.stopAt=mono();s.manifest.status='interrupted';if(s.storageError)s.manifest.storage_error='Rollback failed; inspect raw files before using this session.';s.manifest.metrics=metrics(s);await persist(s);}},true);server.close(()=>process.exit(0));}
+async function shutdown(){if(closing)return;closing=true;tunnel.stop();for(const s of sessions.values())await serial(s.id,async()=>{if(s.recording){s.recording=false;s.stopAt=mono();s.manifest.status='interrupted';if(s.storageError)s.manifest.storage_error='Rollback failed; inspect raw files before using this session.';s.manifest.metrics=metrics(s);await persist(s);}},true);store.close();server.close(()=>process.exit(0));}
 process.on('SIGINT',shutdown);process.on('SIGTERM',shutdown);

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {probeSensors} from '../web/sensors.js';
+import {probeSensors} from '../web/js/phone/sensors.js';
 
 function environment({rotation,permission='granted',generic=false}={}){
   const events=new Map();let time=0,stopped=false;

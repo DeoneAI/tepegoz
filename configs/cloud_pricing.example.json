@@ -1,0 +1,11 @@
+{
+  "region": "us-east-1",
+  "checked": "2026-11-11 via third-party price aggregators (doit.com, holori, vantage); confirm on aws.amazon.com/ec2/pricing before budgeting",
+  "s3_standard_usd_per_gb_month": 0.023,
+  "s3_note": "0.023 is the long-standing first-50-TB S3 Standard rate; not re-verified on 2026-11-11",
+  "instances": {
+    "c7i.xlarge": {"kind": "CPU, 4 vCPU Intel Sapphire Rapids, 8 GiB", "on_demand_usd_per_hour": 0.1785},
+    "g4dn.xlarge": {"kind": "NVIDIA T4 16 GB, 4 vCPU, 16 GiB", "on_demand_usd_per_hour": 0.526},
+    "g6.xlarge": {"kind": "NVIDIA L4 24 GB, 4 vCPU, 16 GiB", "on_demand_usd_per_hour": 0.8048}
+  }
+}

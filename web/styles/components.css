@@ -1,0 +1,114 @@
+/* Reusable components shared by the dashboard and the phone page. Colors come only from tokens. */
+
+/* Brand */
+.brand { display: inline-flex; align-items: center; gap: 10px; }
+.brand img { display: block; }
+.brand-name { font-family: var(--display); font-size: 18px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+.brand-by { display: block; margin-top: 3px; font-size: 11px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
+
+/* Buttons */
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 38px; padding: 9px 16px; border: 1px solid transparent; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; white-space: nowrap; transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, filter 0.15s;
+}
+.button.primary { background: var(--primary); color: var(--primary-ink); }
+.button.primary:hover:not(:disabled) { filter: brightness(1.15); }
+.button.accent { background: var(--accent); color: #fff; }
+.button.secondary { background: var(--surface); border-color: var(--line-strong); color: var(--text-2); }
+.button.secondary:hover:not(:disabled) { background: var(--surface-2); }
+.button.danger { background: var(--bad-soft); border-color: transparent; color: var(--bad); }
+.button.small { min-height: 30px; padding: 5px 11px; font-size: 12px; border-radius: 8px; }
+.button.full { width: 100%; justify-content: space-between; }
+.icon-button {
+  display: inline-grid; place-items: center; width: 36px; height: 36px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--muted); font-size: 16px;
+}
+.icon-button:hover { color: var(--text); border-color: var(--line-strong); }
+
+/* Panels */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.panel-heading {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  min-height: 56px; padding: 12px 20px; border-bottom: 1px solid var(--line);
+}
+.panel-text { padding: 12px 20px; font-size: 13px; }
+
+/* Tags, states, dots */
+.tag {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.02em; color: var(--muted); background: var(--surface-2);
+  padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+}
+.tag.accent { color: var(--accent); background: var(--accent-soft); }
+.tag.ok { color: var(--ok); background: var(--ok-soft); }
+.state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--muted); padding: 3px 9px; border-radius: 999px; background: var(--surface-2); }
+.state::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.state.ok { color: var(--ok); background: var(--ok-soft); }
+.state.warn { color: var(--warn); background: var(--warn-soft); }
+.state.bad { color: var(--bad); background: var(--bad-soft); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--faint); flex-shrink: 0; }
+.dot.online { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+
+/* Notes and errors */
+.note { background: var(--surface-2); border-radius: var(--radius-sm); padding: 11px 13px; color: var(--text-2); font-size: 12px; line-height: 1.6; }
+.form-error { color: var(--bad); font-size: 13px; line-height: 1.6; margin: 10px 0; min-height: 1px; }
+
+/* Forms */
+label { display: block; margin: 14px 0; font-size: 12px; font-weight: 600; color: var(--text-2); }
+label input, label select { display: block; width: 100%; margin-top: 6px; font-weight: 400; }
+input, select { background: var(--surface); color: var(--text); border: 1px solid var(--line-strong); border-radius: 8px; padding: 9px 11px; font-size: 13px; }
+input:focus, select:focus { border-color: var(--text-2); outline: 3px solid var(--surface-3); outline-offset: 0; }
+input[type=range] { padding: 0; accent-color: var(--accent); background: none; border: 0; outline: none; }
+input[type=checkbox] { width: auto; accent-color: var(--accent); }
+label.check { display: flex; align-items: center; gap: 9px; font-weight: 500; }
+label.check input { margin: 0; }
+
+/* Tables */
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; min-width: 620px; }
+table.compact { min-width: 520px; }
+th { padding: 12px 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); border-bottom: 1px solid var(--line); }
+td { padding: 13px 20px; font-size: 13px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: var(--surface-2); }
+td small { display: block; margin-top: 3px; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+td.actions { display: flex; flex-wrap: wrap; gap: 6px; }
+table.compact td, table.compact th { padding: 10px 16px; }
+
+/* Feed overlay badges (always on a dark camera stage) */
+.feed-badge { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: #e2e8f0; background: rgba(12, 10, 9, 0.7); padding: 4px 9px; border-radius: 999px; backdrop-filter: blur(4px); }
+.feed-top { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; gap: 10px; pointer-events: none; }
+
+/* Sensor lists (phone preflight + live capability list) */
+.sensor-list { display: grid; gap: 8px; }
+.sensor-list li {
+  display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: center;
+  padding: 10px 12px; background: var(--surface-2); border-radius: var(--radius-sm); font-size: 13px;
+}
+.sensor-list li span { text-transform: capitalize; font-weight: 600; }
+.sensor-list li b { font-weight: 500; color: var(--muted); font-size: 12px; text-align: right; }
+.sensor-list li small { grid-column: 1 / -1; color: var(--faint); font-family: var(--mono); font-size: 11px; }
+.sensor-list li.ok b { color: var(--ok); }
+.sensor-list li.warn b { color: var(--warn); }
+
+/* Dialogs */
+dialog {
+  width: calc(100% - 32px); max-width: 480px; padding: 24px; color: var(--text);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow-lg);
+}
+dialog.wide { max-width: 920px; }
+dialog::backdrop { background: rgba(12, 10, 9, 0.4); backdrop-filter: blur(3px); }
+dialog h2 { font-family: var(--display); font-size: 22px; letter-spacing: -0.02em; margin-bottom: 6px; }
+dialog p { font-size: 13px; margin-bottom: 12px; }
+.dialog-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+#sensor-check-warning.warn { color: var(--warn); }
+
+/* Toast */
+.toast {
+  position: fixed; left: 50%; bottom: 24px; z-index: 100; transform: translate(-50%, 16px);
+  max-width: calc(100% - 32px); padding: 12px 18px; border-radius: 12px; font-size: 13px;
+  background: var(--text); color: var(--bg); box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+table.compact th, table.compact td { white-space: nowrap; }

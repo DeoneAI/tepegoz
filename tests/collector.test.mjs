@@ -8,8 +8,8 @@ const token='test-only-collector-key';
 test('collector authenticates, stores, freezes and replays protocol messages through its HTTP handler',async t=>{
   const data=await mkdtemp(path.join(tmpdir(),'sensorlink-test-'));
   process.env.SENSORLINK_TEST='1';process.env.DATA_DIR=data;process.env.COLLECTOR_TOKEN=token;process.env.ALLOWED_ORIGINS='https://frontend.test';
-  const {server}=await import('../pc/server.mjs');
-  t.after(async()=>{server.close();await rm(data,{recursive:true,force:true});});
+  const {server,closeStore}=await import('../pc/server.mjs');
+  t.after(async()=>{server.close();closeStore();await rm(data,{recursive:true,force:true});});
   // Exercise the real HTTP listener with streams; loopback sockets are restricted in some sandboxes.
   const req=async(route,key=token,method='GET',value,headers={})=>{
     const bytes=value===undefined?Buffer.alloc(0):Buffer.isBuffer(value)?value:Buffer.from(JSON.stringify(value));
