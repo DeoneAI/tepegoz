@@ -75,6 +75,8 @@ In this mode, the phone's `http://localhost:8787` is forwarded to the PC through
 
 The dashboard starts a Cloudflare quick tunnel for you (or run `npm run start:wifi`). The phone loads `/phone.html` through that HTTPS link from the collector itself, and **View from another device → Create link** opens the hosted (Vercel) dashboard already connected, with no address or token to copy. See [docs/CONNECTING.md](docs/CONNECTING.md).
 
+**No PC running?** The same collector deploys to Render's free plan (`render.yaml`), with recordings backed up to Supabase Storage: [docs/RENDER.md](docs/RENDER.md).
+
 ## Architecture
 
 Acquisition remains in the browser/Node collector. Recorded perception and motion analysis run on the PC through Python CLI modules.

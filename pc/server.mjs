@@ -7,6 +7,7 @@ import { mono, ns, validateSample, percentile, sequenceUpdate, measuredRate } fr
 import { createUsbBridge, isLocalUsbRequest } from './usb.mjs';
 import { createTunnel } from './tunnel.mjs';
 import { openStore } from './store.mjs';
+import { createBackup } from './backup.mjs';
 import { isTrustedLocalBrowser } from './local.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -17,6 +18,10 @@ await mkdir(dataRoot,{recursive:true});
 const store=await openStore(dataRoot);
 export const closeStore=()=>store.close();
 await store.backfill(id=>/^[a-f0-9]{24}$/.test(id));
+// Hosted (cloud) mode, e.g. Render: the disk is temporary, so finished sessions are also kept in Supabase Storage.
+const cloud=Boolean(process.env.RENDER||process.env.COLLECTOR_CLOUD==='1');
+const backup=createBackup();
+if(cloud)await store.restoreFromMirror(id=>/^[a-f0-9]{24}$/.test(id));
 const port=Number(process.env.PORT||8787);
 const usb=createUsbBridge({port,root});
 const tunnel=createTunnel({port,root});
@@ -27,6 +32,7 @@ const allowed=new Set((process.env.ALLOWED_ORIGINS||`http://localhost:${port},ht
 // The hosted dashboard that "View from another device" links open. Always allowed, so no .env edit is needed.
 export const hostedDashboard=new URL(process.env.HOSTED_DASHBOARD||'https://tepegoz-deone.vercel.app').origin;
 allowed.add(hostedDashboard);
+if(process.env.RENDER_EXTERNAL_URL)allowed.add(new URL(process.env.RENDER_EXTERNAL_URL).origin); // the collector's own public page
 const sessions=new Map();
 const secret=()=>randomBytes(24).toString('hex');
 const same=(a,b)=>typeof a==='string'&&typeof b==='string'&&a.length===b.length&&timingSafeEqual(Buffer.from(a),Buffer.from(b));
@@ -35,6 +41,10 @@ const safeId=id=>/^[a-f0-9]{24}$/.test(id||'');
 const sessionDir=id=>path.join(dataRoot,id);
 // The manifest file is authoritative; the SQLite/Supabase index is updated after every successful write.
 const persist=s=>writeFile(path.join(sessionDir(s.id),'manifest.json'),JSON.stringify(s.manifest,null,2)).then(()=>store.save(s.manifest));
+const uploads=new Set(); // backups in flight, awaited on shutdown
+const backupSession=id=>{if(!backup)return;const job=backup.upload(id,sessionDir(id)).finally(()=>uploads.delete(job));uploads.add(job);return job;};
+/** Bring a finished session back from Supabase Storage when this host lost its files. */
+async function ensureLocal(id){if(!backup)return;try{await readFile(path.join(sessionDir(id),'frames.jsonl'));}catch{await mkdir(sessionDir(id),{recursive:true});await backup.restore(id,sessionDir(id));}}
 async function appendRecords(id,records) {
   const files=[];
   try {
@@ -96,7 +106,7 @@ export const server=http.createServer(async(req,res)=>{
   if(req.method==='OPTIONS'){res.writeHead(204);return res.end();}
   const url=new URL(req.url,'http://collector.local');
   try {
-    if(url.pathname==='/health')return json(res,200,{ok:true,version:1});
+    if(url.pathname==='/health')return json(res,200,{ok:true,version:1,cloud});
     if(!url.pathname.startsWith('/api/')) {
       if(req.method!=='GET')return json(res,405,{error:'Method not allowed'});
       const name=url.pathname==='/'?'index.html':url.pathname.slice(1);
@@ -163,6 +173,7 @@ export const server=http.createServer(async(req,res)=>{
       for(const file of ['telemetry.jsonl','frames.jsonl','clock.jsonl'])await writeFile(path.join(sessionDir(id),file),'');
       await persist(session);sessions.set(id,session);return json(res,201,{...view(session),phone_key:session.phoneKey});
     }
+    if(!s&&isAdmin&&req.method==='GET'&&action!=='live-image')await ensureLocal(id);
     if(!action&&req.method==='GET'&&isAdmin){if(s)return json(res,200,view(s,url.searchParams.get('sensor')));return json(res,200,await loadStored(id));}
     if(action==='live-image'&&req.method==='GET'&&isAdmin) {
       res.setHeader('Cache-Control','no-store');
@@ -233,13 +244,15 @@ export const server=http.createServer(async(req,res)=>{
         s.lastFrame=f;s.lastJpeg=jpeg;s.frameCount++;s.bytes+=jpeg.length;s.lastSeen=mono();return json(res,200,{stored:true,frame_index:f.frame_index});});
     }
     if(action==='device'&&req.method==='POST'&&isPhone){const input=JSON.parse((await body(req,20000)).toString());return await serial(id,async()=>{s.device=input;s.manifest.device=input;await persist(s);return json(res,200,{ok:true});});}
-    if(action==='stop'&&req.method==='POST'&&isAdmin)return await serial(id,async()=>{if(s.recording){s.stopAt=mono();s.recording=false;s.manifest.status='completed';s.manifest.ended_at=new Date().toISOString();s.manifest.metrics=metrics(s);await persist(s);}return json(res,200,view(s));});
+    if(action==='stop'&&req.method==='POST'&&isAdmin)return await serial(id,async()=>{if(s.recording){s.stopAt=mono();s.recording=false;s.manifest.status='completed';s.manifest.ended_at=new Date().toISOString();s.manifest.metrics=metrics(s);await persist(s);backupSession(id);}return json(res,200,view(s));});
     return json(res,404,{error:'Not found'});
   }catch(e){if(res.headersSent){res.destroy();return;}json(res,e.status||(e.code==='ENOENT'?404:e instanceof SyntaxError?400:500),{error:e.code==='ENOENT'?'Not found':e.message});}
 });
 const bootId=randomBytes(12).toString('hex');
 server.requestTimeout=30000;server.headersTimeout=15000;
-if(process.env.SENSORLINK_TEST!=='1')server.listen(port,process.env.HOST||'127.0.0.1',()=>{
+if(process.env.SENSORLINK_TEST!=='1')server.listen(port,process.env.HOST||(cloud?'0.0.0.0':'127.0.0.1'),()=>{
+  if(cloud)console.log(`
+TEPEGOZ cloud collector. Recordings are backed up to ${backup?`Supabase Storage (bucket "${backup.bucket}")`:'NOTHING: set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, this disk is temporary'}`);
   console.log(`\nTEPEGOZ • PC collector  (recordings: ${dataRoot})`);
   console.log(`  Session index: ${store.kind==='sqlite'?'SQLite (data/sessions.sqlite)':'manifest files'}${store.mirrored?' + Supabase mirror':''}\n`);
   console.log(`  Open on this PC:  http://localhost:${port}\n`);
@@ -248,5 +261,5 @@ if(process.env.SENSORLINK_TEST!=='1')server.listen(port,process.env.HOST||'127.0
   if(process.argv.includes('--tunnel')||process.env.TUNNEL==='1')tunnel.start(u=>allowed.add(u)).then(t=>console.log(t.url?`  Wi-Fi tunnel ready: ${t.url}\n`:`  Tunnel not started: ${t.error}\n  ${t.install_hint}\n`));
 });
 let closing=false;
-async function shutdown(){if(closing)return;closing=true;tunnel.stop();for(const s of sessions.values())await serial(s.id,async()=>{if(s.recording){s.recording=false;s.stopAt=mono();s.manifest.status='interrupted';if(s.storageError)s.manifest.storage_error='Rollback failed; inspect raw files before using this session.';s.manifest.metrics=metrics(s);await persist(s);}},true);store.close();server.close(()=>process.exit(0));}
+async function shutdown(){if(closing)return;closing=true;tunnel.stop();for(const s of sessions.values())await serial(s.id,async()=>{if(s.recording){s.recording=false;s.stopAt=mono();s.manifest.status='interrupted';if(s.storageError)s.manifest.storage_error='Rollback failed; inspect raw files before using this session.';s.manifest.metrics=metrics(s);await persist(s);backupSession(s.id);}},true);await Promise.race([Promise.allSettled([...uploads]),new Promise(r=>setTimeout(r,20000))]);store.close();server.close(()=>process.exit(0));}
 process.on('SIGINT',shutdown);process.on('SIGTERM',shutdown);

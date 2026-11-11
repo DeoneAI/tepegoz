@@ -32,7 +32,7 @@ export function consumeRemoteLink(storage, location, history) {
   const params = new URLSearchParams(location.hash.slice(1));
   const collector = params.get('collector');
   const token = params.get('token');
-  if (!collector || !token || !/^[\w.-]{16,256}$/.test(token)) return false;
+  if (!collector || !token || !/^[\w.~+/=-]{16,256}$/.test(token)) return false; // also accepts base64 tokens (Render)
   let server;
   try { server = validateServer(collector, { local: false }); } catch { return false; }
   storage.setItem(STORAGE_KEY, JSON.stringify({ server, token, mode: 'tunnel' }));

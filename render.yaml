@@ -1,0 +1,21 @@
+# Render Blueprint: runs the Tepegoz collector in the cloud on Render's free plan.
+# New -> Blueprint -> pick this repository. Then set the two Supabase values when asked.
+# See docs/RENDER.md.
+services:
+  - type: web
+    name: tepegoz-collector
+    runtime: node
+    plan: free
+    buildCommand: npm install --omit=dev
+    startCommand: node pc/server.mjs
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22.13.0
+      - key: COLLECTOR_TOKEN
+        generateValue: true
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

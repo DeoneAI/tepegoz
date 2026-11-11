@@ -56,6 +56,19 @@ export function createSupabaseMirror({ url = process.env.SUPABASE_URL, key = pro
         log(`Supabase mirror unavailable: ${error.message}`);
       }
     },
+    /** Manifests stored in Supabase, newest first ([] when unreachable). Used to rebuild the library after a restart. */
+    async list() {
+      try {
+        const response = await fetchImpl(`${endpoint.split('?')[0]}?select=manifest&order=created_at.desc&limit=500`, {
+          headers: { apikey: key, ...(key.startsWith('eyJ') ? { Authorization: `Bearer ${key}` } : {}) }, signal: AbortSignal.timeout(10000),
+        });
+        if (!response.ok) { log(`Supabase list: HTTP ${response.status}`); return []; }
+        return (await response.json()).map(r => r.manifest).filter(Boolean);
+      } catch (error) {
+        log(`Supabase list unavailable: ${error.message}`);
+        return [];
+      }
+    },
   };
 }
 
@@ -87,6 +100,17 @@ export async function openStore(dataRoot, { mirror = createSupabaseMirror(), log
     list() {
       if (!db) return null;
       return db.prepare('SELECT manifest FROM sessions ORDER BY created_at DESC').all().map(r => JSON.parse(r.manifest));
+    },
+    /** Add sessions known only to Supabase (a host with a temporary disk lost its files). Does not write back to Supabase. */
+    async restoreFromMirror(isSessionId) {
+      if (!db || !mirror?.list) return 0;
+      const known = new Set(db.prepare('SELECT id FROM sessions').all().map(r => r.id));
+      let count = 0;
+      for (const manifest of await mirror.list()) {
+        if (!isSessionId(manifest.id) || known.has(manifest.id)) continue;
+        try { upsertStatement.run(toRow(manifest)); count++; } catch (error) { log(`SQLite restore failed: ${error.message}`); }
+      }
+      return count;
     },
     /** Index any session folder that is missing or newer on disk (files remain authoritative). */
     async backfill(isSessionId) {

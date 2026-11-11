@@ -219,6 +219,8 @@ start it with `npm start`.
 2. Copy `.env.example` to `.env` and fill in `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 3. `npm start`. The terminal shows `SQLite + Supabase mirror`.
 
+**No PC running? Use the cloud collector.** Deploy the same collector to Render's free plan and the phone connects straight to it: see [docs/RENDER.md](docs/RENDER.md).
+
 **Open the dashboard from another device.** On the PC: **Connect phone → View from another device →
 Create link**, then scan the QR code (section 3, part ③). `npm run token` is only needed for the manual
 fallback. A self-hosted copy other than tepegoz-deone.vercel.app: set `HOSTED_DASHBOARD` in `.env`.

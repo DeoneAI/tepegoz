@@ -16,6 +16,10 @@ export const withScheme = value => (value && !/^[a-z][a-z0-9+.-]*:\/\//i.test(va
 export function createConnection(ctx, { toast, onConnected, showPage }) {
   let pairURL = null;
 
+  // A collector running in the cloud (Render) also serves this page; /health says so. Vercel answers 404.
+  let cloudHere = false;
+  if (!ctx.isLocalPage) fetch('/health').then(r => r.json()).then(h => { cloudHere = h?.cloud === true; }).catch(() => {});
+
   const route = () => document.querySelector('input[name="route"]:checked')?.value || 'wifi';
   const token = () => ctx.config?.token || '';
   const local = (path, options) => request(location.origin, token(), path, options).then(r => r.json());
@@ -29,14 +33,15 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
 
   async function openSettings() {
     $('local-setup').hidden = !ctx.isLocalPage;
-    $('hosted-note').hidden = ctx.isLocalPage; // the online copy explains why Wi-Fi/USB live on the PC
+    $('hosted-note').hidden = ctx.isLocalPage || cloudHere; // the online copy explains why Wi-Fi/USB live on the PC
+    $('cloud-note').hidden = !cloudHere;
     $('settings-title').textContent = ctx.isLocalPage ? 'Connect phone' : 'Connect to your collector';
     $('share-setup').hidden = !ctx.isLocalPage; // only this PC can hand out a remote link
     // On the collector PC the remote fields are never needed: hide them so they cannot be filled by mistake.
     $('remote-setup').hidden = ctx.isLocalPage;
-    $('remote-setup').open = !ctx.isLocalPage && !ctx.config;
+    $('remote-setup').open = !ctx.isLocalPage && (!ctx.config || cloudHere);
     $('signed-in').hidden = !ctx.online;
-    $('server-url').value = ctx.config && !ctx.isLocalPage ? ctx.config.server : '';
+    $('server-url').value = ctx.config && !ctx.isLocalPage ? ctx.config.server : cloudHere ? location.origin : '';
     $('connection-error').textContent = '';
     const usb = ctx.config?.mode === 'usb-adb';
     $(usb ? 'route-usb' : 'route-wifi').checked = true;
