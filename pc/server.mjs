@@ -60,7 +60,7 @@ async function appendRecords(id,records) {
         if(!bytesWritten)throw new Error('Recording write made no progress');
         offset+=bytesWritten;
       }
-      await file.sync();
+      if(!cloud)await file.sync(); // a cloud host's disk is temporary and backed up at Stop, so skip the per-write flush there
     }
   }catch(error){
     // Restore completed/partial appends before accepting a retry. This is not crash atomicity.
@@ -74,6 +74,8 @@ async function appendRecords(id,records) {
   }finally{await Promise.allSettled(files.map(({file})=>file.close()));}
 }
 const append=(id,name,text)=>appendRecords(id,[[name,text]]);
+/** Resolve once frame `prev` is stored (or was given up on); a lost upload delays later frames by at most this timeout, concurrently. */
+async function framePredecessor(s,prev,timeoutMs=600){const until=Date.now()+timeoutMs;while(s.recording&&(s.counters.last.frame??-1)<prev&&Date.now()<until)await new Promise(r=>setTimeout(r,4));}
 async function body(req,limit=2_000_000) {
   const parts=[];let n=0;for await(const p of req){n+=p.length;if(n>limit)throw Object.assign(new Error('Request too large'),{status:413});parts.push(p);}return Buffer.concat(parts);
 }
@@ -230,6 +232,8 @@ export const server=http.createServer(async(req,res)=>{
       if(!Number.isSafeInteger(meta.frame_index)||meta.frame_index<0||meta.frame_index>999999999999||!/^\d{1,18}$/.test(meta.timestamp_ns)||!['captureTime','presentationTime_estimate','callback_estimate'].includes(meta.timestamp_source)||!Number.isInteger(meta.width)||!Number.isInteger(meta.height)||meta.width<1||meta.width>1920||meta.height<1||meta.height>1920)return json(res,400,{error:'Invalid frame metadata'});
       const jpeg=await body(req,2_000_000);const received=mono();
       if(jpeg[0]!==0xff||jpeg[1]!==0xd8)return json(res,400,{error:'Expected JPEG'});
+      // Frames can arrive out of order when the phone keeps several uploads in flight: wait (briefly) for the one it sent before.
+      if(Number.isSafeInteger(meta.prev_frame_index)&&meta.prev_frame_index>=0)await framePredecessor(s,meta.prev_frame_index);
       return await serial(id,async()=>{if(!s.recording)return json(res,409,{error:'Session stopped'});
         const counters=structuredClone(s.counters);
         if(!sequenceUpdate(counters,'frame',meta.frame_index))return json(res,409,{error:'Duplicate/out of order frame'});

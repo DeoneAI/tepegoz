@@ -87,13 +87,13 @@ test('ended sessions report unsent telemetry instead of claiming a successful fl
   assert.match(client.ui.status, /1 telemetry samples not uploaded/);
 });
 
-test('samples recorded while stopped are ignored and frames are skipped while one is uploading', async () => {
-  const gate = deferred(); let uploads = 0;
-  const client = phone(async () => ({}), async () => { uploads++; await gate.promise; });
-  const first = client.capture.frame(0, {});
-  client.capture.frame(200, {}); // second frame while the first is still uploading → counted skip, no upload
-  await tick(3); assert.equal(uploads, 1);
-  gate.resolve(); await first;
+test('samples recorded while stopped are ignored and frames beyond the in-flight limit are skipped', async () => {
+  const gate = deferred(); const sent = [];
+  const client = phone(async () => ({}), async (_route, _blob, headers) => { sent.push(JSON.parse(headers['X-Frame-Meta'])); await gate.promise; });
+  const jobs = [0, 200, 400, 600, 800, 1000].map(t => client.capture.frame(t, {})); // 6th frame while 5 uploads are in flight → counted skip
+  await tick(3); assert.equal(sent.length, 5);
+  assert.deepEqual(sent.map(m => m.prev_frame_index), [-1, 0, 1, 2, 3], 'each frame names the frame sent before it');
+  gate.resolve(); await Promise.all(jobs.filter(Boolean));
   await client.capture.stop(false);
   client.enqueue(5); assert.equal(client.capture.pending, 0);
 });

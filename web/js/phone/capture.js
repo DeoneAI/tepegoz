@@ -24,7 +24,11 @@ export const MESSAGES = {
  * @param view      UI sink: status, startButton, stopButton, captureState, lockOptions, stats, sensorResult, options
  * @param env       { now, timers, media, motion, geolocation, wakeLock, createGyroscope, probeSensors, device }
  */
-export function createCapture({ sessionId, mode, transport, view, env }) {
+// Several JPEGs may be uploading at once, so one slow round trip no longer caps the frame rate
+// (over the internet each upload takes several hundred ms). The PC commits them in order using `prev_frame_index`.
+export const MAX_FRAMES_IN_FLIGHT = 5;
+
+export function createCapture({ sessionId, mode, transport, view, env, maxInFlight = MAX_FRAMES_IN_FLIGHT }) {
   const now = env.now;
   const timers = env.timers;
   let running = false;
@@ -35,7 +39,8 @@ export function createCapture({ sessionId, mode, transport, view, env }) {
   let stats = freshStats();
   let frameIndex = 0;
   let lastFrameAt = -Infinity;
-  let frameUpload = null;
+  const framesInFlight = new Set();
+  let lastSentIndex = -1;
   let handles = {};
 
   const queue = createTelemetryQueue({
@@ -130,7 +135,7 @@ export function createCapture({ sessionId, mode, transport, view, env }) {
   }
 
   // ---------------------------------------------------------------- frames
-  async function uploadFrame(index, meta) {
+  async function uploadFrame(index, prev, meta) {
     try {
       const { width } = view.options();
       const image = await env.media.encode(width);
@@ -138,7 +143,7 @@ export function createCapture({ sessionId, mode, transport, view, env }) {
       const hasPresentation = typeof meta.presentationTime === 'number';
       const t = hasCapture ? meta.captureTime : hasPresentation ? meta.presentationTime : now();
       const payload = {
-        frame_index: index, timestamp_ns: stamp(t),
+        frame_index: index, prev_frame_index: prev, timestamp_ns: stamp(t),
         timestamp_source: hasCapture ? 'captureTime' : hasPresentation ? 'presentationTime_estimate' : 'callback_estimate',
         media_time_s: meta.mediaTime ?? image.mediaTime, width: image.width, height: image.height,
       };
@@ -163,9 +168,12 @@ export function createCapture({ sessionId, mode, transport, view, env }) {
     if (timestamp - lastFrameAt < interval - 2) return;
     lastFrameAt = timestamp;
     const index = frameIndex++;
-    if (frameUpload) { stats.droppedFrames++; return; }
-    frameUpload = uploadFrame(index, meta).finally(() => { frameUpload = null; });
-    return frameUpload;
+    if (framesInFlight.size >= maxInFlight) { stats.droppedFrames++; return; }
+    const prev = lastSentIndex;
+    lastSentIndex = index;
+    const job = uploadFrame(index, prev, meta).finally(() => framesInFlight.delete(job));
+    framesInFlight.add(job);
+    return job;
   }
 
   // ---------------------------------------------------------------- lifecycle
@@ -249,7 +257,7 @@ export function createCapture({ sessionId, mode, transport, view, env }) {
     if (flushPending) {
       view.stopButton({ disabled: true });
       view.status('Stopping capture and finishing frame and telemetry uploads…');
-      if (frameUpload) await frameUpload; // the JPEG drawn before the stream was released
+      await Promise.allSettled([...framesInFlight]); // the JPEGs drawn before the stream was released
       await queue.drain(4);
     }
     view.stopButton({ hidden: !queue.pending || queue.ended, disabled: false, label: 'Retry remaining telemetry uploads' });
