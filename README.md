@@ -388,7 +388,18 @@ the collector loads it at start-up.
 | `COLLECTOR_CLOUD` | unset (`RENDER` is detected) | `1` = cloud mode: bind all interfaces, back up to Storage, rebuild the list from Supabase |
 | `RENDER_EXTERNAL_URL` | set by Render | The collector's own public origin, allowed automatically |
 
-npm scripts: `npm start`, `npm run start:wifi`, `npm run dev`, `npm test`, `npm run token` (prints the token for manual sign-in).
+### npm commands
+
+| Command | What it does | When to use it |
+|---|---|---|
+| `npm start` | Starts the collector (`node pc/server.mjs`), loading `.env` if it exists. Serves the dashboard and phone page at <http://localhost:8787>, and records sessions into `data/`. Keep the terminal open while you record. | Every time you want to record or replay. |
+| `npm run start:wifi` | Same as `npm start`, plus **starts the Cloudflare HTTPS link right away** (needs `cloudflared`) and prints its address. Equivalent to setting `TUNNEL=1`. | When the phone will connect over Wi-Fi or mobile data and you don't want to press **Start link** in the dashboard. Not needed for USB. |
+| `npm run dev` | Currently identical to `npm start`. | Kept as the usual name for a development run; use either. |
+| `npm test` | Runs all Node tests in `tests/*.test.mjs` (collector, auth, storage, replay, phone logic, session index, cloud backup, frame ordering). Needs no phone, network or install. | After changing code, and before committing. |
+| `npm run token` | Prints the collector's admin token (`COLLECTOR_TOKEN`, or the one saved in `data/.collector-key`). Run `npm start` once first so the token exists. | Only to sign in by hand from another device. The **Create link** button does this for you, and the PC's own browser never needs it. Keep the token private. |
+
+On Windows PowerShell, use `npm.cmd` instead of `npm` if script policy blocks it (for example `npm.cmd start`). The Python tools
+are not npm commands: see [Offline perception and estimation](#offline-perception-and-estimation).
 
 ---
 
