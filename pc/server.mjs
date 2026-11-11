@@ -29,9 +29,6 @@ const keyFile=path.join(dataRoot,'.collector-key');
 let admin=process.env.COLLECTOR_TOKEN;
 if(!admin) { try {admin=(await readFile(keyFile,'utf8')).trim();} catch {admin=randomBytes(32).toString('hex');await writeFile(keyFile,admin,{mode:0o600});} }
 const allowed=new Set((process.env.ALLOWED_ORIGINS||`http://localhost:${port},http://127.0.0.1:${port}`).split(',').map(x=>x.trim()));
-// The hosted dashboard that "View from another device" links open. Always allowed, so no .env edit is needed.
-export const hostedDashboard=new URL(process.env.HOSTED_DASHBOARD||'https://tepegoz-deone.vercel.app').origin;
-allowed.add(hostedDashboard);
 if(process.env.RENDER_EXTERNAL_URL)allowed.add(new URL(process.env.RENDER_EXTERNAL_URL).origin); // the collector's own public page
 const sessions=new Map();
 const secret=()=>randomBytes(24).toString('hex');
@@ -136,10 +133,10 @@ export const server=http.createServer(async(req,res)=>{
       if(!isLocalUsbRequest(req,port))return json(res,403,{error:'Set up the phone connection from http://localhost:'+port+' on the collector PC.'});
       if(url.pathname==='/api/connection'&&req.method==='GET')return json(res,200,{local_origin:`http://localhost:${port}`,tunnel:tunnel.status()});
       if(url.pathname==='/api/tunnel'&&req.method==='POST')return json(res,200,await tunnel.start(u=>allowed.add(u)));
-      // One-click remote viewing: start the link if needed and hand this PC's own browser a hosted-dashboard URL
-      // whose #fragment carries the address and token (fragments are never sent to Vercel).
+      // One-click remote viewing: start the link if needed and hand this PC's own browser a URL of the collector's secure
+      // address whose #fragment carries the address and token (a fragment is never sent over the network).
       if(url.pathname==='/api/remote-link'&&req.method==='POST'){const t=await tunnel.start(u=>allowed.add(u));if(!t.url)return json(res,503,{error:t.error?`${t.error} ${t.install_hint}`:'The secure link did not start.'});
-        return json(res,200,{url:`${hostedDashboard}/#collector=${encodeURIComponent(t.url)}&token=${encodeURIComponent(admin)}`,collector:t.url,hosted:hostedDashboard});}
+        return json(res,200,{url:`${t.url}/#collector=${encodeURIComponent(t.url)}&token=${encodeURIComponent(admin)}`,collector:t.url});}
       return json(res,405,{error:'Method not allowed'});
     }
     const parts=url.pathname.split('/').filter(Boolean);

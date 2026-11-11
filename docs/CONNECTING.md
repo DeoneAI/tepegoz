@@ -1,7 +1,7 @@
 # Connecting a phone to Tepegoz
 
 You only need **one thing running: the collector on your PC**. It stores every recording, serves the
-dashboard and the phone page, and (for Wi-Fi) opens the secure link for you. Vercel and manual
+dashboard and the phone page, and (for Wi-Fi) opens the secure link for you. Manual
 Cloudflare commands are no longer part of the normal setup.
 
 ## The whole picture
@@ -72,8 +72,7 @@ flowchart TD
 |---|---|
 | Copy a 64-character token into a form | Nothing: the dashboard on the PC is trusted; for another device press **Create link** and scan the QR code |
 | Run `cloudflared` in a second terminal and paste its URL | The dashboard starts the secure link (or `npm run start:wifi`) |
-| Add the Vercel site to `ALLOWED_ORIGINS` and restart | Not needed: the phone page comes from the collector through the link |
-| Use the Vercel site | Optional, only to view the dashboard from another computer (Advanced in the dialog) |
+| Add a separate website to `ALLOWED_ORIGINS` and restart | Not needed: the dashboard and phone page both come from the collector through the link |
 
 ## Where are my sessions?
 

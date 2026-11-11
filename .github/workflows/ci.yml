@@ -25,7 +25,6 @@ jobs:
           node-version: '22'
           package-manager-cache: false
       - run: npm test
-      - run: npm run build
 
   parquet:
     name: Python analysis, perception and estimation

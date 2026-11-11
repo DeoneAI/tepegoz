@@ -1,12 +1,12 @@
 # Tepegoz
 
-**Continuing on a coworker's PC? Start with the [Weeks 1–3 handoff](docs/handoff/START-HERE.md)** for fresh installation, the team's existing Vercel project, week-by-week tasks and evidence to collect.
+**Continuing on a coworker's PC? Start with the [Weeks 1–3 handoff](docs/handoff/START-HERE.md)** for fresh installation, week-by-week tasks and evidence to collect.
 
 **Smartphone-to-PC acquisition and recorded road perception with depth and motion experiments.**
 
 Tepegoz contains the **phone acquisition prototype** (collector + dashboard) plus offline PC lanes, road-user detection/tracking, depth, Kalman exercises, gyro orientation and visual-inertial experiments. The project follows the supplied [one-month assignment and technical addendum](docs/roadmap/assignment.pdf).
 
-**Hosted dashboard:** [tepegoz-deone.vercel.app](https://tepegoz-deone.vercel.app) (optional; only needed to view the dashboard from another computer). Everyday use is the local dashboard at `http://localhost:8787` on the collector PC. Recordings and offline analysis stay on the PC.
+**Everyday use** is the local dashboard at `http://localhost:8787` on the collector PC. Recordings and offline analysis stay on the PC.
 
 **Current milestone: Weeks 2–3 baselines implemented with public datasets; Week 2 quality acceptance and Week 1 physical acceptance remain partial.** The [Day 7 lane-quality review](docs/LANE-QUALITY.md) and recorded-phone-footage outcome remain open. Public data exercises the PC pipeline without establishing phone/USB performance. The local estimator is an attitude-only experiment, not full VIO/SLAM. Android Camera2 and SensorManager remain acquisition alternatives to the current browser client.
 
@@ -19,7 +19,7 @@ Tepegoz contains the **phone acquisition prototype** (collector + dashboard) plu
 - HTTPS-tunnel pairing and Android USB/ADB reverse support in the receiver and dashboard.
 - Upload-only phone keys, separate collector admin authentication and exact-origin checks.
 - CSV/JSONL/JPEG recording, clock-offset estimates, stop/finalization, replay and optional offline Parquet export.
-- A dependency-free Node runtime and static frontend; Vercel hosts the frontend, while the PC stores recordings.
+- A dependency-free Node runtime that serves its own static frontend; recordings are stored by the collector (on your PC, or on a cloud host such as Render).
 - Python/ONNX classical and pretrained lanes, six road-user classes, temporal tracks, relative and learned metric-depth alternatives, independent indexed logs and overlay videos.
 - Reproducible CPU benchmarks, a small labeled detector comparison, real gyro/VO experiments, motion ablations, scalar/2D Kalman plots and explicit calibration/time contracts.
 
@@ -73,7 +73,7 @@ In this mode, the phone's `http://localhost:8787` is forwarded to the PC through
 
 ### Wi-Fi or mobile network: HTTPS tunnel
 
-The dashboard starts a Cloudflare quick tunnel for you (or run `npm run start:wifi`). The phone loads `/phone.html` through that HTTPS link from the collector itself, and **View from another device → Create link** opens the hosted (Vercel) dashboard already connected, with no address or token to copy. See [docs/CONNECTING.md](docs/CONNECTING.md).
+The dashboard starts a Cloudflare quick tunnel for you (or run `npm run start:wifi`). The phone loads `/phone.html` through that HTTPS link from the collector itself, and **View from another device → Create link** opens the dashboard on another device through the same secure link, already signed in, with no address or token to copy. See [docs/CONNECTING.md](docs/CONNECTING.md).
 
 **No PC running?** The same collector deploys to Render's free plan (`render.yaml`), with recordings backed up to Supabase Storage: [docs/RENDER.md](docs/RENDER.md).
 
@@ -238,24 +238,22 @@ python scripts/export_parquet.py data/SESSION_ID
 
 ```bash
 npm test
-npm run build
 python -m pip install -r scripts/requirements-parquet.txt
 python -m pip install -r scripts/requirements-analysis.txt
 python -m unittest discover -s tests -p "test_*.py"
 ```
 
-Install `scripts/requirements-vision.txt`, `scripts/requirements-analysis.txt` and `scripts/requirements-parquet.txt` to exercise every Python check. [Validation evidence](docs/VALIDATION.md) records exact suite counts, actual model runs and their limits. GitHub Actions runs tests and the static build; no hosted CI job proves phone hardware performance.
+Install `scripts/requirements-vision.txt`, `scripts/requirements-analysis.txt` and `scripts/requirements-parquet.txt` to exercise every Python check. [Validation evidence](docs/VALIDATION.md) records exact suite counts, actual model runs and their limits. GitHub Actions runs the tests; no hosted CI job proves phone hardware performance.
 
 | Setting | Default | Purpose |
 |---|---|---|
 | `PORT` / `HOST` | `8787` / `127.0.0.1` | Collector listener |
 | `DATA_DIR` | `./data` | Local recording directory |
 | `ALLOWED_ORIGINS` | Localhost origins | Exact frontend/mobile origin allowlist |
-| `HOSTED_DASHBOARD` | `https://tepegoz-deone.vercel.app` | Online dashboard opened by *Create link*; always allowed |
 | `COLLECTOR_TOKEN` | Generated and stored locally | Optional admin token override |
 | `ADB_PATH` | PATH or `.tools/platform-tools/adb` | Optional Platform-Tools executable |
 
-The static frontend can be deployed using `vercel.json` (`npm run build`, output `dist`). The PC collector remains a separate process. `npm run deploy` and `DEPLOY-VERCEL.ps1` target production and require an authenticated Vercel CLI. No Vercel account/project binding is committed.
+The frontend is plain static files in `web/`, served by the collector itself. To run the collector in the cloud see [docs/RENDER.md](docs/RENDER.md).
 
 ## Repository layout
 

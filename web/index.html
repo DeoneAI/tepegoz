@@ -238,18 +238,9 @@
         <button type="button" class="icon-button ghost" data-close aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button>
       </header>
       <div class="dialog-body">
-        <div class="hosted-note" id="hosted-note" hidden>
-          <p><strong>This is the online copy of the dashboard.</strong> Recording, Wi-Fi and USB run on the collector PC. This page can watch it from anywhere.</p>
-          <p>Easiest way to connect:</p>
-          <ol>
-            <li>On the collector PC open <code>http://localhost:8787</code> → <strong>Connect phone</strong>.</li>
-            <li>Under <strong>View from another device</strong> press <strong>Create link</strong>.</li>
-            <li>Scan the QR code or open the link here. Address and token fill in by themselves.</li>
-          </ol>
-        </div>
-        <div class="hosted-note" id="cloud-note" hidden>
-          <p><strong>This is your cloud collector.</strong> The phone connects straight to this page: no PC, USB or Cloudflare link is needed.</p>
-          <p>Sign in with the collector token: in Render open your service → <strong>Environment</strong> → <strong>COLLECTOR_TOKEN</strong> and copy its value. The address below is already filled in.</p>
+        <div class="remote-note" id="remote-note" hidden>
+          <p><strong>You opened this collector from another device.</strong> Sign in with the collector token. The address below is already filled in.</p>
+          <p>Easiest: on the collector PC press <strong>Connect phone → View from another device → Create link</strong> and scan the QR code. Or paste the token: <code>npm run token</code> on a PC collector, or <strong>COLLECTOR_TOKEN</strong> under Environment on Render.</p>
         </div>
         <div id="local-setup">
           <p class="status-line" id="signed-in"><i class="dot online"></i>Collector running on this PC</p>
@@ -275,7 +266,7 @@
         </div>
         <section class="share-setup" id="share-setup">
           <h3>View from another device</h3>
-          <p>Opens this dashboard on <span id="share-host">tepegoz-deone.vercel.app</span>, already connected to this PC. Keep it private: anyone with it can control this collector. It stops working when the collector restarts.</p>
+          <p>Opens this dashboard on another device through the secure link, already signed in. Keep it private: anyone with it can control this collector. It stops working when the collector restarts.</p>
           <div class="route-row"><span class="route-status" id="share-status" role="status">No link yet</span><button type="button" class="button secondary small" id="share-create">Create link</button></div>
           <div class="share-ready" id="share-ready" hidden>
             <div class="share-qr" id="share-qr"></div>

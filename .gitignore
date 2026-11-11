@@ -1,7 +1,5 @@
 node_modules/
-dist/
 data/
-.vercel/
 .env*
 !.env.example
 *.log
@@ -13,8 +11,3 @@ venv/
 .pytest_cache/
 .DS_Store
 Thumbs.db
-
-.vercel
-
-.vercel
-.env*

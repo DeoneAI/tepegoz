@@ -9,16 +9,9 @@
 
 ## 28 October 2026 — coworker handoff readiness
 
-- Prepared [fresh-PC setup](handoff/START-HERE.md), separate Week 1/2/3 operator guides and an evidence template. The workflow uses the coworker's existing Vercel project and leaves branch/commit/push operations to the repository owner. Portable binaries, models/datasets, raw recordings and account credentials are explicitly not clone contents.
-- Copied the current tracked and nonignored new source files into a separate source-only directory, with no `.tools/`, `data/`, `.venv/`, `.vercel/` or `.env.local`. **23 Node and 40 Python tests passed without skips**, and the static build produced all ten frontend files there. CLI help and asset-registry listing also worked. Runtimes/packages came from the available host environment; this verifies source/asset separation, not a newly provisioned coworker PC or a new Python 3.12 installation.
+- Prepared [fresh-PC setup](handoff/START-HERE.md), separate Week 1/2/3 operator guides and an evidence template. The workflow leaves branch/commit/push operations to the repository owner. Portable binaries, models/datasets, raw recordings and account credentials are explicitly not clone contents.
+- Copied the current tracked and nonignored new source files into a separate source-only directory, with no `.tools/`, `data/`, `.venv/` or `.env.local`. **23 Node and 40 Python tests passed without skips**. CLI help and asset-registry listing also worked. Runtimes/packages came from the available host environment; this verifies source/asset separation, not a newly provisioned coworker PC or a new Python 3.12 installation.
 - Reviewed command flags and local document links. No new model download, physical phone recording or deployment was claimed for this check. Explicit remaining software tasks are the generic phone quaternion/yaw export adapter and complete derived-session image/calibration preparation; EuRoC-specific demos and checkerboard previews are not substitutes for them.
-
-## 28 October 2026 — production frontend deployment
-
-- Published **https://tepegoz-tawny.vercel.app** with Vercel CLI 65.5.0. Production deployment `dpl_CH1LrgoYyTWYmuyHktc8jHpoZuDN` returned `READY`; the selected account reports Hobby. No paid services were added. The Node recording collector and Python processing remain on the PC.
-- Re-ran **23 Node tests** and the static build before publishing. Anonymous HTTPS requests return 200 for the dashboard and all ten frontend assets, whose bytes match the local build exactly. Camera/accelerometer/gyroscope permissions and CSP/security headers are present. `/pc/server.mjs`, `/.env.local` and `/data/` return 404. This verifies publishing, not physical capture or a live collector connection.
-- The first upload's overly restrictive inclusion rules omitted the build script and failed before becoming ready. Corrected `.vercelignore` to exclude recordings, credentials, tools and offline processing while including `web/`, `scripts/build.mjs` and build configuration; the subsequent deployment succeeded.
-- Updated `DEPLOY-VERCEL.ps1` to support the locally installed Node/CLI and report failed deployments. Account/project binding, local CLI, OIDC credentials and raw request evidence remain ignored. Public deployment evidence is in [the deployment report](reports/frontend-deployment.json).
 
 ## 28 October 2026 — public-data Weeks 2–3
 
@@ -60,13 +53,11 @@ Software checks, simulated acquisition and physical evidence are kept separate. 
 |---|---|---|
 | Node test suite | **14 passed**: clock, nearest matching, schema v2, rates, auth/origin, receiver persistence/replay, live JPEG, GNSS CSV, sequence gaps, sensor probe and USB bridge behavior | Handler/USB/sensor tests use fixtures or injected dependencies |
 | Python Parquet suite | **2 passed**, PyArrow 26.0.0 | Typed int64 timestamps, null GNSS fields, bounded multi-batch round-trip, unchanged raw JSONL, empty output and active-session refusal; synthetic data |
-| Static production build | Passed: Node-built `dist/` from `web/` | Does not deploy the PC receiver |
 | Browser end-to-end | Headless installed Chrome; USB UI/device selection/QR, localhost phone pairing, gyro-unavailable modal, no camera during preflight, capture upload, telemetry ingest, save and PC inventory; no JavaScript page errors | ADB responses, camera and motion input were simulated; no physical performance claim |
 | Responsive visual review | Desktop settings and inventory; mobile 390 px preflight dialog reviewed from screenshots | This is desktop Chrome emulation, not an on-device visual audit |
 | Mermaid diagrams | Architecture, sequence and radar parsed and rendered with Mermaid 11; SVG fallbacks exported and visually reviewed | Radar scores are explicitly qualitative decision rubric, not measured benchmarks |
 | Android Platform-Tools | Official Windows portable ADB installed under `.tools/platform-tools`; version 37.0.1; discovery executed | No attached authorized device was listed; real USB reverse/capture remains unverified |
 | Existing physical phone data | A previous session contained 2,263 accelerometer and 2,263 linear acceleration samples, zero gyroscope samples; its recorded average saved FPS was approximately 0.55 and clock RTT approximately 562 ms | One development recording; not a compliant two-minute full-IMU/stress benchmark; no gyro hardware conclusion from browser output |
-| Static hosting | A previous production frontend deployment returned READY; deployment configuration is included in `vercel.json` | Account/project binding is local and excluded from Git; the backend remains on PC |
 | Physical USB/Wi‑Fi comparison | **Not completed** | Authorized phone, data cable, driver, fixed settings and controlled-duration captures required |
 | Full W1 stress / calibration / display latency | **Not completed** | See `STRESS-TEST.md`; no measured camera intrinsics/extrinsics or true capture-to-display experiment |
 

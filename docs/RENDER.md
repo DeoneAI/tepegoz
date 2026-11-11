@@ -1,8 +1,7 @@
 # Run the collector in the cloud (Render, free)
 
 Use this when you do **not** want to keep a PC running. The collector runs on [Render](https://render.com/docs/free)'s
-free plan; the phone opens the Render address directly (it is already HTTPS), so no Cloudflare link, no USB and no
-Vercel are involved. Recordings are copied to **Supabase Storage** (free) because Render's disk is temporary.
+free plan; the phone opens the Render address directly (it is already HTTPS), so no Cloudflare link and no USB are involved. Recordings are copied to **Supabase Storage** (free) because Render's disk is temporary.
 
 ```mermaid
 flowchart LR

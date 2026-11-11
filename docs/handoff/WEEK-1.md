@@ -79,7 +79,7 @@ After a clean baseline, repeat matched stationary/rotation settings over both US
 
 Use separate sessions for a 10-second connection interruption/recovery, permission denial/restoration, switching apps and screen lock. For USB, also test cable removal/remapping and an Internet-disabled cable-only path. Keep pre-failure files and report losses/recovery behavior. Expected browser suspension is a limitation to measure, not hide.
 
-## Wi-Fi link and the hosted dashboard
+## Wi-Fi link and the dashboard on another device
 
 On the collector PC open `http://localhost:8787` → **Connect phone → Wi-Fi → Start link** (or start the collector with `npm run start:wifi`). The collector starts a Cloudflare quick tunnel and serves the phone page through it, so no second terminal and no `ALLOWED_ORIGINS` change are needed for recording. Create a **new** session and scan its QR code.
 

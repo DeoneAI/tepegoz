@@ -9,8 +9,6 @@
     "start:wifi": "node --env-file-if-exists=.env pc/server.mjs --tunnel",
     "dev": "node --env-file-if-exists=.env pc/server.mjs",
     "test": "node --test tests/*.test.mjs",
-    "build": "node scripts/build.mjs",
-    "deploy": "vercel --prod",
     "token": "node scripts/show-token.mjs"
   },
   "engines": {

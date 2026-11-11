@@ -25,12 +25,11 @@ Do not rebuild these modules from scratch. Public-data evidence does not pass ph
 ```text
 Phone browser: camera + real available motion sensors
     -> USB/ADB OR HTTPS tunnel
-Your PC: Node collector -> data/ recordings
+Your PC: Node collector (serves the capture page and dashboard) -> data/ recordings
 Your PC: Python offline lanes / objects / tracks / depth / motion analysis
-Vercel: static capture page and dashboard
 ```
 
-Your PC is the recording server. Keep it awake, the collector running, and the cable/tunnel connected during capture. There is no paid cloud recording service in this setup. The hosted dashboard does not run the Python perception stack or store recordings on Vercel. The current phone client does not save an independent offline session.
+Your PC is the recording server. Keep it awake, the collector running, and the cable/tunnel connected during capture. There is no paid cloud recording service in this setup. The dashboard does not run the Python perception stack. The current phone client does not save an independent offline session.
 
 ## Fresh-PC installation
 
@@ -73,7 +72,7 @@ npm.cmd run build
 & .\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"
 ```
 
-The handoff baseline has **23 Node tests and 40 Python tests**. With all requirements installed, none should skip. The tests use controlled inputs; passing them is not phone acceptance. `npm install` is not needed for the dependency-free Node collector/build. Optional Vercel CLI installation is separate.
+The handoff baseline has **23 Node tests and 40 Python tests**. With all requirements installed, none should skip. The tests use controlled inputs; passing them is not phone acceptance. `npm install` is not needed for the dependency-free Node collector.
 
 ## What is intentionally absent after cloning
 
@@ -82,26 +81,15 @@ The handoff baseline has **23 Node tests and 40 Python tests**. With all require
 | `.tools/` | Downloaded models, public datasets, experiment outputs and development tools. Recreate with the documented fetch commands; do not expect the original developer's files |
 | `data/` | Raw phone recordings. Your collector creates this locally. Transfer any agreed example separately, preserving its complete session folder |
 | `.venv/`, `node_modules/` | Local dependencies; install on your PC |
-| `.vercel/`, `.env*` | Machine/account bindings and credentials; do not copy the original developer's files |
-| `dist/` | Generated frontend; recreate with `npm.cmd run build` |
+| `.env*` | Credentials; do not copy the original developer's files |
 
 Tracked `docs/reports/` contains selected reference metrics/plots, not the full raw experiments. Fetching assets checks the registered byte size/SHA-256. Your timing results may differ; record your own hardware, settings and versions. Keep licensing/attribution from [THIRD-PARTY.md](../THIRD-PARTY.md).
 
-## Hosted dashboard (optional)
+## Other devices and the cloud (optional)
 
-Recording does not need Vercel: the collector serves the dashboard and the phone page itself. The hosted copy `tepegoz-deone.vercel.app` is only a remote viewer (deployed with `vercel deploy --prod` from `main`). If you host your own copy, use these project settings:
+Recording needs only the collector: it serves the dashboard and the phone page itself. To watch from another device, on the collector PC press **Connect phone → View from another device → Create link** and scan the QR code. To run the collector without a PC, see [docs/RENDER.md](../RENDER.md).
 
-| Setting | Value |
-|---|---|
-| Root directory | Repository root (`.`) |
-| Framework | Other / static frontend |
-| Build command | `npm run build` |
-| Output directory | `dist` |
-| Node | 22.x for reproducibility |
-
-Keep `vercel.json` and `.vercelignore`. Never put the collector token in Vercel. To watch from another device: on the collector PC press **Connect phone → View from another device → Create link** and scan the QR code. A self-hosted copy needs `HOSTED_DASHBOARD` in `.env`.
-
-Wi-Fi links and USB are always set up from `http://localhost:8787` on the collector PC; see [Week 1](WEEK-1.md#wi-fi-link-and-the-hosted-dashboard).
+Wi-Fi links and USB are always set up from `http://localhost:8787` on the collector PC; see [Week 1](WEEK-1.md#wi-fi-link-and-the-dashboard-on-another-device).
 
 ## Working rules and troubleshooting
 
@@ -109,7 +97,7 @@ Wi-Fi links and USB are always set up from `http://localhost:8787` on the collec
 - Keep raw recordings unchanged. Derived images, plots and inference outputs go to separate folders under `.tools/experiments/`.
 - Record source type: `phone`, `public dataset`, or `synthetic exercise`. Preserve frame indices, timestamps and model/code hashes.
 - Run matched speed benchmarks serially; model-only FPS and end-to-end FPS are different measurements.
-- Do not commit `data/`, `.tools/`, `.venv/`, `.env*`, `.vercel/`, pairing links, collector tokens or raw private media.
+- Do not commit `data/`, `.tools/`, `.venv/`, `.env*`, pairing links, collector tokens or raw private media.
 
 | Symptom | First action |
 |---|---|

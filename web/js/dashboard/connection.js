@@ -16,10 +16,6 @@ export const withScheme = value => (value && !/^[a-z][a-z0-9+.-]*:\/\//i.test(va
 export function createConnection(ctx, { toast, onConnected, showPage }) {
   let pairURL = null;
 
-  // A collector running in the cloud (Render) also serves this page; /health says so. Vercel answers 404.
-  let cloudHere = false;
-  if (!ctx.isLocalPage) fetch('/health').then(r => r.json()).then(h => { cloudHere = h?.cloud === true; }).catch(() => {});
-
   const route = () => document.querySelector('input[name="route"]:checked')?.value || 'wifi';
   const token = () => ctx.config?.token || '';
   const local = (path, options) => request(location.origin, token(), path, options).then(r => r.json());
@@ -33,15 +29,14 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
 
   async function openSettings() {
     $('local-setup').hidden = !ctx.isLocalPage;
-    $('hosted-note').hidden = ctx.isLocalPage || cloudHere; // the online copy explains why Wi-Fi/USB live on the PC
-    $('cloud-note').hidden = !cloudHere;
+    $('remote-note').hidden = ctx.isLocalPage; // a page opened through the secure link or on a cloud host
     $('settings-title').textContent = ctx.isLocalPage ? 'Connect phone' : 'Connect to your collector';
     $('share-setup').hidden = !ctx.isLocalPage; // only this PC can hand out a remote link
     // On the collector PC the remote fields are never needed: hide them so they cannot be filled by mistake.
     $('remote-setup').hidden = ctx.isLocalPage;
-    $('remote-setup').open = !ctx.isLocalPage && (!ctx.config || cloudHere);
+    $('remote-setup').open = !ctx.isLocalPage && !ctx.config;
     $('signed-in').hidden = !ctx.online;
-    $('server-url').value = ctx.config && !ctx.isLocalPage ? ctx.config.server : cloudHere ? location.origin : '';
+    $('server-url').value = ctx.config && !ctx.isLocalPage ? ctx.config.server : ctx.isLocalPage ? '' : location.origin; // this page is served by the collector
     $('connection-error').textContent = '';
     const usb = ctx.config?.mode === 'usb-adb';
     $(usb ? 'route-usb' : 'route-wifi').checked = true;
@@ -150,7 +145,6 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
         { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}', signal: AbortSignal.timeout(40000) });
       const link = await response.json();
       shareURL = link.url;
-      $('share-host').textContent = new URL(link.hosted).host;
       $('share-status').className = 'route-status ok';
       $('share-status').textContent = 'Link ready. Scan it or open it on the other device.';
       $('share-open').href = shareURL;

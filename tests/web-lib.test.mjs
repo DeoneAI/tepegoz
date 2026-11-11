@@ -102,10 +102,10 @@ test('collector address may be typed without https://', () => {
   assert.equal(withScheme(''), '');
 });
 
-test('remote link fills address and token on the hosted page and leaves the address bar clean', () => {
+test('remote link fills address and token when a collector is opened from another device and leaves the address bar clean', () => {
   const store = new Map(); const storage = { setItem: (k, v) => store.set(k, v) };
   let replaced = null; const history = { replaceState: (_s, _t, url) => { replaced = url; } };
-  const at = hash => ({ hostname: 'tepegoz-deone.vercel.app', pathname: '/', hash });
+  const at = hash => ({ hostname: 'abc.trycloudflare.com', pathname: '/', hash });
   const token = 'a'.repeat(64);
   assert.equal(consumeRemoteLink(storage, at(`#collector=${encodeURIComponent('https://abc.trycloudflare.com')}&token=${token}`), history), true);
   assert.deepEqual(JSON.parse(store.get('tepegoz-connection')), { server: 'https://abc.trycloudflare.com', token, mode: 'tunnel' });

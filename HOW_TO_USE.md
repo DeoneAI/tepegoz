@@ -2,7 +2,7 @@
 
 Record your phone's camera and motion sensors on your PC, then replay and analyse them.
 
-**You do not need a token, an account, Vercel, or any configuration.** One program runs on your PC,
+**You do not need a token, an account, or any configuration.** One program runs on your PC,
 and you use it from your PC's browser.
 
 ---
@@ -91,23 +91,22 @@ Pick how the phone will reach this PC (see section 4 if unsure). The area below 
 | a phone listed as *unauthorized* | Unlock the phone and tap **Allow** on the USB-debugging prompt. |
 
 **③ View from another device (one click).**
-Watch this collector from a laptop or phone anywhere, through the online dashboard
-(`https://tepegoz-deone.vercel.app`):
+Watch this collector from a laptop or phone anywhere. The dashboard is served by the collector itself,
+through its secure Cloudflare link:
 
 1. Press **Create link**. The collector starts its secure Cloudflare link if it is not running yet.
 2. Scan the QR code with the other device, or press **Copy link** / **Open**.
-3. The online dashboard opens already connected. You never copy an address or a token by hand.
+3. The dashboard opens on that device already signed in. You never copy an address or a token by hand.
 
 ```mermaid
 sequenceDiagram
     participant PC as Collector PC (localhost:8787)
     participant CF as Cloudflare link
-    participant V as tepegoz-deone.vercel.app
+    participant D as Other device (browser)
     PC->>CF: start link (https://….trycloudflare.com)
-    PC->>PC: Create link = online URL + #address + token
-    Note over PC,V: the part after # stays in the browser, Vercel never receives it
-    V->>CF: dashboard requests with the token
-    CF->>PC: forwarded to the collector
+    PC->>PC: Create link = link address + #address + token
+    D->>CF: open the link (the part after # never leaves the browser)
+    CF->>PC: dashboard page and API calls, forwarded to the collector
 ```
 
 Keep the link private: anyone with it can control the collector. It stops working when the collector
@@ -223,7 +222,7 @@ start it with `npm start`.
 
 **Open the dashboard from another device.** On the PC: **Connect phone → View from another device →
 Create link**, then scan the QR code (section 3, part ③). `npm run token` is only needed for the manual
-fallback. A self-hosted copy other than tepegoz-deone.vercel.app: set `HOSTED_DASHBOARD` in `.env`.
+fallback.
 
 ---
 

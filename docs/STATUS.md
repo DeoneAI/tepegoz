@@ -2,7 +2,7 @@
 
 Last updated: **11 November 2026** (Asia/Baku).
 
-Since 28 October: phone connection simplified (no token on the collector PC, Wi-Fi link started by the collector, USB from the same dialog; [HOW_TO_USE.md](../HOW_TO_USE.md)); sessions indexed in SQLite with an optional Supabase mirror; dashboard redesigned and published at [tepegoz-deone.vercel.app](https://tepegoz-deone.vercel.app); model-only inference benchmarks on CPU, iGPU and GPU with plots (`scripts/bench_inference.py`, `scripts/plot_benchmarks.py`). The first phone recording ("Stationary test", 211 frames) exists locally; physical acceptance measurements are still open.
+Since 28 October: phone connection simplified (no token on the collector PC, Wi-Fi link started by the collector, USB from the same dialog; [HOW_TO_USE.md](../HOW_TO_USE.md)); sessions indexed in SQLite with an optional Supabase mirror; dashboard redesigned; collector deployable to Render's free plan with Supabase Storage backup ([docs/RENDER.md](RENDER.md)); model-only inference benchmarks on CPU, iGPU and GPU with plots (`scripts/bench_inference.py`, `scripts/plot_benchmarks.py`). The first phone recording ("Stationary test", 211 frames) exists locally; physical acceptance measurements are still open.
 
 Current milestone: **Weeks 2–3 PC baselines implemented with public-data evidence; Week 2 quality acceptance and Week 1 physical acceptance remain partial**. No finalized phone recording is available; public datasets support PC development without replacing phone-domain evidence. This file records development progress, not an automatic repository monitor. The full checklist is in [ROADMAP.md](ROADMAP.md), results in [the measured report](reports/WEEKS-2-3.md), and checks in [VALIDATION.md](VALIDATION.md).
 
@@ -29,8 +29,7 @@ Current milestone: **Weeks 2–3 PC baselines implemented with public-data evide
 - [x] Bound archive downloads before body consumption, test ignored/oversized ranges, and verify the streamed implementation against the public ZIP endpoint.
 - [x] Re-audit the original PDF through Day 15; add the missing 240-step scalar noisy-observation experiment/CSV, mark the assumed quiet interval on real IMU plots, and distinguish semantic/instance/lane/detection tasks in the glossary. See the [requirement evidence audit](reports/THROUGH-WEEK-3-AUDIT.md).
 - [x] Add the [checkerboard calibration workflow](CALIBRATION.md), including held-out views, duplicate/size checks, corner previews, lens correction preview and residual diagnostics. Execute it on 13 public images; keep phone/mount calibration unclaimed.
-- [x] Publish the latest frontend to [tepegoz-deone.vercel.app](https://tepegoz-deone.vercel.app) on Vercel Hobby (previously tepegoz-tawny.vercel.app). Verify public access, all 10 built assets and capture/security headers; keep recordings, credentials and offline modules out of frontend uploads. The PC collector remains required.
-- [x] Prepare the [coworker handoff](handoff/START-HERE.md), three week guides and an evidence template. Use the coworker's existing Vercel project, recreate ignored local dependencies/assets, and leave branch/commit/push operations to the repository owner. Explicitly identify the remaining phone orientation/export and image/calibration preparation tasks.
+- [x] Prepare the [coworker handoff](handoff/START-HERE.md), three week guides and an evidence template. Recreate ignored local dependencies/assets, and leave branch/commit/push operations to the repository owner. Explicitly identify the remaining phone orientation/export and image/calibration preparation tasks.
 - [x] Review project architecture and compare the attached assignment with the repository PDF. All 11 pages have identical extracted text.
 - [x] Fix phone Stop to await active telemetry uploads and drain queued samples.
 - [x] Keep unsent telemetry visible and offer bounded retries before PC finalization.
@@ -56,6 +55,6 @@ Current milestone: **Weeks 2–3 PC baselines implemented with public-data evide
 - Logging uses live CSV/JSONL and optional finalized-session Parquet. The source does not explicitly require live Parquet append; this is the selected implementation, not an approval dependency.
 - Browser timestamps remain estimates; clock correction and the ±100 ms association window do not establish hardware exposure timing.
 - Physical-device availability, real gyro readings and measured calibration cannot be replaced by fixture tests.
-- Historical reports retain the hashes/settings of the code that produced them. Rendering fixes must not be presented as a reproduction of every older benchmark; local Vercel account/project bindings and credentials remain ignored.
+- Historical reports retain the hashes/settings of the code that produced them. Rendering fixes must not be presented as a reproduction of every older benchmark; local credentials remain ignored.
 
 Update this tracker when work is completed or new evidence changes a milestone. Keep individual assignment checkboxes in [ROADMAP.md](ROADMAP.md); mark a gate complete only when its acceptance evidence exists.

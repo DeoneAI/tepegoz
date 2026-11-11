@@ -25,7 +25,6 @@ test('collector authenticates, stores, freezes and replays protocol messages thr
   assert.equal((await req('/api/sessions',token,'GET',undefined,{origin:'https://untrusted.test'})).status,403);
   const preflight=await req('/api/sessions/test/frame',token,'OPTIONS',undefined,{origin:'https://frontend.test'});
   assert.equal(preflight.status,204);
-  assert.equal((await req('/api/sessions',token,'OPTIONS',undefined,{origin:'https://tepegoz-deone.vercel.app'})).status,204,'the hosted dashboard is always allowed');
   assert.equal((await req('/api/remote-link',token,'POST',{})).status,403,'remote links are only handed out to the browser on the collector PC');
   assert.equal((await req('/api/remote-link','bad','POST',{})).status,401);
   assert.equal(preflight.headers['Access-Control-Max-Age'],'600');

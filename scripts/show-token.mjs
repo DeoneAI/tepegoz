@@ -1,4 +1,4 @@
-// Print the collector token. Only needed for the optional remote (hosted) dashboard;
+// Print the collector token. Only needed to sign in from another device by hand;
 // the dashboard on the collector PC (http://localhost:8787) works without it.
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
