@@ -251,13 +251,17 @@ export const server=http.createServer(async(req,res)=>{
 const bootId=randomBytes(12).toString('hex');
 server.requestTimeout=30000;server.headersTimeout=15000;
 if(process.env.SENSORLINK_TEST!=='1')server.listen(port,process.env.HOST||(cloud?'0.0.0.0':'127.0.0.1'),()=>{
-  if(cloud)console.log(`
-TEPEGOZ cloud collector. Recordings are backed up to ${backup?`Supabase Storage (bucket "${backup.bucket}")`:'NOTHING: set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, this disk is temporary'}`);
-  console.log(`\nTEPEGOZ • PC collector  (recordings: ${dataRoot})`);
-  console.log(`  Session index: ${store.kind==='sqlite'?'SQLite (data/sessions.sqlite)':'manifest files'}${store.mirrored?' + Supabase mirror':''}\n`);
-  console.log(`  Open on this PC:  http://localhost:${port}\n`);
-  console.log('  Then click "Connect phone" and choose Wi-Fi or USB. No token is needed on this PC.');
-  console.log('  (Remote dashboard only: npm run token prints the collector token.)\n');
+  console.log(`\nTEPEGOZ • ${cloud?'cloud':'PC'} collector  (recordings: ${dataRoot})`);
+  console.log(`  Session index: ${store.kind==='sqlite'?'SQLite (data/sessions.sqlite)':'manifest files'}${store.mirrored?' + Supabase mirror':''}`);
+  if(cloud){
+    console.log(`  Recording backup: ${backup?`Supabase Storage (bucket "${backup.bucket}")`:'NONE (set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY: this disk is temporary)'}\n`);
+    console.log(`  Public address: ${process.env.RENDER_EXTERNAL_URL||'your host address'}`);
+    console.log('  Sign in with COLLECTOR_TOKEN from the host environment; the phone opens the same address.\n');
+  }else{
+    console.log(`\n  Open on this PC:  http://localhost:${port}\n`);
+    console.log('  Then click "Connect phone" and choose Wi-Fi or USB. No token is needed on this PC.');
+    console.log('  (Remote dashboard only: npm run token prints the collector token.)\n');
+  }
   if(process.argv.includes('--tunnel')||process.env.TUNNEL==='1')tunnel.start(u=>allowed.add(u)).then(t=>console.log(t.url?`  Wi-Fi tunnel ready: ${t.url}\n`:`  Tunnel not started: ${t.error}\n  ${t.install_hint}\n`));
 });
 let closing=false;
