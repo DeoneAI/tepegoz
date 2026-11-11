@@ -4,7 +4,7 @@
 // so the only choice left is the phone route:
 //   Wi-Fi / mobile data → the collector starts a temporary HTTPS tunnel; the phone opens the page through it.
 //   USB cable (Android) → ADB maps the phone's localhost:8787 to this PC.
-// Opening the dashboard from another computer (e.g. the Vercel copy) is an advanced option.
+// Another device opens the online dashboard through a one-click link made here ("View from another device").
 
 import { $, el } from '../lib/dom.js';
 import { explainNetworkError, request, validateServer } from '../lib/http.js';
@@ -31,11 +31,10 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
     $('local-setup').hidden = !ctx.isLocalPage;
     $('hosted-note').hidden = ctx.isLocalPage; // the online copy explains why Wi-Fi/USB live on the PC
     $('settings-title').textContent = ctx.isLocalPage ? 'Connect phone' : 'Connect to your collector';
-    $('remote-hint').hidden = !ctx.isLocalPage; // the hosted note already says this
-    $('remote-summary').textContent = ctx.isLocalPage ? 'Remote dashboard' : 'Collector address and token';
+    $('share-setup').hidden = !ctx.isLocalPage; // only this PC can hand out a remote link
     // On the collector PC the remote fields are never needed: hide them so they cannot be filled by mistake.
     $('remote-setup').hidden = ctx.isLocalPage;
-    $('remote-setup').open = !ctx.isLocalPage;
+    $('remote-setup').open = !ctx.isLocalPage && !ctx.config;
     $('signed-in').hidden = !ctx.online;
     $('server-url').value = ctx.config && !ctx.isLocalPage ? ctx.config.server : '';
     $('connection-error').textContent = '';
@@ -84,8 +83,12 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
       const remote = !ctx.isLocalPage;
       if (remote) {
         const remoteToken = $('remote-token').value.trim() || ctx.config?.token;
-        if (!remoteToken) throw new Error('Paste the collector token (run "npm run token" on the PC).');
-        config = { server: validateServer(withScheme($('server-url').value.trim())), token: remoteToken, mode: 'tunnel' };
+        const address = $('server-url').value.trim() || ctx.config?.server;
+        if (!address || !remoteToken) {
+          $('remote-setup').open = true;
+          throw new Error('Open the link from "View from another device" on the collector PC, or enter the address and token.');
+        }
+        config = { server: validateServer(withScheme(address)), token: remoteToken, mode: 'tunnel' };
         await request(config.server, config.token, '/api/sessions');
       } else {
         await request(location.origin, token(), '/api/sessions'); // is the collector running?
@@ -127,6 +130,48 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
     } finally {
       button.disabled = false;
     }
+  }
+
+  // ---------------------------------------------------------------- view from another device
+  let shareURL = null;
+
+  async function createShareLink() {
+    const button = $('share-create');
+    button.disabled = true;
+    $('share-status').className = 'route-status';
+    $('share-status').textContent = 'Starting the secure link…';
+    try {
+      const response = await request(location.origin, token(), '/api/remote-link',
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}', signal: AbortSignal.timeout(40000) });
+      const link = await response.json();
+      shareURL = link.url;
+      $('share-host').textContent = new URL(link.hosted).host;
+      $('share-status').className = 'route-status ok';
+      $('share-status').textContent = 'Link ready. Scan it or open it on the other device.';
+      $('share-open').href = shareURL;
+      const box = $('share-qr');
+      box.replaceChildren();
+      try {
+        const qr = window.qrcode(0, 'L');
+        qr.addData(shareURL);
+        qr.make();
+        box.innerHTML = qr.createSvgTag(3, 0); // generated locally from our own link; no user HTML
+      } catch {
+        box.append(el('div', { className: 'qr-fallback', text: 'Use Copy link.' }));
+      }
+      $('share-ready').hidden = false;
+      refreshTunnel();
+    } catch (error) {
+      $('share-status').className = 'route-status warn';
+      $('share-status').textContent = explainNetworkError(error, 'Cannot reach the collector. Is "npm start" still running?');
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function copyShareLink() {
+    try { await navigator.clipboard.writeText(shareURL); toast('Link copied. Open it on the other device.'); }
+    catch { toast('Use Open, then copy the address from the new tab.'); }
   }
 
   // ---------------------------------------------------------------- sessions + pairing
@@ -201,6 +246,8 @@ export function createConnection(ctx, { toast, onConnected, showPage }) {
   for (const input of document.querySelectorAll('input[name="route"]')) input.addEventListener('change', showRoute);
   $('tunnel-start').addEventListener('click', () => startTunnel().catch(error => { $('connection-error').textContent = error.message; }));
   $('usb-check').addEventListener('click', findUsbDevices);
+  $('share-create').addEventListener('click', createShareLink);
+  $('share-copy').addEventListener('click', copyShareLink);
   for (const id of ['new-session', 'pair-create', 'pair-shortcut']) $(id).addEventListener('click', openCreate);
   $('create-form').addEventListener('submit', createSession);
   $('copy-link').addEventListener('click', copyLink);

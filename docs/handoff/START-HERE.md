@@ -99,7 +99,7 @@ Recording does not need Vercel: the collector serves the dashboard and the phone
 | Output directory | `dist` |
 | Node | 22.x for reproducibility |
 
-Keep `vercel.json` and `.vercelignore`. Never put the collector token in Vercel. To let a hosted copy talk to your collector, add its exact origin to `ALLOWED_ORIGINS` in `.env` on the collector PC, then use **Connect to your collector** with the Wi-Fi link address and `npm run token`.
+Keep `vercel.json` and `.vercelignore`. Never put the collector token in Vercel. To watch from another device: on the collector PC press **Connect phone → View from another device → Create link** and scan the QR code. A self-hosted copy needs `HOSTED_DASHBOARD` in `.env`.
 
 Wi-Fi links and USB are always set up from `http://localhost:8787` on the collector PC; see [Week 1](WEEK-1.md#wi-fi-link-and-the-hosted-dashboard).
 
@@ -117,7 +117,7 @@ Wi-Fi links and USB are always set up from `http://localhost:8787` on the collec
 | Import/module missing | Run pip with `.venv\Scripts\python.exe`, then use that same executable for scripts/tests |
 | Model missing/incomplete | Run the appropriate `fetch_assets.py --group ...`; do not rename a different model to bypass checks |
 | ADB missing/unauthorized | Follow Week 1's extraction, cable, unlock and debugging authorization checks |
-| Collector unreachable/CORS error | On the PC use `http://localhost:8787`. For a hosted copy check the current Wi-Fi link address, `ALLOWED_ORIGINS` in `.env` and `npm run token`; create a new session after a restart |
+| Collector unreachable/CORS error | On the PC use `http://localhost:8787`. For the online dashboard press **Create link** again on the PC (the address changes on restart); create a new session after a restart |
 | Gyro unavailable | Separate browser permissions/support from actual hardware inventory; no synthetic replacement |
 | Recording active/storage error | Finalize normally or investigate the storage error before analysis/inference |
 | ONNX Runtime DLL/import failure | Check interpreter architecture and [official installation prerequisites](https://onnxruntime.ai/docs/install/); preserve the error text |

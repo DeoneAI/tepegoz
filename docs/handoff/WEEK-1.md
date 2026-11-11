@@ -85,7 +85,7 @@ On the collector PC open `http://localhost:8787` → **Connect phone → Wi-Fi �
 
 A quick tunnel gets a new address on every restart: create a new session after restarting. [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/) are temporary development/test endpoints with no uptime guarantee.
 
-To watch from another computer through the hosted dashboard, add its exact origin to `ALLOWED_ORIGINS` in `.env`, restart the collector, then in the hosted copy use **Connect to your collector** with the Wi-Fi link address and the token from `npm run token`. See [HOW_TO_USE.md](../../HOW_TO_USE.md).
+To watch from another device, press **View from another device → Create link** in the same dialog and scan the QR code: the online dashboard opens already connected. See [HOW_TO_USE.md](../../HOW_TO_USE.md).
 
 ## 6. Measure actual display latency separately
 

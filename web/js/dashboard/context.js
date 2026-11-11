@@ -1,7 +1,7 @@
 // Shared dashboard state: the collector connection, the active session and a change signal.
 // Modules read `ctx` and call ctx.emit(); nothing else holds global mutable state.
 
-import { createClient, isLocalHost } from '../lib/http.js';
+import { createClient, isLocalHost, validateServer } from '../lib/http.js';
 
 const STORAGE_KEY = 'tepegoz-connection';
 const LEGACY_KEY = 'sensorlink-connection';
@@ -22,8 +22,27 @@ function consumeLoginLink(storage, location, history) {
   history?.replaceState(null, '', `${location.pathname}#live`);
 }
 
+/**
+ * "View from another device" on the collector PC opens the hosted dashboard at
+ * /#collector=https://….trycloudflare.com&token=… . Save both and clear them from the address bar.
+ * The #fragment never leaves the browser, so the token is not sent to the hosting site.
+ */
+export function consumeRemoteLink(storage, location, history) {
+  if (isLocalHost(location.hostname)) return false;
+  const params = new URLSearchParams(location.hash.slice(1));
+  const collector = params.get('collector');
+  const token = params.get('token');
+  if (!collector || !token || !/^[\w.-]{16,256}$/.test(token)) return false;
+  let server;
+  try { server = validateServer(collector, { local: false }); } catch { return false; }
+  storage.setItem(STORAGE_KEY, JSON.stringify({ server, token, mode: 'tunnel' }));
+  history?.replaceState(null, '', `${location.pathname}#live`);
+  return true;
+}
+
 export function createContext({ storage = sessionStorage, location = window.location, history = window.history } = {}) {
   consumeLoginLink(storage, location, history);
+  consumeRemoteLink(storage, location, history);
   const listeners = new Set();
   // On the collector PC the dashboard is trusted without a token (see pc/local.mjs).
   const localDefault = isLocalHost(location.hostname) ? { server: location.origin, token: '', mode: 'tunnel' } : null;

@@ -8,6 +8,7 @@ import { readPairing, buildPairingLink, PAIRING_KEY } from '../web/js/phone/pair
 import { progress } from '../web/js/dashboard/project.js';
 import { deviceLabel } from '../web/js/dashboard/live.js';
 import { withScheme } from '../web/js/dashboard/connection.js';
+import { consumeRemoteLink } from '../web/js/dashboard/context.js';
 
 test('format helpers never print NaN or Infinity', () => {
   assert.equal(fmt(NaN), '—'); assert.equal(fmt(Infinity), '—'); assert.equal(fmt('3'), '—'); assert.equal(fmt(1.234, 2), '1.23');
@@ -99,4 +100,17 @@ test('collector address may be typed without https://', () => {
   assert.equal(withScheme('https://abc.trycloudflare.com'), 'https://abc.trycloudflare.com');
   assert.equal(withScheme('http://localhost:8787'), 'http://localhost:8787');
   assert.equal(withScheme(''), '');
+});
+
+test('remote link fills address and token on the hosted page and leaves the address bar clean', () => {
+  const store = new Map(); const storage = { setItem: (k, v) => store.set(k, v) };
+  let replaced = null; const history = { replaceState: (_s, _t, url) => { replaced = url; } };
+  const at = hash => ({ hostname: 'tepegoz-deone.vercel.app', pathname: '/', hash });
+  const token = 'a'.repeat(64);
+  assert.equal(consumeRemoteLink(storage, at(`#collector=${encodeURIComponent('https://abc.trycloudflare.com')}&token=${token}`), history), true);
+  assert.deepEqual(JSON.parse(store.get('tepegoz-connection')), { server: 'https://abc.trycloudflare.com', token, mode: 'tunnel' });
+  assert.equal(replaced, '/#live');
+  assert.equal(consumeRemoteLink(storage, at(`#collector=http://abc.example&token=${token}`), history), false, 'plain HTTP is refused');
+  assert.equal(consumeRemoteLink(storage, at('#collector=https://abc.trycloudflare.com&token=short'), history), false);
+  assert.equal(consumeRemoteLink(storage, { ...at(`#collector=https://abc.trycloudflare.com&token=${token}`), hostname: 'localhost' }, history), false);
 });

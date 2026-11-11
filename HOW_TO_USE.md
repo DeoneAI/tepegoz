@@ -56,7 +56,7 @@ flowchart TD
     W --> C["Connect"]
     U --> C
     C --> N["Window closes →<br/>click New session"]
-    R["Remote dashboard<br/>(collapsed, usually ignore)"] -. "only on another computer" .-> C
+    R["View from another device<br/>Create link → QR code"] --> V["Online dashboard opens<br/>already connected"]
 ```
 
 **① Status line: "Collector running on this PC"**
@@ -90,16 +90,31 @@ Pick how the phone will reach this PC (see section 4 if unsure). The area below 
 | **ADB not found…** | Install Android Platform-Tools (section 1). |
 | a phone listed as *unauthorized* | Unlock the phone and tap **Allow** on the USB-debugging prompt. |
 
-**③ Remote dashboard (collapsed). Leave it alone on this PC.**
-Only needed when you open the dashboard from a **different computer** (for example the hosted copy):
+**③ View from another device (one click).**
+Watch this collector from a laptop or phone anywhere, through the online dashboard
+(`https://tepegoz-deone.vercel.app`):
 
-1. On the PC running the collector: `npm run token` and copy the result.
-2. Find the collector's address: start the Wi-Fi link (it shows *Running · …trycloudflare.com*).
-3. On the other computer, fill **Collector address** (`https://…trycloudflare.com`) and **Collector token**.
-4. The collector must allow that site: add its address to `ALLOWED_ORIGINS` in `.env` and restart `npm start`.
+1. Press **Create link**. The collector starts its secure Cloudflare link if it is not running yet.
+2. Scan the QR code with the other device, or press **Copy link** / **Open**.
+3. The online dashboard opens already connected. You never copy an address or a token by hand.
 
-If you are on the same PC as the collector, keep both fields **empty**. Filling them switches the
-window to remote mode.
+```mermaid
+sequenceDiagram
+    participant PC as Collector PC (localhost:8787)
+    participant CF as Cloudflare link
+    participant V as tepegoz-deone.vercel.app
+    PC->>CF: start link (https://….trycloudflare.com)
+    PC->>PC: Create link = online URL + #address + token
+    Note over PC,V: the part after # stays in the browser, Vercel never receives it
+    V->>CF: dashboard requests with the token
+    CF->>PC: forwarded to the collector
+```
+
+Keep the link private: anyone with it can control the collector. It stops working when the collector
+restarts (the address changes); press **Create link** again.
+
+*Manual fallback* (on the online dashboard under **Enter address and token manually**): the address is
+the *Running · …trycloudflare.com* line in this dialog; the token is printed by `npm run token`.
 
 **④ Cancel / Connect**
 **Connect** saves your choice and closes the window. The *Phone* panel then shows **Wi-Fi** or
@@ -204,14 +219,9 @@ start it with `npm start`.
 2. Copy `.env.example` to `.env` and fill in `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 3. `npm start`. The terminal shows `SQLite + Supabase mirror`.
 
-**Open the dashboard from another computer (advanced).** Only this case needs the collector token:
-
-```bash
-npm run token
-```
-
-Paste it under **Connect phone → Remote dashboard** (step-by-step in section 3, part ③), and list
-that site's address in `ALLOWED_ORIGINS` in `.env`.
+**Open the dashboard from another device.** On the PC: **Connect phone → View from another device →
+Create link**, then scan the QR code (section 3, part ③). `npm run token` is only needed for the manual
+fallback. A self-hosted copy other than tepegoz-deone.vercel.app: set `HOSTED_DASHBOARD` in `.env`.
 
 ---
 

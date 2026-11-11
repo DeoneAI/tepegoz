@@ -70,7 +70,7 @@ flowchart TD
 
 | Before | Now |
 |---|---|
-| Copy a 64-character token into a form | Nothing: the dashboard on the PC is trusted (remote dashboards: `npm run token`) |
+| Copy a 64-character token into a form | Nothing: the dashboard on the PC is trusted; for another device press **Create link** and scan the QR code |
 | Run `cloudflared` in a second terminal and paste its URL | The dashboard starts the secure link (or `npm run start:wifi`) |
 | Add the Vercel site to `ALLOWED_ORIGINS` and restart | Not needed: the phone page comes from the collector through the link |
 | Use the Vercel site | Optional, only to view the dashboard from another computer (Advanced in the dialog) |

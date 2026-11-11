@@ -73,7 +73,7 @@ In this mode, the phone's `http://localhost:8787` is forwarded to the PC through
 
 ### Wi-Fi or mobile network: HTTPS tunnel
 
-The dashboard starts a Cloudflare quick tunnel for you (or run `npm run start:wifi`). The phone loads `/phone.html` through that HTTPS link from the collector itself, so `ALLOWED_ORIGINS` is only needed for the optional hosted (Vercel) dashboard. See [docs/CONNECTING.md](docs/CONNECTING.md).
+The dashboard starts a Cloudflare quick tunnel for you (or run `npm run start:wifi`). The phone loads `/phone.html` through that HTTPS link from the collector itself, and **View from another device → Create link** opens the hosted (Vercel) dashboard already connected, with no address or token to copy. See [docs/CONNECTING.md](docs/CONNECTING.md).
 
 ## Architecture
 
@@ -249,6 +249,7 @@ Install `scripts/requirements-vision.txt`, `scripts/requirements-analysis.txt` a
 | `PORT` / `HOST` | `8787` / `127.0.0.1` | Collector listener |
 | `DATA_DIR` | `./data` | Local recording directory |
 | `ALLOWED_ORIGINS` | Localhost origins | Exact frontend/mobile origin allowlist |
+| `HOSTED_DASHBOARD` | `https://tepegoz-deone.vercel.app` | Online dashboard opened by *Create link*; always allowed |
 | `COLLECTOR_TOKEN` | Generated and stored locally | Optional admin token override |
 | `ADB_PATH` | PATH or `.tools/platform-tools/adb` | Optional Platform-Tools executable |
 

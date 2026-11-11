@@ -239,12 +239,12 @@
       </header>
       <div class="dialog-body">
         <div class="hosted-note" id="hosted-note" hidden>
-          <p><strong>This is the online copy of the dashboard.</strong> Wi-Fi and USB are set up on the collector PC itself, at <code>http://localhost:8787</code>. For safety, a website can never start the link or talk to USB on your PC.</p>
-          <p>Here you can only view a running collector from another computer:</p>
+          <p><strong>This is the online copy of the dashboard.</strong> Recording, Wi-Fi and USB run on the collector PC. This page can watch it from anywhere.</p>
+          <p>Easiest way to connect:</p>
           <ol>
-            <li>On the collector PC: start the Wi-Fi link and copy its address (<em>Running · …trycloudflare.com</em>).</li>
-            <li>On the collector PC: run <code>npm run token</code> and copy the token.</li>
-            <li>Paste both below and press <strong>Connect</strong>.</li>
+            <li>On the collector PC open <code>http://localhost:8787</code> → <strong>Connect phone</strong>.</li>
+            <li>Under <strong>View from another device</strong> press <strong>Create link</strong>.</li>
+            <li>Scan the QR code or open the link here. Address and token fill in by themselves.</li>
           </ol>
         </div>
         <div id="local-setup">
@@ -269,9 +269,21 @@
             <span class="route-status" id="usb-status" role="status">Requires Android Platform-Tools.</span>
           </div>
         </div>
+        <section class="share-setup" id="share-setup">
+          <h3>View from another device</h3>
+          <p>Opens this dashboard on <span id="share-host">tepegoz-deone.vercel.app</span>, already connected to this PC. Keep it private: anyone with it can control this collector. It stops working when the collector restarts.</p>
+          <div class="route-row"><span class="route-status" id="share-status" role="status">No link yet</span><button type="button" class="button secondary small" id="share-create">Create link</button></div>
+          <div class="share-ready" id="share-ready" hidden>
+            <div class="share-qr" id="share-qr"></div>
+            <div class="share-actions">
+              <button type="button" class="button secondary small" id="share-copy">Copy link</button>
+              <a class="button secondary small" id="share-open" target="_blank" rel="noopener noreferrer">Open</a>
+            </div>
+          </div>
+        </section>
         <details class="advanced" id="remote-setup">
-          <summary id="remote-summary">Remote dashboard</summary>
-          <p class="small muted" id="remote-hint">Only for the hosted copy. Get the token with <code>npm run token</code> on the PC; the collector must list this site in ALLOWED_ORIGINS.</p>
+          <summary id="remote-summary">Enter address and token manually</summary>
+          <p class="small muted" id="remote-hint">Address: the <em>Running · …trycloudflare.com</em> line on the collector PC. Token: run <code>npm run token</code> on that PC.</p>
           <label>Collector address<input id="server-url" placeholder="https://….trycloudflare.com" type="url"></label>
           <label>Collector token<input id="remote-token" type="password" autocomplete="off"></label>
         </details>
