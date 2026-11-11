@@ -90,9 +90,9 @@ test('ended sessions report unsent telemetry instead of claiming a successful fl
 test('samples recorded while stopped are ignored and frames beyond the in-flight limit are skipped', async () => {
   const gate = deferred(); const sent = [];
   const client = phone(async () => ({}), async (_route, _blob, headers) => { sent.push(JSON.parse(headers['X-Frame-Meta'])); await gate.promise; });
-  const jobs = [0, 200, 400, 600, 800, 1000].map(t => client.capture.frame(t, {})); // 6th frame while 5 uploads are in flight → counted skip
-  await tick(3); assert.equal(sent.length, 5);
-  assert.deepEqual(sent.map(m => m.prev_frame_index), [-1, 0, 1, 2, 3], 'each frame names the frame sent before it');
+  const jobs = [0, 200, 400, 600, 800, 1000, 1200, 1400, 1600].map(t => client.capture.frame(t, {})); // 9th frame while 8 uploads are in flight → counted skip
+  await tick(3); assert.equal(sent.length, 8);
+  assert.deepEqual(sent.map(m => m.prev_frame_index), [-1, 0, 1, 2, 3, 4, 5, 6], 'each frame names the frame sent before it');
   gate.resolve(); await Promise.all(jobs.filter(Boolean));
   await client.capture.stop(false);
   client.enqueue(5); assert.equal(client.capture.pending, 0);

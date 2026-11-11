@@ -81,7 +81,8 @@ async function body(req,limit=2_000_000) {
 }
 function metrics(s) {
   const elapsed=Math.max(.001,((s.stopAt||mono())-s.startAt)/1000);
-  return {frames:s.frameCount,samples:s.sampleCount,fps:s.frameCount/elapsed,imu_hz:measuredRate(s.sensorTiming?.accelerometer),
+  return {frames:s.frameCount,samples:s.sampleCount,fps:s.frameCount>1&&s.lastFrameAt>s.firstFrameAt?(s.frameCount-1)*1000/(s.lastFrameAt-s.firstFrameAt):0, // frames per second while frames were arriving, not diluted by time before the phone started
+    imu_hz:measuredRate(s.sensorTiming?.accelerometer),
     per_sensor_hz:Object.fromEntries(Object.entries(s.sensorTiming||{}).map(([k,v])=>[k,measuredRate(v)])),
     sensor_counts:s.sensorCounts,sequence_gaps:s.counters.gaps,sequence_gaps_by_stream:s.counters.by_stream||{},phone_dropped_frames:s.phoneDropped||0,phone_dropped_samples:s.phoneDroppedSamples||0,
     latency_p50_ms:percentile(s.latency,.5),latency_p95_ms:percentile(s.latency,.95),jitter_ms:s.latency.length>1?Math.sqrt(s.latency.reduce((a,x)=>a+(x-s.latency.reduce((a,b)=>a+b,0)/s.latency.length)**2,0)/s.latency.length):null,
@@ -245,7 +246,7 @@ export const server=http.createServer(async(req,res)=>{
         }catch(error){await rm(imageFile,{force:true}).catch(()=>{});throw error;}
         s.counters=counters;
         if(s.clock){s.latency.push(Math.max(0,received-(Number(f.timestamp_ns)/1e6+s.clock.offset_ms)));s.latency=s.latency.slice(-600);}
-        s.lastFrame=f;s.lastJpeg=jpeg;s.frameCount++;s.bytes+=jpeg.length;s.lastSeen=mono();return json(res,200,{stored:true,frame_index:f.frame_index});});
+        s.lastFrame=f;s.lastJpeg=jpeg;s.frameCount++;s.firstFrameAt??=received;s.lastFrameAt=received;s.bytes+=jpeg.length;s.lastSeen=mono();return json(res,200,{stored:true,frame_index:f.frame_index});});
     }
     if(action==='device'&&req.method==='POST'&&isPhone){const input=JSON.parse((await body(req,20000)).toString());return await serial(id,async()=>{s.device=input;s.manifest.device=input;await persist(s);return json(res,200,{ok:true});});}
     if(action==='stop'&&req.method==='POST'&&isAdmin)return await serial(id,async()=>{if(s.recording){s.stopAt=mono();s.recording=false;s.manifest.status='completed';s.manifest.ended_at=new Date().toISOString();s.manifest.metrics=metrics(s);await persist(s);backupSession(id);}return json(res,200,view(s));});

@@ -26,7 +26,7 @@ export const MESSAGES = {
  */
 // Several JPEGs may be uploading at once, so one slow round trip no longer caps the frame rate
 // (over the internet each upload takes several hundred ms). The PC commits them in order using `prev_frame_index`.
-export const MAX_FRAMES_IN_FLIGHT = 5;
+export const MAX_FRAMES_IN_FLIGHT = 8;
 
 export function createCapture({ sessionId, mode, transport, view, env, maxInFlight = MAX_FRAMES_IN_FLIGHT }) {
   const now = env.now;
