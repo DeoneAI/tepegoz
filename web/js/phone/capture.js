@@ -13,7 +13,8 @@ const SESSION_ENDED = new Set([409, 410]);
 const finiteRotation = r => r && ['alpha', 'beta', 'gamma'].every(k => typeof r[k] === 'number' && Number.isFinite(r[k]));
 
 export const MESSAGES = {
-  stopped: 'Phone capture stopped. Use Stop & save on the PC to finalize this session.',
+  stopped: 'Capture stopped. The session is saved.',
+  stoppedUnsaved: 'Phone capture stopped, but the session could not be saved from here. Use Stop & save on the dashboard.',
   endedWith: n => `Session ended with ${n} telemetry samples not uploaded. Create a new session on the PC.`,
   queuedWith: n => `Capture stopped with ${n} telemetry samples still queued. Keep this page open, restore the connection, then tap Retry remaining telemetry uploads before saving on the PC.`,
 };
@@ -268,7 +269,9 @@ export function createCapture({ sessionId, mode, transport, view, env, maxInFlig
 
   async function stopFromUser() {
     const complete = await stop();
-    view.status(complete ? MESSAGES.stopped : queue.ended ? MESSAGES.endedWith(queue.pending) : MESSAGES.queuedWith(queue.pending));
+    // Everything is uploaded, so finalize the session here: the dashboard no longer waits for a Stop & save click.
+    const saved = complete && await transport.post('/stop', {}).then(() => true, () => false);
+    view.status(saved ? MESSAGES.stopped : complete ? MESSAGES.stoppedUnsaved : queue.ended ? MESSAGES.endedWith(queue.pending) : MESSAGES.queuedWith(queue.pending));
   }
 
   return {

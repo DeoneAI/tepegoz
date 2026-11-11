@@ -30,4 +30,9 @@ test('frames that overtake each other on the network are stored in order and non
   assert.deepEqual(replay.frames.map(f => f.frame_index), [0, 1, 2, 3]);
   // A frame whose predecessor never arrives is still stored after the short wait.
   assert.equal((await frame(6, 5)).status, 200);
+  // The phone (pairing key) may finalize its own session, and a wrong key may not.
+  assert.equal((await req(`/api/sessions/${session.id}/stop`, 'wrong-key', 'POST', {})).status, 401);
+  const stopped = await req(`/api/sessions/${session.id}/stop`, session.phone_key, 'POST', {});
+  assert.equal(stopped.status, 200);
+  assert.equal(stopped.json().recording, false);
 });

@@ -249,7 +249,7 @@ export const server=http.createServer(async(req,res)=>{
         s.lastFrame=f;s.lastJpeg=jpeg;s.frameCount++;s.firstFrameAt??=received;s.lastFrameAt=received;s.bytes+=jpeg.length;s.lastSeen=mono();return json(res,200,{stored:true,frame_index:f.frame_index});});
     }
     if(action==='device'&&req.method==='POST'&&isPhone){const input=JSON.parse((await body(req,20000)).toString());return await serial(id,async()=>{s.device=input;s.manifest.device=input;await persist(s);return json(res,200,{ok:true});});}
-    if(action==='stop'&&req.method==='POST'&&isAdmin)return await serial(id,async()=>{if(s.recording){s.stopAt=mono();s.recording=false;s.manifest.status='completed';s.manifest.ended_at=new Date().toISOString();s.manifest.metrics=metrics(s);await persist(s);backupSession(id);}return json(res,200,view(s));});
+    if(action==='stop'&&req.method==='POST'&&(isAdmin||isPhone))return await serial(id,async()=>{if(s.recording){s.stopAt=mono();s.recording=false;s.manifest.status='completed';s.manifest.ended_at=new Date().toISOString();s.manifest.metrics=metrics(s);await persist(s);backupSession(id);}return json(res,200,view(s));});
     return json(res,404,{error:'Not found'});
   }catch(e){if(res.headersSent){res.destroy();return;}json(res,e.status||(e.code==='ENOENT'?404:e instanceof SyntaxError?400:500),{error:e.code==='ENOENT'?'Not found':e.message});}
 });

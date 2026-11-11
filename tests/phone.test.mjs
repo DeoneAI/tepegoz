@@ -27,7 +27,7 @@ function phone(post, upload = async () => ({})) {
 const deferred = () => { let resolve, reject; const promise = new Promise((ok, fail) => { resolve = ok; reject = fail; }); return { promise, resolve, reject }; };
 const tick = async (n = 2) => { for (let i = 0; i < n; i++) await Promise.resolve(); };
 
-test('phone Stop waits for the final JPEG acknowledgment before inviting PC finalization', async () => {
+test('phone Stop waits for the final JPEG acknowledgment before saving the session', async () => {
   const ack = deferred(); let requested = false;
   const client = phone(async () => ({}), async () => { requested = true; await ack.promise; return {}; });
   const frame = client.capture.frame(100, { captureTime: 90, mediaTime: 0.1 });
@@ -35,12 +35,12 @@ test('phone Stop waits for the final JPEG acknowledgment before inviting PC fina
   let stopped = false; const stop = client.capture.stopFromUser().then(() => { stopped = true; });
   await tick(); assert.equal(stopped, false);
   ack.resolve(); await frame; await stop;
-  assert.match(client.ui.status, /Use Stop & save/);
+  assert.match(client.ui.status, /session is saved/);
 });
 
 test('phone Stop waits for active upload then drains samples captured while it was in flight', async () => {
   const first = deferred(), calls = [];
-  const client = phone(async (route, payload) => { calls.push(payload); if (calls.length === 1) await first.promise; return { accepted: payload.samples.length }; });
+  const client = phone(async (route, payload) => { if (route === '/stop') return {}; calls.push(payload); if (calls.length === 1) await first.promise; return { accepted: payload.samples.length }; });
   client.enqueue(1); const upload = client.capture.flush(); await tick(1); client.enqueue(2);
   let stopped = false; const stop = client.capture.stopFromUser().then(() => { stopped = true; });
   await tick();
@@ -48,12 +48,12 @@ test('phone Stop waits for active upload then drains samples captured while it w
   first.resolve(); await upload; await stop;
   assert.deepEqual(calls.map(c => Array.from(c.samples, s => s.sequence_id)), [[0], [1]]);
   assert.equal(client.capture.pending, 0); assert.equal(client.ui.stop.hidden, true);
-  assert.match(client.ui.status, /Use Stop & save/);
+  assert.match(client.ui.status, /session is saved/);
 });
 
 test('phone Stop retries an active failed batch without losing subsequent queued samples', async () => {
   const first = deferred(), calls = [];
-  const client = phone(async (route, payload) => { calls.push(payload); if (calls.length === 1) await first.promise; return {}; });
+  const client = phone(async (route, payload) => { if (route === '/stop') return {}; calls.push(payload); if (calls.length === 1) await first.promise; return {}; });
   client.enqueue(1); const upload = client.capture.flush(); await tick(1); client.enqueue(2);
   const stop = client.capture.stopFromUser(); first.reject(new Error('Connection lost')); await upload; await stop;
   assert.deepEqual(calls.map(c => Array.from(c.samples, s => s.sequence_id)), [[0], [0, 1]]);
@@ -77,7 +77,7 @@ test('failed stop keeps telemetry and offers a retry before PC finalization', as
   assert.match(client.ui.status, /1 telemetry samples still queued/);
   offline = false; await client.capture.stopFromUser();
   assert.equal(client.capture.pending, 0); assert.equal(client.ui.stop.hidden, true);
-  assert.match(client.ui.status, /Use Stop & save/);
+  assert.match(client.ui.status, /session is saved/);
 });
 
 test('ended sessions report unsent telemetry instead of claiming a successful flush', async () => {
@@ -102,4 +102,22 @@ test('telemetry queue keeps a bounded buffer and counts dropped samples', async 
   const queue = createTelemetryQueue({ upload: async () => ({}), limit: 3 });
   for (let i = 0; i < 5; i++) queue.push({ sensor_type: 'gyroscope', value: i });
   assert.equal(queue.pending, 3); assert.equal(queue.dropped, 2);
+});
+
+test('a clean phone Stop saves the session so the dashboard does not wait for Stop & save', async () => {
+  const routes = [];
+  const client = phone(async route => { routes.push(route); return {}; });
+  client.enqueue(1); await client.capture.stopFromUser();
+  assert.ok(routes.includes('/stop'), 'the phone finalizes the session itself');
+  assert.equal(routes.at(-1), '/stop', 'only after the last telemetry batch');
+  assert.match(client.ui.status, /session is saved/);
+});
+
+test('phone Stop does not save while telemetry is still queued, and tells you if saving fails', async () => {
+  const routes = []; let failStop = false, offline = true;
+  const client = phone(async route => { routes.push(route); if (route === '/stop' ? failStop : offline) throw new Error('Offline'); return {}; });
+  client.enqueue(1); await client.capture.stopFromUser();
+  assert.ok(!routes.includes('/stop'), 'unsent samples keep the session open for the retry');
+  offline = false; failStop = true; await client.capture.stopFromUser();
+  assert.match(client.ui.status, /Use Stop & save on the dashboard/);
 });
