@@ -9,7 +9,6 @@ services:
     buildCommand: npm install --omit=dev
     startCommand: node pc/server.mjs
     healthCheckPath: /health
-    autoDeploy: true
     envVars:
       - key: NODE_VERSION
         value: 22.13.0

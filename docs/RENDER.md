@@ -33,6 +33,14 @@ Shortcut that skips typing: open
 `https://YOUR-SERVICE.onrender.com/#collector=https://YOUR-SERVICE.onrender.com&token=YOUR_TOKEN` once on a device.
 The part after `#` stays in the browser and is removed from the address bar.
 
+## Updating after a code change
+
+Render read the repository by its public URL, so it does **not** redeploy on every push. After new commits on `main`: open the service in Render → **Manual Deploy → Deploy latest commit**. (Connecting your GitHub account to Render instead enables automatic deploys.)
+
+## Speed (frames per second)
+
+The phone keeps up to 5 frames uploading at once, so the round-trip time to the server matters much less than before. Distance still adds delay: the collector runs in the Render region chosen when the service was created (the default is Oregon, USA). From Europe or the Caucasus, create the service in **Frankfurt** instead (Render → New → Blueprint, choose the Frankfurt region; a region cannot be changed later). If the frame rate is still low, choose **640×360** on the phone page: it sends about a quarter of the data.
+
 ## What to expect on the free plan
 
 | Limit (Render free) | What it means here |
